@@ -1,0 +1,160 @@
+---
+title: 'Series de tiempo: Tarea 1'
+author: "Guillermo Alberto Garcia Candanosa - A01034958"
+date: '2022-04-25'
+output:
+  html_document:
+    df_print: paged
+---
+
+Librerías requeridas para instalar:
+
+```{r}
+#install.packages("tidyverse") 
+#install.packages("fpp3") 
+#install.packages("forecast") 
+#install.packages("ggplot2") 
+#install.packages("astsa") 
+#install.packages("GGally") 
+#install.packages("fma") 
+#install.packages("expsmooth") 
+#install.packages("tsibble")
+```
+
+Carga de librerías:
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse) 
+library(fpp3) 
+library(forecast) 
+library(ggplot2) 
+library(astsa) 
+library(GGally) 
+library(fma) 
+library(expsmooth) 
+library(tsibble)
+```
+
+1. Una serie de tiempo es una secuencia de observaciones (o números) sobre intervalos de tiempo separados de manera regular (el índice). En R, esta información se puede almacenar en un formato llamado “tsibble”, el cual nos permite graficar la información.
+
+a. Convierte la serie de tiempo de la siguiente tabla en “tsibble” en R.
+
+```{r}
+y <- tsibble(
+Year = 2015:2019,
+Observation = c(48, 36, 25, 30, 68),
+index = Year
+)
+```
+
+b. Grafica la serie. Puedes usar el siguiente código:
+
+```{r}
+autoplot(y) + 
+  ggtitle("Aprobación presidencial (% promedio en México, anual)") +
+  ylab("%") +
+  xlab("Año")
+```
+
+c. ¿La serie sigue alguna tendencia, estacionalidad o ciclo?
+
+*R: Se podría afirmar que la serie sigue ciclos sexenales, en donde la popularidad presidencial llega a su máximo durante el primer año de gobierno del presidente en turno, y baja conforme nos acercamos a las próximas elecciones presidenciales.*
+
+2. Carga la base de datos “tute1.csv”, que puedes ubicar en el sitio del curso en Canvas. Tiene 4 columnas: Quarter, Sales (ventas trimestrales de una tienda de teléfonos), AdBudget (es el presupuesto para publicidad de la tienda (en dólares australianos) y GDP (Producto interno bruto de Australia, en dólares australianos). La serie ya fue ajustada por inflación.
+
+a. Carga la base de datos en R (recuerda asignar un directorio de trabajo y ahí guardar la base de datos (ejemplo: setwd("E:\Tareas\Curso\Curso TS").
+
+```{r}
+# No requerí asignar un directorio de trabajo, pues estoy trabajando sobre un proyecto en RStudio en donde asigné previamente el directorio.
+
+tute1 <- read_csv("tute1.csv")
+```
+
+b. Transforma los datos en una serie de tiempo para R. 
+
+```{r}
+mytimeseries <- tute1 %>%
+  mutate(Quarter = yearmonth(Quarter)) %>%
+  as_tsibble(index = Quarter)
+```
+
+c. Grafica las series de tiempo de las variables en la base de datos.
+
+```{r}
+mytimeseries %>%
+  pivot_longer(-Quarter) %>%
+  ggplot(aes(x = Quarter, y = value, colour = name)) +
+  geom_line() +
+  facet_grid(name ~ ., scales = "free_y")
+```
+
+d. Revisa qué pasa cuando no incluyes facet_grid().
+
+```{r}
+mytimeseries %>%
+  pivot_longer(-Quarter) %>%
+  ggplot(aes(x = Quarter, y = value, colour = name)) +
+  geom_line()
+```
+
+
+*R: Al no incluir facet_grid(), las tres series de tiempo se grafican en una misma gráfica. El facet_grid() permite graficar cada serie de tiempo por separado dentro de un mismo output, lo cual permite visualizar el comportamiento de los datos de forma independiente en escalas distintas según el caso.*
+
+3. Usa la base de datos “hh_budget” de la librería de R. Esta base de datos incluye indicadores anuales de los presupuestos de los hogares de Australia, Japón, Canadá y los Estados Unidos, de 1995 a 2016.
+
+a. Crea un training set que excluya los últimos cuatro años y los convierta en un test set.
+
+```{r}
+library(tsibbledata)
+
+hh_budget_train <-
+  hh_budget %>%
+  filter_index(. ~ '2012')
+
+hh_budget_test <-
+  hh_budget %>%
+  filter_index('2013' ~ .)
+```
+
+b. Ejecuta los métodos simples de pronóstico con el training set y pronostica para los correspondientes al test set.
+
+```{r}
+hh_budget_models <-
+  hh_budget_train %>%
+  model(mean = MEAN(Wealth),
+        naive = NAIVE(Wealth),
+        snaive = SNAIVE(Wealth),
+        )
+
+hh_budget_forecast <-
+  hh_budget_models %>%
+  forecast(hh_budget_test)
+```
+
+c. Calcula la exactitud de los métodos. ¿Cuál es el mejor?
+
+```{r}
+hh_budget_forecast %>% 
+  accuracy(hh_budget_test) %>%
+  group_by(Country) %>%
+  arrange(RMSE) %>%
+  slice(1)
+```
+
+4. Establece si las siguientes frases son verdaderas o falsas.
+
+a. El mejor indicador para evaluar la exactitud de un pronóstico es el MAPE.
+
+*R: Falso.*
+
+b. Los modelos explicativos predicen mejor las series de tiempo.
+
+*R: Falso.*
+
+c. Siempre debe escogerse el modelo con el mejor desempeño en el test set.
+
+*R: Falso.*
+
+d. Los modelos simples de pronóstico son los mejores, por su sencillez.
+
+*R: Falso.*

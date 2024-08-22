@@ -1,0 +1,147 @@
+{UTF-8}
+"Créditos otorgados sin documentos, con ingresos autoreportados y no verificados, etc."\
+		  = A FUNCTION OF( "Número de corredores de hipotecas, agentes de bienes raíces, etc."\
+		,Precios de bienes raíces)
+	~	
+	~		|
+
+Precios de bienes raíces  = A FUNCTION OF( Demanda de bienes raíces,"Estabilidad económica (empleo, estabilidad de precios)."\
+		,Impago de créditos hipotecarios,Oferta de bienes raíces)
+	~	
+	~		|
+
+Demanda de bienes raíces  = A FUNCTION OF( "Créditos otorgados sin documentos, con ingresos autoreportados y no verificados, etc."\
+		,Dinero en circulación,Precios de bienes raíces)
+	~	
+	~		|
+
+Dinero en circulación  = A FUNCTION OF( Política monetaria)
+	~	
+	~		|
+
+"Estabilidad económica (empleo, estabilidad de precios)."  = A FUNCTION OF( Demanda de bienes raíces\
+		,Dinero en circulación,Precios de bienes raíces)
+	~	
+	~		|
+
+Impago de créditos hipotecarios  = A FUNCTION OF( "Créditos otorgados sin documentos, con ingresos autoreportados y no verificados, etc."\
+		)
+	~	
+	~		|
+
+Instrmentos hipotecarios laxos  = A FUNCTION OF( "Créditos otorgados sin documentos, con ingresos autoreportados y no verificados, etc."\
+		)
+	~	
+	~		|
+
+"Número de corredores de hipotecas, agentes de bienes raíces, etc."  = A FUNCTION OF\
+		( Instrmentos hipotecarios laxos)
+	~	
+	~		|
+
+Oferta de bienes raíces  = A FUNCTION OF( Precios de bienes raíces)
+	~	
+	~		|
+
+Política monetaria  = A FUNCTION OF( )
+	~	
+	~		|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 100
+	~	Month
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 0
+	~	Month
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 
+        TIME STEP
+	~	Month [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 1
+	~	Month [0,?]
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*View 1
+$192-192-192,0,Arial Unicode MS|12||0-0-0|0-0-0|0-0-255|-1--1--1|255-255-255|96,96,132,0
+10,1,Oferta de bienes raíces,711,541,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,2,Precios de bienes raíces,698,373,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,3,Demanda de bienes raíces,697,205,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,4,2,3,1,0,45,0,2,192,0,-1--1--1,|||0-0-0,1|(615,281)|
+1,5,2,1,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(622,458)|
+1,6,3,2,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(789,280)|
+1,7,1,2,1,0,45,0,2,192,0,-1--1--1,|||0-0-0,1|(789,465)|
+10,8,Política monetaria,514,69,48,20,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,9,Instrmentos hipotecarios laxos,278,224,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,10,"Número de corredores de hipotecas, agentes de bienes raíces, etc.",381,373,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,11,9,10,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(272,310)|
+10,12,"Créditos otorgados sin documentos, con ingresos autoreportados y no verificados, etc.",486,214,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,13,10,12,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(485,322)|
+1,14,12,9,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(366,156)|
+1,15,12,3,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(568,162)|
+10,16,"Estabilidad económica (empleo, estabilidad de precios).",1043,334,66,41,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,17,2,16,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(891,409)|
+10,18,Dinero en circulación,678,109,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,19,8,18,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(604,59)|
+1,20,18,3,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(703,139)|
+1,21,18,16,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(977,157)|
+1,22,3,16,1,0,45,0,2,192,0,-1--1--1,|||0-0-0,1|(889,213)|
+10,23,Impago de créditos hipotecarios,457,492,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,24,23,2,1,0,45,0,2,192,0,-1--1--1,|||0-0-0,1|(546,434)|
+1,25,12,23,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(513,348)|
+12,26,2,388,260,23,23,5,7,0,0,1,0,0,0,0,0,0,0,0,0
+Burbuja inmobiliaria
+12,27,1,708,280,23,23,4,7,0,0,1,0,0,0,0,0,0,0,0,0
+Ley de Demanda
+12,28,1,710,448,23,23,5,7,0,0,1,0,0,0,0,0,0,0,0,0
+Ley de Oferta
+1,29,2,12,1,0,45,0,2,192,0,-1--1--1,|||-1--1--1,1|(563,309)|
+12,30,2,586,351,17,17,5,7,0,8,1,0,0,0,-1--1--1,0-0-0,|9||0-0-0,0,0,0,0,0,0
+Implosión de la burbuja
+1,31,16,2,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(916,320)|
+12,32,2,890,350,23,23,5,7,0,8,1,0,0,0,-1--1--1,0-0-0,|8||0-0-0,0,0,0,0,0,0
+Reforzamiento de estabilidad económica
+///---\\\
+:L<%^E!@
+5:Precios de bienes raíces
+9:current
+19:132,0
+24:0
+25:0
+26:0
+23:0
+15:0,0,0,0,0,0
+27:0,
+34:0,
+42:0
+72:0
+73:0
+95:0
+96:0
+97:0
+77:0
+78:0
+102:0
+93:0
+94:0
+92:0
+91:0
+90:0
+87:0
+75:
+43:
+103:8,8,8,3,8

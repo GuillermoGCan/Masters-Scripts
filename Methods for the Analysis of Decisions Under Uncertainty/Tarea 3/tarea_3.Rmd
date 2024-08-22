@@ -1,0 +1,1973 @@
+---
+title: 'Métodos para el análisis de decisiones bajo incertidumbre: Tarea 2'
+author: "Guillermo Alberto Garcia Candanosa - A01034958"
+date: '2022-11-25'
+---
+
+**Carga de librerías**
+
+```{r Carga de librerías, message=FALSE, warning=FALSE}
+library(deSolve)
+library(shiny)
+library(ggplot2)
+library(Rmisc)
+library(scales)
+library(extrafont)
+library(data.table)
+library(reshape2)
+library(knitr)
+library(tidyverse)
+library(lattice)
+library(ggpubr)
+library(lhs)
+library(rpart)
+library(rpart.plot)
+```
+
+# Problema 1 (50 puntos)
+
+## Aplicación detallada de Scenario Discovery
+
+1.  Emplea la versión "ediam_10_24_2016.r" del modelo EDIAM como el "Generador de Escenarios" en el estudio RDM descrito en los siguientes apartados
+
+-   Métricas de desempeño:
+
+    -   Crecimiento de la temperatura en el año 100
+
+    -   Crecimiento económico promedio región avanzada
+
+    -   Crecimiento económico promedio región emergente
+
+-   Objetivos:
+
+    -   Ambiental: El crecimiento de la tamperatura se mantiene por debajo de los dos grados Celsius al final del primer siglo
+
+    -   Económico: El crecimiento económico en ambas regiones es mayor o igual al 2%
+
+-   Incertidumbres, crea una muestra tipo LHC, tamaño N = 500, considerando el siguiente espacio de incertidumbre:
+
+    -   Propensión a la innovación tecnologías verdes: *Eta.re*  0.013≤ηre≤.027
+
+    -   Retornos a la investigación tecnologías verdes: *Gamma.re*  0.16≤γre≤.33
+
+    -   Transferabilidad tecnologías verdes: *Nu.re*  0.013≤νre≤.027
+
+    -   Elasticidad de substitución entre energía fósil y verde: *epsilon*  3.0≤ϵ≤10.0
+
+-   Políticas, considera las siguientes dos alternativas de política:
+
+    -   Política Independiente:
+
+        -   Impuesto al Carbono AR;  tax.rate.N=0.56490213
+
+        -   Subsidio Tecnológico AR;  epsi.re.subsidy.N=0.33509668
+
+        -   Subsidio Investigación y Desarrollo AR;  s.re.subsidy.N=2.09203509
+
+        -   Impuesto al Carbono ER;  tax.rate.S=0.29273582
+
+        -   Subsidio Tecnológico ER;  epsi.re.subsidy.S=0.25091565
+
+        -   Subsidio Investigación y Desarrollo ER;  s.re.subsidy.S=2.25442520
+
+        -   Subsidio Tecnológico Fondo Verde;  epsi.re.GFsubsidy.N=0.0
+
+        -   Subsidio Investigación y Desarrollo Fondo Verde;  s.re.GFsubsidy.N=0.0
+
+        -   Vida media política;  policy.half.life=0.00411079
+
+    -   Política Fondo Verde:
+
+        -   Impuesto al Carbono AR;  tax.rate.N=0.605709672
+
+        -   Subsidio Tecnológico AR;  epsi.re.subsidy.N=0.191382026
+
+        -   Subsidio Investigación y Desarrollo AR;  s.re.subsidy.N=3.322859643
+
+        -   Impuesto al Carbono ER;  tax.rate.S=0.295041075
+
+        -   Subsidio Tecnológico ER;  epsi.re.subsidy.S=0.202098716
+
+        -   Subsidio Investigación y Desarrollo ER;  s.re.subsidy.S=0.733830192
+
+        -   Subsidio Tecnológico Fondo Verde;  epsi.re.GFsubsidy.N=0.077498849
+
+        -   Subsidio Investigación y Desarrollo Fondo Verde;  s.re.GFsubsidy.N=0.540613659
+
+        -   Vida media política;  policy.half.life=0.003541255
+
+Corre el experimento exploratorio para cada política y estima el porcentaje de futuros en los que no se cumplen los objetivos ambiental y económico respectivamente. ¿Qué política te parece más vulnerable? [Tabla con resultados, renglones con políticas, columnas con objetivos]
+
+**1.1 Definición de políticas**
+
+```{r 1.1 Definición de políticas}
+#The Ediam model requires two input vectors
+#Choose your policy
+#Define your policy
+
+policies.1 <-
+  c(
+#carbon tax
+    tax.rate.N = 0.56490213,
+    tax.rate.S = 0.29273582,
+#Technology push in Advanced Region
+	  epsi.re.subsidy.N = 0.33509668, #Technology subsidy in Advanced Region
+    s.re.subsidy.N = 2.09203509, #R&D subsidy in Advanced Region
+#Technology push in Emerging Region
+    epsi.re.subsidy.S = 0.25091565, #Technology subsidy in Emerging Region
+    epsi.re.GFsubsidy.N = 0,#Technology subsidy in GCF
+    s.re.subsidy.S = 2.25442520, #R&D subsidy in Emerging Region
+    s.re.GFsubsidy.N = 0, #R&D subsidy in GCF
+    policy.half.life = as.numeric(0.00411079) #Policy half time
+)
+
+policies.2 <-
+  c(
+#carbon tax
+    tax.rate.N = 0.605709672,
+    tax.rate.S = 0.295041075,
+#Technology push in Advanced Region
+	  epsi.re.subsidy.N = 0.191382026, #Technology subsidy in Advanced Region
+    s.re.subsidy.N = 3.322859643, #R&D subsidy in Advanced Region
+#Technology push in Emerging Region
+    epsi.re.subsidy.S = 0.202098716, #Technology subsidy in Emerging Region
+    epsi.re.GFsubsidy.N = 0.077498849,#Technology subsidy in GCF
+    s.re.subsidy.S = 0.733830192, #R&D subsidy in Emerging Region
+    s.re.GFsubsidy.N = 0.540613659, #R&D subsidy in GCF
+    policy.half.life = as.numeric(0.003541255) #Policy half time
+)
+```
+
+**1.1 Carga de EDIAM a la sesión de R**
+
+```{r 1.1 Carga de EDIAM a la sesión de R}
+# Especificar directorio donde se guardó el modelo.
+
+dir.model <- 
+  "C:/Users/Guillermo GC/Dropbox/TEC MTY MPE/7o Trimestre/Modelación Avanzada/EDIAM/"
+  # "C:/Users/GuillermoAlbertoGarc/Dropbox/TEC MTY MPE/7o Trimestre/Modelación Avanzada/EDIAM/"
+
+# Especificar la versión del modelo que estamos utilizando
+model.version <-
+  "ediam_10_24_2016.r"
+
+# Cargar el modelo en la sesión
+source(
+  paste(dir.model,
+        model.version,
+        sep="")
+  )
+```
+
+**1.1 Función de creación de experimentos mixtos**
+
+```{r 1.1 Función de creación de experimentos mixtos}
+#Define function to create mix experiments
+
+exp.design.table <-
+  function(dir.exp.inputs,Limits.File,sample.size,Policies.File,Policy.Switch,Climate.File,Climate.Switch){
+    
+    Limits <-
+      read.csv(paste(dir.exp.inputs,Limits.File,sep="")) #type1->constant,type2->factorial, type3->latinhypercube
+    
+    Limits$Description <- NULL
+    Limits$Comments <- NULL
+    
+    Policies <-
+      read.csv(paste(dir.exp.inputs,Policies.File,sep=""))
+    
+    Climate <- 
+      read.csv(paste(dir.exp.inputs,Climate.File,sep=""))
+    
+    #Separate variables into the three different strings
+    Constants <-
+      Limits[Limits$Type==1,"VarName"]
+    Factorial <-
+      Limits[Limits$Type==2,"VarName"]
+    LatinHyperCube <- 
+      Limits[Limits$Type==3,"VarName"]
+    
+    #Create factorial part of the experimental design
+    
+    Create.factorial.exp<-function(Limits){
+      if (length(Factorial)==0){
+        c()
+        } else{
+          Limits.Factorial <- 
+            Limits[Limits$Type==2,]
+          
+          row.names(Limits.Factorial) <- 
+            Limits.Factorial$VarName
+          
+          Limits.Factorial <- 
+            Limits.Factorial[,c("Min","Max","Gradient")]
+          
+          Limits.Factorial$Gradient <-
+            ifelse(Limits.Factorial$Gradient >1,
+                   Limits.Factorial$Gradient,
+                   2) #this allows the instruction below to use gradient=1 as input and work ok
+          
+          l <-
+            lapply(data.frame(t(Limits.Factorial)),
+                   function (x) {
+                     seq(x[1],x[2],by=(x[2]-x[1])/(x[3]-1))
+                     }
+                   ) #if in doubt about the function look at the form of data.frame(t(Limits.Factorial))
+          
+          return(expand.grid(l))
+        }
+      }
+    
+    Exp.design.factorial <-
+      Create.factorial.exp(Limits)
+
+    #Create Latin hyper cube part of experimental design
+    
+    Create.LHC.exp<-function(Limits){
+      if (length(LatinHyperCube)==0){
+        c()
+        } else {
+          library(lhs)
+          
+          sample <- 
+            randomLHS(sample.size,length(LatinHyperCube))
+          
+          Limits.LHC <-
+            Limits[Limits$Type==3,]
+          
+          row.names(Limits.LHC) <-
+            Limits.LHC$VarName
+          
+          Limits.LHC <- 
+            Limits.LHC[,c("Min","Max")]
+          
+          Limits.LHC$Row.Number <-
+            c(1:nrow(Limits.LHC))
+          
+          lhc.p1 <-
+            as.data.frame(apply(Limits.LHC,1,
+                                function (x){
+                                  sample[,x[3]]*(x[2]-x[1])+x[1]
+                                  }
+                                )
+                          )
+          
+          lhc.p1$LHC.Type <-
+            "Sample"
+          
+          #add extreme values to sample table
+          lhc.p2 <- 
+            Limits[Limits$Type==3,]
+          
+          row.names(lhc.p2) <-
+            lhc.p2$VarName
+          
+          lhc.p2 <-
+            lhc.p2[,c("Min","Max","Gradient")]
+          
+          lhc.p2$Gradient <-
+            2
+          
+          lhc.p2$Gradient <-
+            ifelse(lhc.p2$Gradient > 1,
+                   lhc.p2$Gradient,
+                   2) #this allows the instruction below to use gradient=1 as input and work ok
+          
+          lhc.p2 <-
+            lapply(data.frame(t(lhc.p2)),
+                   function (x) {
+                     seq(x[1],x[2],by=(x[2]-x[1])/(x[3]-1))
+                     }
+                   ) #if in doubt about the function look at the form of data.frame(t(lhc.p2))
+          
+          lhc.p2 <-
+            expand.grid(lhc.p2)
+          
+          lhc.p2$LHC.Type <-
+            "Extremes"
+          
+          #rbind both tables
+          lhc <-
+            rbind(lhc.p1,lhc.p2)
+          return(lhc)
+        }
+      }
+
+Exp.design.LHC <-
+  Create.LHC.exp(Limits)
+
+#Create constant part of the experimental design
+
+Create.Constant.exp <- 
+  function(Limits)
+    {
+    if (length(Constants)==0)
+      {
+      c()
+      } else {
+        Limits.Constant <-
+          Limits[Limits$Type==1,]
+        
+        varnames <-
+          Limits.Constant$VarName
+        
+        Limits.Constant <-
+          data.frame(t(Limits.Constant[,"Cte"]))
+        
+        colnames(Limits.Constant) <- 
+          varnames
+        
+        return(Limits.Constant)
+      }
+    }
+
+Exp.design.Constant <- 
+  Create.Constant.exp(Limits)
+
+#Join the three experimental design tables to create total number of futures
+Exp.design <-
+  if(length(Factorial)==0 && length(LatinHyperCube)==0){
+    Exp.design.Constant
+  } else {
+    if(length(Factorial)==0){
+      Exp.design.LHC
+    } else {
+        if(length(LatinHyperCube)==0){
+          Exp.design.factorial
+        } else {
+            merge(Exp.design.LHC,Exp.design.factorial)
+        }
+    }
+  }
+
+
+Exp.design <-
+  if(length(Factorial)==0 && length(LatinHyperCube)==0){
+    Exp.design
+  } else {
+      if(length(Constants)==0){
+        Exp.design
+      } else {
+          merge(Exp.design,Exp.design.Constant)
+      }
+    }
+
+#Finally add reference Future.ID
+ #Exp.design.reference<-Limits
+ #varnames<-Exp.design.reference$VarName
+ #Exp.design.reference<-data.frame(t(Exp.design.reference[,"Cte"]))
+ #colnames(Exp.design.reference)<-varnames
+
+#rbind with rest of experiment
+# Exp.design<-rbind(Exp.design,Exp.design.reference)
+
+# Join with climate scenarios to create total number of futures
+Climate <-
+  if(Climate.Switch==FALSE) {
+    Climate[1,]
+  } else {
+      Climate
+  }
+
+Exp.design <-
+  merge(Exp.design,Climate)
+
+Exp.design$Future.ID <-
+  as.numeric(row.names(Exp.design))
+
+#Join total number of futures with policies to create total number of runs
+Policies <-
+  if(Policy.Switch==FALSE) {Policies[1,]}else{Policies}
+
+Exp.design <-
+  merge(Exp.design,Policies)
+
+Exp.design$Run.ID <-
+  as.numeric(row.names(Exp.design))
+
+return(Exp.design)
+}
+```
+
+**1.1 Definición de directorio de trabajo**
+
+```{r 1.1 Definición de directorio de trabajo}
+#define root directory for experiment's inputs
+
+dir.exp.inputs <-
+  r"(C:\Users\Guillermo GC\Dropbox\TEC MTY MPE\7o Trimestre\Modelación Avanzada\Tareas\Tarea 3\)"
+  # r"(C:\Users\GuillermoAlbertoGarc\Dropbox\TEC MTY MPE\7o Trimestre\Modelación Avanzada\Tareas\Tarea 3\)"
+
+Limits.File <-
+  "Limits_1.csv"
+Policies.File <-
+  "Policies_1.csv"
+Climate.File <-
+  "Climate_1.csv"
+```
+
+**1.1 Muestreo LHC con tamaño de muestra 500**
+
+```{r 1.1 Muestreo LHC con tamaño de muestra 500}
+sample.size_1.1 <- 500
+Policy.Switch <- FALSE
+Climate.Switch <- FALSE
+
+set.seed(55555)
+
+Exp.design_1.1 <-
+  exp.design.table(dir.exp.inputs,
+                   Limits.File,
+                   sample.size_1.1,
+                   Policies.File,
+                   Policy.Switch,
+                   Climate.File,
+                   Climate.Switch)
+```
+
+**1.1 Definición de función para correr EDIAM con el diseño experimental**
+
+```{r 1.1 Definición de función para correr EDIAM con el diseño experimental}
+ediam.experiment <-
+  function(Exp.design,policies){
+    exp.out <-
+      apply(Exp.design,1,function(x){ #load parameters from Ex.design.table
+        params <-
+          c(CO2.Concentration.0 = 382.2461, #
+          TimeStep = as.numeric(x["TimeStep"]),#
+          EndTime = as.numeric(x["EndTime"]), #
+          alfa = as.numeric(x["alfa"]),
+          epsilon = as.numeric(x["epsilon"]), #elasticity of subsitution
+          Gamma.re = as.numeric(x["Gamma.re"]), #R&D returns SETs
+          k.re = as.numeric(x["k.re"]),#
+          Gamma.ce = as.numeric(x["Gamma.ce"]), #R&D returns FETs
+          k.ce = as.numeric(x["k.ce"]),#
+          Eta.re = as.numeric(x["Eta.re"]), #Innovation propensity SETs
+          Eta.ce = as.numeric(x["Eta.ce"]), #Innovation propensity FETs
+          Nu.re = as.numeric(x["Nu.re"]),  #Transferability SETs
+          Nu.ce = as.numeric(x["Nu.ce"]),  #Transferability FETs
+          qsi = as.numeric(x["qsi"]),#
+          Delta.S = as.numeric(x["Delta.S"]),
+          Delta.Temp.Disaster = as.numeric(x["Delta.Temp.Disaster"]),#
+          Beta.Delta.Temp = as.numeric(x["Beta.Delta.Temp"]),
+          CO2.base = as.numeric(x["CO2.base"]),
+          labor.growth_N = as.numeric(x["labor.growth_N"]),# Population growth Advanced Region
+          labor.growth_S = as.numeric(x["labor.growth_S"]),# Population growth Emerging Region
+          lambda.S = as.numeric(x["lambda.S"]),
+          sigma.utility = as.numeric(x["sigma.utility"]),
+          rho = as.numeric(x["rho"]), #Discount rate
+          Yre.0_N = as.numeric(x["Yre.0_N"]),
+          Yce.0_N = as.numeric(x["Yce.0_N"]),
+          Yre.0_S = as.numeric(x["Yre.0_S"]),
+          Yce.0_S = as.numeric(x["Yce.0_S"]),
+          size.factor = as.numeric(x["size.factor"]),#
+          Run.ID = as.numeric(x["Run.ID"]));
+        
+        #run the model
+        ediam(policies,params)
+        }
+        )
+    
+    #Transform results into a data frame
+    exp.out <-
+      do.call("rbind",exp.out)
+    
+    return(exp.out)
+    }
+```
+
+**1.1 Ejecución del experimento para cada alternativa de política**
+
+```{r 1.1 Ejecución del experimento para cada alternativa de política, warning=FALSE}
+exp.out.P1_1.1 <-
+  ediam.experiment(Exp.design_1.1,policies.1)
+
+exp.out.P2_1.1 <-
+  ediam.experiment(Exp.design_1.1,policies.2)
+```
+
+**1.1 Unificación de resultados por política implementada**
+
+```{r 1.1 Unificación de resultados por política implementada, warning=FALSE}
+# Unifico los resultados dela implementación de cada política en una base de datos
+exp.out.P1_1.1$Policy <- 
+  "P1"
+exp.out.P2_1.1$Policy <- 
+  "P2"
+
+exp.out_1.1 <-
+  rbind(exp.out.P1_1.1,
+        exp.out.P2_1.1)
+
+# Unifico los resultados con el diseño experimental utilizado
+exp.out_1.1 <- 
+  merge(exp.out_1.1,
+        Exp.design_1.1, 
+        by="Run.ID")
+```
+
+**1.1 Estimación de las métricas de desempeño**
+
+```{r 1.1 Estimación de las métricas de desempeño, warning=FALSE}
+# Estimación del crecimiento económico promedio de ambas regiones bajo cada política
+## Política 1
+P1_1.1 <-
+  subset(exp.out_1.1,
+         Policy =="P1")
+
+P1_1.1 <-
+  aggregate(P1_1.1[,c("Growth.Rate_N","Growth.Rate_S")],
+            list(Run.ID = P1_1.1$Run.ID),
+            mean,
+            na.rm=TRUE)
+
+## Política 2
+P2_1.1 <-
+  subset(exp.out_1.1,
+         Policy =="P2")
+
+P2_1.1 <-
+  aggregate(P2_1.1[,c("Growth.Rate_N","Growth.Rate_S")],
+            list(Run.ID = P2_1.1$Run.ID),
+            mean,
+            na.rm=TRUE)
+
+# Estimación del Crecimiento de la Temperatura Promedio en el año 300
+
+## Política 1
+Delta.temp.P1_1.1 <-
+  subset(exp.out_1.1,
+         Policy =="P1" & time == 100)[,c("Run.ID","Delta.Temp")]
+
+## Política 2
+Delta.temp.P2_1.1 <-
+  subset(exp.out_1.1,
+         Policy =="P2" & time == 100)[,c("Run.ID","Delta.Temp")]
+```
+
+**1.1 Elaboración de base de datos para cada política y summary() de resultados**
+
+```{r 1.1 Elaboración de base de datos para cada política y summary() de resultados, warning=FALSE}
+# Elaboración de base de datos para cada política
+## Política 1
+P1_1.1 <-
+  merge(P1_1.1,
+        Delta.temp.P1_1.1,
+        by = "Run.ID")
+
+kable(head(P1_1.1),
+      align = c("c"))
+
+## Política 2
+P2_1.1 <-
+  merge(P2_1.1,
+        Delta.temp.P2_1.1,
+        by = "Run.ID")
+
+kable(head(P2_1.1),
+      align = c("c"))
+
+# Resumen de resultados de cada política
+summary(P1_1.1)
+summary(P2_1.1)
+```
+
+**1.1 Incorporación de objetivos de métricas de desempeño a bases de datos de políticas**
+
+```{r 1.1 Incorporación de objetivos de métricas de desempeño a bases de datos de políticas}
+# Política 1
+
+## Objetivo 1
+P1_1.1$Obj1DT <- 
+  ifelse(P1_1.1$Delta.Temp < 2, 1, 0)
+
+## Objetivo 2
+P1_1.1$Obj2GNGS <- 
+  ifelse(P1_1.1$Growth.Rate_N >= 0.020 & P1_1.1$Growth.Rate_S >= 0.020, 1, 0)
+
+## Objetivos 1 y 2
+P1_1.1$Obj12 <- 
+  ifelse(P1_1.1$Obj1DT == 1 & P1_1.1$Obj2GNGS == 1, 1, 0)
+
+# Política 2
+
+## Objetivo 1
+P2_1.1$Obj1DT <- 
+  ifelse(P2_1.1$Delta.Temp < 2, 1, 0)
+
+## Objetivo 2
+P2_1.1$Obj2GNGS <- 
+  ifelse(P2_1.1$Growth.Rate_N >= 0.020 & P2_1.1$Growth.Rate_S >= 0.020, 1, 0)
+
+## Objetivos 1 y 2
+P2_1.1$Obj12 <- 
+  ifelse(P2_1.1$Obj1DT == 1 & P2_1.1$Obj2GNGS == 1, 1, 0)
+```
+
+**1.1 Resumen de resultados de cada política**
+
+```{r 1.1 Resumen de resultados de cada política}
+# Resumen de resultados de cada política
+summary(P1_1.1[,5:7])
+
+summary(P2_1.1[,5:7])
+```
+
+**1.1 Tabla comparativa de porcentaje de incumplimiento de objetivos para cada alternativa de política**
+
+```{r 1.1 Tabla comparativa de porcentaje de incumplimiento de objetivos para cada alternativa de política}
+mat_incumplimiento_1.1 <- 
+  matrix(nrow = 2, 
+         ncol = 4)
+
+mat_incumplimiento_1.1[1,1] <- "P1"
+mat_incumplimiento_1.1[2,1] <- "P2"
+
+# Política 1
+## Objetivo Ambiental
+mat_incumplimiento_1.1[1,2] <- 
+  round(1-mean(P1_1.1$Obj1DT),4)
+
+## Objetivo Económico
+mat_incumplimiento_1.1[1,3] <- 
+  round(1-mean(P1_1.1$Obj2GNGS),4)
+
+## Ambos Objetivos
+mat_incumplimiento_1.1[1,4] <- 
+  round(1-mean(P1_1.1$Obj12),4)
+
+# Política 2
+mat_incumplimiento_1.1[2,2] <- 
+  round(1-mean(P2_1.1$Obj1DT),4)
+
+## Objetivo Económico
+mat_incumplimiento_1.1[2,3] <- 
+  round(1-mean(P2_1.1$Obj2GNGS),4)
+
+## Ambos Objetivos
+mat_incumplimiento_1.1[2,4] <- 
+  round(1-mean(P2_1.1$Obj12),4)
+
+kable(mat_incumplimiento_1.1,
+      align = "l",
+      col.names = 
+        c("Políticas",
+          "Futuros en incumplimiento del Objetivo Ambiental",
+          "Futuros en incumplimiento del Objetivo Económico",
+          "Futuros en incumplimiento de ambos objetivos"),
+      caption = "Tabla comparativa de porcentaje de incumplimiento de objetivos para cada alternativa de política.")
+```
+
+*R: A partir de la tabla generada, se podría decir que ambas políticas son similarmente vulnerables tomando como referencia ambas métricas de desempeño. Tomando como referencia particularmente el objetivo económico, se podría afirmar que la política 1 es ligeramente menos vulnerable que la política 2.*
+
+2.  Estima el nivel de arrepentimiento para cada futuro y cada política para las tres métricas de desempeño. Describe tus resultados empleando un histograma para cada política y métrica. ¿Identificas algún tipo de diferencia con el respecto del nivel de arrepentimiento de cada política?, ¿Qué política te parece más robusta? [histogramas y discusión de resultados]
+
+**1.2 Estimación del nivel de arrepentimiento para cada política y para cada futuro**
+
+```{r 1.2 Estimación del nivel de arrepentimiento para cada política y para cada futuro}
+
+# Cálculo del nivel de arrepentimiento de cada política implementada en cada futuro
+for (i in 1:nrow(P1_1.1)){
+  ## Política 1
+  P1_1.1$Regret.DT[i] <- 
+    min(P1_1.1$Delta.Temp[i],
+        P2_1.1$Delta.Temp[i]) -
+    P1_1.1$Delta.Temp[i]
+  
+  P1_1.1$Regret.GN[i] <- 
+    max(P1_1.1$Growth.Rate_N[i],
+        P2_1.1$Growth.Rate_N[i]) -
+    P1_1.1$Growth.Rate_N[i]
+  
+  P1_1.1$Regret.GS[i] <- 
+    max(P1_1.1$Growth.Rate_S[i],
+        P2_1.1$Growth.Rate_S[i]) -
+    P1_1.1$Growth.Rate_S[i]
+  
+  ## Política 2
+  P2_1.1$Regret.DT[i] <- 
+    min(P1_1.1$Delta.Temp[i],
+        P2_1.1$Delta.Temp[i]) -
+    P2_1.1$Delta.Temp[i]
+  
+  P2_1.1$Regret.GN[i] <- 
+    max(P1_1.1$Growth.Rate_N[i],
+        P2_1.1$Growth.Rate_N[i]) -
+    P2_1.1$Growth.Rate_N[i]
+  
+  P2_1.1$Regret.GS[i] <- 
+    max(P1_1.1$Growth.Rate_S[i],
+        P2_1.1$Growth.Rate_S[i]) -
+    P2_1.1$Growth.Rate_S[i]
+}
+
+# Elaboración de histogramas de arrepentimiento para cada política y métrica
+
+# Política 1
+## Crecimiento de temperatura promedio
+hist(P1_1.1$Regret.DT,
+     breaks = c(-0.16,-0.12,-0.08,-0.04,0))
+
+## Crecimiento económico promedio en la región avanzada
+hist(P1_1.1$Regret.GN,
+     breaks = c(0,0.00033,0.00066,0.00099,0.00132,0.00165))
+
+## Crecimiento económico promedio en la región emergente
+hist(P1_1.1$Regret.GS,
+     breaks = c(0,0.00033,0.00066,0.00099,0.00132,0.00165))
+
+# Política 2
+## Crecimiento de temperatura promedio
+hist(P2_1.1$Regret.DT,
+     breaks = c(-0.16,-0.12,-0.08,-0.04,0))
+
+## Crecimiento económico promedio en la región avanzada
+hist(P2_1.1$Regret.GN,
+     breaks = c(0,0.00033,0.00066,0.00099,0.00132,0.00165))
+
+## Crecimiento económico promedio en la región emergente
+hist(P2_1.1$Regret.GS,
+     breaks = c(0,0.00033,0.00066,0.00099,0.00132,0.00165))
+```
+
+*R: Para la métrica de desempeño de crecimiento de temperatura promedio, se puede apreciar en los histogramas generados que la Política 1 resulta ser la más robusta, pues concentra cerca de 500 observaciones en el rango de nivel de arrepentimiento más cercano al 0, mientras que en la Política 2 se visualiza mayor dispersión de los datos en arrepentimientos de hasta alrededor de -0.15. Para la métrica de desempeño de crecimiento económico promedio en la región avanzada, se puede ver que de igual forma la Política 1 resulta ser la más robusta, aunque la diferencia con la dispersión de los datos de la Política 2 es apenas perceptible. Finalmente, con la métrica de desempeño de crecimiento económico promedio en la región emergente, podemos visualizar que la Política 2 resulta ser mejor al concentrar alrededor de 500 observaciones en el rango de nivel de arrepentimiento más cercano al 0, mientras que en la Política 1 se visualiza mayor dispersión de los datos en arrepentimientos de hasta alrededor de 0.0015.*
+
+3.  Estima el valor esperado del arrepentimiento ambiental, crecimiento económico en la región avanzada y crecimiento económico en la región emergente para cada una las políticas consideradas. ¿Qué política te parece más robusta? [tabla con resultados y discusión]
+
+**1.3 Estimación del valor esperado de arrepentimiento para cada métrica bajo la implementación de cada política**
+
+```{r 1.3 Estimación del valor esperado de arrepentimiento para cada métrica bajo la implementación de cada política}
+mat_regrets_1.3 <- 
+  matrix(nrow = 2, 
+         ncol = 4)
+
+mat_regrets_1.3[1,1] <- "P1"
+mat_regrets_1.3[2,1] <- "P2"
+
+# Política 1
+## Crecimiento de la Temperatura Promedio
+mat_regrets_1.3[1,2] <- 
+  round(mean(P1_1.1$Regret.DT),4)
+
+## Crecimiento Económico en la Región Avanzada
+mat_regrets_1.3[1,3] <- 
+  100*round(mean(P1_1.1$Regret.GN),4)
+
+## Crecimiento Económico en la Región Emergente
+mat_regrets_1.3[1,4] <- 
+  100*round(mean(P1_1.1$Regret.GS),4)
+
+# Política 2
+## Crecimiento de la Temperatura Promedio
+mat_regrets_1.3[2,2] <- 
+  round(mean(P2_1.1$Regret.DT),4)
+
+## Crecimiento Económico en la Región Avanzada
+mat_regrets_1.3[2,3] <- 
+  100*round(mean(P2_1.1$Regret.GN),4)
+
+## Crecimiento Económico en la Región Emergente
+mat_regrets_1.3[2,4] <- 
+  100*round(mean(P2_1.1$Regret.GS),4)
+
+kable(mat_regrets_1.3,
+      align = "l",
+      col.names = 
+        c("Políticas",
+          "Valor Esperado de Arrepentimiento por el Crecimiento de la Temperatura Promedio [°C]",
+          "Valor Esperado de Arrepentimiento por el Crecimiento Económico Promedio en la Región Avanzada [%]",
+          "Valor Esperado de Arrepentimiento por el Crecimiento Económico Promedio en la Región Emergente [%]"),
+      caption = "Tabla comparativa del valor esperado del nivel de arrepentimiento por la implementación de cada política para cada métrica de desempeño.")
+```
+
+*R: Respaldando las conclusiones obtenidas de los histogramas del problema anterior, podemos afirmar que la Política 1 es más robusta cuando se trata de las métricas del Crecimiento de la Temperatura Promedio y del Crecimiento Económico Promedio en la Región Avanzada, pues efectivamente sus valores esperados de nivel de arrepentimiento son más cercanos al 0. Por su parte, considerando la métrica de Crecimiento Económico Promedio en la Región Emergente, podemos afirmar que la Política 2 resulta ser más robusta pues su valor de arrepentimiento esperado es 0.*
+
+4.  Considera el objetivo ambiental: emplea el algoritmo PRIM a través de la función sdprim y explica al menos el 95% de los casos de vulnerabilidad empleando uno o más clusters multi-dimensionales. Para cada cluster describe sus límites dimensionales y las métricas de cobertura y densidad correspondientes. ¿Bajo que circunstancias tu política es vulnerable con respecto de este objetivo? [Tabla con resultados y discusión, toma como ejemplo la tabla 4.4 de Molina-Perez (2016)]
+
+**1.4 Unificación de bases de datos de resultados de políticas con diseño experimental**
+
+```{r 1.4 Unificación de bases de datos de resultados de políticas con diseño experimental}
+# Política 1
+P1_1.1 <- 
+  merge(P1_1.1,
+        Exp.design_1.1,
+        by = "Run.ID")
+
+# Política 2
+P2_1.1 <- 
+  merge(P2_1.1,
+        Exp.design_1.1,
+        by = "Run.ID")
+```
+
+**1.4 Elaboración de árboles de regresión**
+
+```{r 1.4 Elaboración de árboles de decisión}
+# Política 1
+rpart_P1_DT_1.1 <- 
+  rpart(Obj1DT ~
+          epsilon +
+          Eta.re +
+          Gamma.re +
+          Nu.re, 
+        data = P1_1.1,
+        method = "anova",
+        maxdepth = 3)
+
+# Gráfico de árbol de regresión
+rpart.plot(rpart_P1_DT_1.1)
+
+# Política 2
+rpart_P2_DT_1.1 <- 
+  rpart(Obj1DT ~
+          epsilon +
+          Eta.re +
+          Gamma.re +
+          Nu.re, 
+        data = P2_1.1,
+        method = "anova",
+        maxdepth = 3)
+
+# Gráfico de árbol de regresión
+rpart.plot(rpart_P2_DT_1.1)
+```
+
+**1.4 Tabla comparativa de cajas de vulnerabilidad para cada alternativa de política**
+
+```{r 1.4 Tabla comparativa de cajas de vulnerabilidad para cada alternativa de política}
+# Matriz comparativa de cajas de vulnerabilidad para cada alternativa de política
+mat_vulnerabilities_1.4 <- 
+  matrix(nrow = 6, 
+         ncol = 5)
+
+mat_vulnerabilities_1.4[1,1] <- "P1"
+mat_vulnerabilities_1.4[2,1] <- "P1"
+mat_vulnerabilities_1.4[3,1] <- "P1"
+
+mat_vulnerabilities_1.4[4,1] <- "P2"
+mat_vulnerabilities_1.4[5,1] <- "P2"
+mat_vulnerabilities_1.4[6,1] <- "P2"
+
+mat_vulnerabilities_1.4[1,2] <- "Caja 1"
+mat_vulnerabilities_1.4[2,2] <- "Caja 2"
+mat_vulnerabilities_1.4[3,2] <- "Caja 3"
+
+mat_vulnerabilities_1.4[4,2] <- "Caja 1"
+mat_vulnerabilities_1.4[5,2] <- "Caja 2"
+mat_vulnerabilities_1.4[6,2] <- "Caja 3"
+
+# Política 1
+## Densidad Caja 1
+mat_vulnerabilities_1.4[1,3] <- 
+  1.00
+  
+## Cobertura Caja 1
+mat_vulnerabilities_1.4[1,4] <- 
+  0.82
+
+## Rangos de estresores Caja 1
+mat_vulnerabilities_1.4[1,5] <- 
+  "Epsilon < 5.8"
+
+## Densidad Caja 2
+mat_vulnerabilities_1.4[2,3] <- 
+  1.00
+
+## Cobertura Caja 2
+mat_vulnerabilities_1.4[2,4] <- 
+  0.06
+
+## Rangos de estresores Caja 2
+mat_vulnerabilities_1.4[2,5] <- 
+  "Epsilon < 6.5, Eta.re < 0.017"
+
+## Densidad Caja 3
+mat_vulnerabilities_1.4[3,3] <- 
+  0.55
+
+## Cobertura Caja 3
+mat_vulnerabilities_1.4[3,4] <- 
+  0.07
+
+## Rangos de estresores Caja 3
+mat_vulnerabilities_1.4[3,5] <- 
+  "Epsilon < 6.5, Eta.re > 0.017"
+
+# Política 2
+## Densidad Caja 1
+mat_vulnerabilities_1.4[4,3] <- 
+  1.00
+  
+## Cobertura Caja 1
+mat_vulnerabilities_1.4[4,4] <- 
+  0.82
+
+## Rangos de estresores Caja 1
+mat_vulnerabilities_1.4[4,5] <- 
+  "Epsilon < 5.8"
+
+## Densidad Caja 2
+mat_vulnerabilities_1.4[5,3] <- 
+  1.00
+
+## Cobertura Caja 2
+mat_vulnerabilities_1.4[5,4] <- 
+  0.06
+
+## Rangos de estresores Caja 2
+mat_vulnerabilities_1.4[5,5] <- 
+  "Epsilon < 6.5, Eta.re < 0.017"
+
+## Densidad Caja 3
+mat_vulnerabilities_1.4[6,3] <- 
+  0.55
+
+## Cobertura Caja 3
+mat_vulnerabilities_1.4[6,4] <- 
+  0.07
+
+## Rangos de estresores Caja 3
+mat_vulnerabilities_1.4[6,5] <- 
+  "Epsilon < 6.5, Eta.re > 0.017"
+
+kable(mat_vulnerabilities_1.4,
+      align = "l",
+      col.names = 
+        c("Política",
+          "Caja",
+          "Densidad",
+          "Cobertura",
+          "Rangos de estresores"),
+      caption = "Tabla comparativa de cajas de vulnerabilidad respecto al objetivo ambiental correspondientes a cada alternativa de política.")
+```
+
+*R: A partir de la tabla generada, se puede afirmar que las condiciones bajo las cuales existen vulnerabilidades son prácticamente idénticas bajo la implementación de ambas políticas. En ese sentido, se puede concluir que el principal factor que pudiera afectar el resultado de la política en términos ambientales sería la elasticidad de sustitución de las tecnologías fósiles y limpias (epsilon), en donde una elasticidad por debajo de 5.8 prácticamente garantiza que no se cumplirá el objetivo y una elasticidad menor a 6.5 ofrece una probabilidad de aproximadamente un 95% de que el futuro en cuestión resulte ser vulnerable.*
+
+5.  Considera el objetivo económico: emplea el algoritmo PRIM a través de la función sdprim y explica al menos el 70% de los casos de vulnerabilidad empleando uno o más clusters multi-dimensionales. Para cada cluster describe sus límites dimensionales y las métricas de cobertura y densidad correspondientes. ¿Bajo que circunstancias tu política es vulnerable con respecto de este objetivo? [Tabla con resultados y discusión, toma como ejemplo la tabla 4.4 de Molina-Perez (2016)]
+
+**1.5 Elaboración de árboles de regresión**
+
+```{r 1.5 Elaboración de árboles de decisión}
+# Política 1
+rpart_P1_GNGS_1.1 <- 
+  rpart(Obj2GNGS ~
+          epsilon +
+          Eta.re +
+          Gamma.re +
+          Nu.re, 
+        data = P1_1.1,
+        method = "anova",
+        maxdepth = 3)
+
+# Gráfico de árbol de regresión
+rpart.plot(rpart_P1_GNGS_1.1)
+
+# Política 2
+rpart_P2_GNGS_1.1 <- 
+  rpart(Obj2GNGS ~
+          epsilon +
+          Eta.re +
+          Gamma.re +
+          Nu.re, 
+        data = P2_1.1,
+        method = "anova",
+        maxdepth = 3)
+
+# Gráfico de árbol de regresión
+rpart.plot(rpart_P2_GNGS_1.1)
+```
+
+**1.5 Tabla comparativa de cajas de vulnerabilidad para cada alternativa de política**
+
+```{r 1.5 Tabla comparativa de cajas de vulnerabilidad para cada alternativa de política}
+# Matriz comparativa de cajas de vulnerabilidad para cada alternativa de política
+mat_vulnerabilities_1.5 <- 
+  matrix(nrow = 6, 
+         ncol = 5)
+
+mat_vulnerabilities_1.5[1,1] <- "P1"
+mat_vulnerabilities_1.5[2,1] <- "P1"
+mat_vulnerabilities_1.5[3,1] <- "P1"
+
+mat_vulnerabilities_1.5[4,1] <- "P2"
+mat_vulnerabilities_1.5[5,1] <- "P2"
+mat_vulnerabilities_1.5[6,1] <- "P2"
+
+mat_vulnerabilities_1.5[1,2] <- "Caja 1"
+mat_vulnerabilities_1.5[2,2] <- "Caja 2"
+mat_vulnerabilities_1.5[3,2] <- "Caja 3"
+
+mat_vulnerabilities_1.5[4,2] <- "Caja 1"
+mat_vulnerabilities_1.5[5,2] <- "Caja 2"
+mat_vulnerabilities_1.5[6,2] <- "Caja 3"
+
+# Política 1
+## Densidad Caja 1
+mat_vulnerabilities_1.5[1,3] <- 
+  1.00
+  
+## Cobertura Caja 1
+mat_vulnerabilities_1.5[1,4] <- 
+  0.47
+
+## Rangos de estresores Caja 1
+mat_vulnerabilities_1.5[1,5] <- 
+  "Eta.re < 0.021, Gamma.re < 0.26"
+
+## Densidad Caja 2
+mat_vulnerabilities_1.5[2,3] <- 
+  0.82
+
+## Cobertura Caja 2
+mat_vulnerabilities_1.5[2,4] <- 
+  0.21
+
+## Rangos de estresores Caja 2
+mat_vulnerabilities_1.5[2,5] <- 
+  "Eta.re < 0.021, 0.26 < Gamma.re < 0.32"
+
+## Densidad Caja 3
+mat_vulnerabilities_1.5[3,3] <- 
+  0.98
+
+## Cobertura Caja 3
+mat_vulnerabilities_1.5[3,4] <- 
+  0.16
+
+## Rangos de estresores Caja 3
+mat_vulnerabilities_1.5[3,5] <- 
+  "Eta.re > 0.021, Gamma.re < 0.21"
+
+# Política 2
+## Densidad Caja 1
+mat_vulnerabilities_1.5[4,3] <- 
+  0.99
+  
+## Cobertura Caja 1
+mat_vulnerabilities_1.5[4,4] <- 
+  0.47
+
+## Rangos de estresores Caja 1
+mat_vulnerabilities_1.5[4,5] <- 
+  "Eta.re < 0.021, Gamma.re < 0.27"
+
+## Densidad Caja 2
+mat_vulnerabilities_1.5[5,3] <- 
+  0.81
+
+## Cobertura Caja 2
+mat_vulnerabilities_1.5[5,4] <- 
+  0.18
+
+## Rangos de estresores Caja 2
+mat_vulnerabilities_1.5[5,5] <- 
+  "Eta.re < 0.021, 0.27 < Gamma.re < 0.32"
+
+## Densidad Caja 3
+mat_vulnerabilities_1.5[6,3] <- 
+  0.98
+
+## Cobertura Caja 3
+mat_vulnerabilities_1.5[6,4] <- 
+  0.16
+
+## Rangos de estresores Caja 3
+mat_vulnerabilities_1.5[6,5] <- 
+  "Eta.re > 0.021, Gamma.re < 0.21"
+
+kable(mat_vulnerabilities_1.5,
+      align = "l",
+      col.names = 
+        c("Política",
+          "Caja",
+          "Densidad",
+          "Cobertura",
+          "Rangos de estresores"),
+      caption = "Tabla comparativa de cajas de vulnerabilidad respecto al objetivo económico correspondientes a cada alternativa de política.")
+```
+
+*R: A partir de la tabla generada, se puede afirmar que el principal factor que determina el objetivo económico bajo la implementación de cualquier política ha sido la propensidad a la innovación en tecnologías verdes (Eta.re); seguido también por la variable de retornos a la investigación tecnologías verdes (Gamma.re). En este sentido, la implementación de una u otra política no hace mayor diferenciación, pues los cambios en la probabilidad de caer en una situación de vulnerabilidad no cambian más de 1% de una política a otra; siendo ligeramente menos probable caer en escenarios de vulnerabilidad al implementar la Política 2 a comparación de la Política 1.*
+
+# Problema 2 (50 puntos)
+
+## Diseño de políticas robustas
+
+1.  Considera el mismo diseño experimental del problema anterior incluyendo la siguiente modificación:
+
+-   Incertidumbres, crea una muestra tipo LHC, tamaño N = 1,000, considerando el siguiente espacio de incertidumbre:
+
+    -   Propensión a la innovación tecnologías verdes: *Eta.re*  0.013≤ηre≤.027
+
+    -   Retornos a la investigación tecnologías verdes: *Gamma.re*  0.16≤γre≤.33 0.16≤γre≤.33
+
+    -   Transferabilidad tecnologías verdes: *Nu.re*  0.013≤νre≤.027
+
+    -   Elasticidad de substitución entre energía fósil y verde: *epsilon*  3.0≤ϵ≤10.0
+
+    -   Sensibilidad climática al carbono: *Beta.Delta.Temp*  4.9≤β≤6.2
+
+    -   Capacidad del sumidero de carbono: *Delta.S*  0.0006≤δ≤0.002
+
+A través de esta modificación investigaremos la vulnerabilidad de las políticas climáticas propuestas bajo escenarios ambientales menos favorables. Corre el experimento exploratorio para cada política y estima el porcentaje de futuros en los que no se cumplen los objetivos ambiental y económico respectivamente. ¿Qué política te parece más vulnerable? [Tabla con resultados, renglones con políticas, columnas con objetivos]
+
+**2.1 Muestreo LHC con tamaño de muestra 1,000**
+
+```{r 2.1 Muestreo LHC con tamaño de muestra 1,000}
+sample.size_2.1 <- 1000
+set.seed(55555)
+
+Xs <-
+  c("epsilon",
+    "Gamma.re",
+    "Eta.re",
+    "Nu.re",
+    "Delta.S",
+    "Beta.Delta.Temp")
+
+Exp.design_2.1 <-
+  data.frame(randomLHS(sample.size_2.1,length(Xs)))
+
+colnames(Exp.design_2.1) <- 
+  Xs
+
+####
+Exp.design_2.1[,Xs[1]]<-qunif(Exp.design_2.1[,Xs[1]],3.0,10)
+Exp.design_2.1[,Xs[2]]<-qunif(Exp.design_2.1[,Xs[2]],0.166666667,0.333333333)
+Exp.design_2.1[,Xs[3]]<-qunif(Exp.design_2.1[,Xs[3]],0.013333333,0.026666667)
+Exp.design_2.1[,Xs[4]]<-qunif(Exp.design_2.1[,Xs[4]],0.013333333,0.026666667)
+Exp.design_2.1[,Xs[5]]<-qunif(Exp.design_2.1[,Xs[5]],0.0006,0.002)
+Exp.design_2.1[,Xs[6]]<-qunif(Exp.design_2.1[,Xs[6]],4.9,6.2)
+
+summary(Exp.design_2.1)
+
+#add run.id 
+Exp.design_2.1$Run.ID<-1:nrow(Exp.design_2.1)
+```
+
+**2.1 Definición de función para correr EDIAM con el diseño experimental**
+
+```{r 2.1 Definición de función para correr EDIAM con el diseño experimental}
+ediam.experiment<-function(Exp.design,policies)
+  {
+   exp.out<-apply(Exp.design,1,function(x){
+  #load parameters from Ex.design.table
+      params<-c( CO2.Concentration.0 = 382.2461, #
+          TimeStep = as.numeric(5.0),#
+          EndTime = as.numeric(300), #
+          alfa = as.numeric(0.33),
+          epsilon = as.numeric(x["epsilon"]), #elasticity of subsitution
+          Gamma.re = as.numeric(x["Gamma.re"]), #R&D returns SETs
+          k.re = as.numeric(0),#
+          Gamma.ce = as.numeric(0.25), #R&D returns FETs
+          k.ce = as.numeric(0),#
+          Eta.re = as.numeric(x["Eta.re"]), #Innovation propensity SETs
+          Eta.ce = as.numeric(0.02), #Innovation propensity FETs
+          Nu.re = as.numeric(x["Nu.re"]),  #Transferability SETs
+          Nu.ce = as.numeric(0.02),  #Transferability FETs
+          qsi = as.numeric(0.0100539),#
+          Delta.S = as.numeric(x["Delta.S"]),
+          Delta.Temp.Disaster = as.numeric(6.0),#
+          Beta.Delta.Temp = as.numeric(x["Beta.Delta.Temp"]),
+          CO2.base = as.numeric( 289.415),
+          labor.growth_N = as.numeric(0),# Population growth Advanced Region
+          labor.growth_S = as.numeric(0),# Population growth Emerging Region
+          lambda.S = as.numeric(0.1443),
+          sigma.utility = as.numeric(2.0),
+          rho = as.numeric(0.008), #Discount rate
+          Yre.0_N = as.numeric(45.55074),
+          Yce.0_N = as.numeric(193.2),
+          Yre.0_S = as.numeric(27.82166),
+          Yce.0_S = as.numeric(257.5463),
+          size.factor = as.numeric(4.0),#
+          Run.ID = as.numeric(x["Run.ID"]));
+  #run the model
+  ediam(policies,params)
+  })
+  #Transform results into a data frame
+  exp.out<-do.call("rbind",exp.out)
+  return(exp.out)
+  }
+```
+
+**2.1 Ejecución del experimento para cada alternativa de política**
+
+```{r 2.1 Ejecución del experimento para cada alternativa de política, warning=FALSE}
+exp.out.P1_2.1 <-
+  ediam.experiment(Exp.design_2.1,policies.1)
+
+exp.out.P2_2.1 <-
+  ediam.experiment(Exp.design_2.1,policies.2)
+```
+
+**2.1 Unificación de resultados por política implementada**
+
+```{r 2.1 Unificación de resultados por política implementada, warning=FALSE}
+# Unifico los resultados dela implementación de cada política en una base de datos
+exp.out.P1_2.1$Policy <- 
+  "P1"
+exp.out.P2_2.1$Policy <- 
+  "P2"
+
+exp.out_2.1 <-
+  rbind(exp.out.P1_2.1,
+        exp.out.P2_2.1)
+
+# Unifico los resultados con el diseño experimental utilizado
+exp.out_2.1 <- 
+  merge(exp.out_2.1,
+        Exp.design_2.1, 
+        by="Run.ID")
+```
+
+**2.1 Estimación de las métricas de desempeño**
+
+```{r 2.1 Estimación de las métricas de desempeño, warning=FALSE}
+# Estimación del crecimiento económico promedio de ambas regiones bajo cada política
+## Política 1
+P1_2.1 <-
+  subset(exp.out_2.1,
+         Policy =="P1")
+
+P1_2.1 <-
+  aggregate(P1_2.1[,c("Growth.Rate_N","Growth.Rate_S")],
+            list(Run.ID = P1_2.1$Run.ID),
+            mean,
+            na.rm=TRUE)
+
+## Política 2
+P2_2.1 <-
+  subset(exp.out_2.1,
+         Policy =="P2")
+
+P2_2.1 <-
+  aggregate(P2_2.1[,c("Growth.Rate_N","Growth.Rate_S")],
+            list(Run.ID = P2_2.1$Run.ID),
+            mean,
+            na.rm=TRUE)
+
+# Estimación del Crecimiento de la Temperatura Promedio en el año 300
+
+## Política 1
+Delta.temp.P1_2.1 <-
+  subset(exp.out_2.1,
+         Policy =="P1" & time == 100)[,c("Run.ID","Delta.Temp")]
+
+## Política 2
+Delta.temp.P2_2.1 <-
+  subset(exp.out_2.1,
+         Policy =="P2" & time == 100)[,c("Run.ID","Delta.Temp")]
+```
+
+**2.1 Elaboración de base de datos para cada política y summary() de resultados**
+
+```{r 2.1 Elaboración de base de datos para cada política y summary() de resultados, warning=FALSE}
+# Elaboración de base de datos para cada política
+## Política 1
+P1_2.1 <-
+  merge(P1_2.1,
+        Delta.temp.P1_2.1,
+        by = "Run.ID")
+
+kable(head(P1_2.1),
+      align = c("c"))
+
+## Política 2
+P2_2.1 <-
+  merge(P2_2.1,
+        Delta.temp.P2_2.1,
+        by = "Run.ID")
+
+kable(head(P2_2.1),
+      align = c("c"))
+
+# Resumen de resultados de cada política
+summary(P1_2.1)
+summary(P2_2.1)
+```
+
+**2.1 Incorporación de objetivos de métricas de desempeño a bases de datos de políticas**
+
+```{r 2.1 Incorporación de objetivos de métricas de desempeño a bases de datos de políticas}
+# Política 1
+
+## Objetivo 1
+P1_2.1$Obj1DT <- 
+  ifelse(P1_2.1$Delta.Temp < 2, 1, 0)
+
+## Objetivo 2
+P1_2.1$Obj2GNGS <- 
+  ifelse(P1_2.1$Growth.Rate_N >= 0.020 & P1_2.1$Growth.Rate_S >= 0.020, 1, 0)
+
+## Objetivos 1 y 2
+P1_2.1$Obj12 <- 
+  ifelse(P1_2.1$Obj1DT == 1 & P1_2.1$Obj2GNGS == 1, 1, 0)
+
+# Política 2
+
+## Objetivo 1
+P2_2.1$Obj1DT <- 
+  ifelse(P2_2.1$Delta.Temp < 2, 1, 0)
+
+## Objetivo 2
+P2_2.1$Obj2GNGS <- 
+  ifelse(P2_2.1$Growth.Rate_N >= 0.020 & P2_2.1$Growth.Rate_S >= 0.020, 1, 0)
+
+## Objetivos 1 y 2
+P2_2.1$Obj12 <- 
+  ifelse(P2_2.1$Obj1DT == 1 & P2_2.1$Obj2GNGS == 1, 1, 0)
+```
+
+**2.1 Resumen de resultados de cada política**
+
+```{r 2.1 Resumen de resultados de cada política}
+# Resumen de resultados de cada política
+summary(P1_2.1[,5:7])
+
+summary(P2_2.1[,5:7])
+```
+
+**2.1 Tabla comparativa de porcentaje de incumplimiento de objetivos para cada alternativa de política**
+
+```{r 2.1 Tabla comparativa de porcentaje de incumplimiento de objetivos para cada alternativa de política}
+mat_incumplimiento_2.1 <- 
+  matrix(nrow = 2, 
+         ncol = 4)
+
+mat_incumplimiento_2.1[1,1] <- "P1"
+mat_incumplimiento_2.1[2,1] <- "P2"
+
+# Política 1
+## Objetivo Ambiental
+mat_incumplimiento_2.1[1,2] <- 
+  round(1-mean(P1_2.1$Obj1DT),4)
+
+## Objetivo Económico
+mat_incumplimiento_2.1[1,3] <- 
+  round(1-mean(P1_2.1$Obj2GNGS),4)
+
+## Ambos Objetivos
+mat_incumplimiento_2.1[1,4] <- 
+  round(1-mean(P1_2.1$Obj12),4)
+
+# Política 2
+mat_incumplimiento_2.1[2,2] <- 
+  round(1-mean(P2_2.1$Obj1DT),4)
+
+## Objetivo Económico
+mat_incumplimiento_2.1[2,3] <- 
+  round(1-mean(P2_2.1$Obj2GNGS),4)
+
+## Ambos Objetivos
+mat_incumplimiento_2.1[2,4] <- 
+  round(1-mean(P2_2.1$Obj12),4)
+
+kable(mat_incumplimiento_2.1,
+      align = "l",
+      col.names = 
+        c("Políticas",
+          "Futuros en incumplimiento del Objetivo Ambiental",
+          "Futuros en incumplimiento del Objetivo Económico",
+          "Futuros en incumplimiento de ambos objetivos"),
+      caption = "Tabla comparativa de porcentaje de incumplimiento de objetivos para cada alternativa de política.")
+```
+
+*R: A partir de la tabla generada, se podría decir que la Política 1 es ligeramente más vulnerable que la Política 2 tomando como referencia ambos objetivos planteados. En el objetivo ambiental, específicamente, se vislumbra que la Política 2 es la menos vulnerable, mientras que en el objetivo económico la Política 1 es la menos vulnerable. Estas diferencias de vulnerabilidad entre políticas, sin embargo, resultan muy poco significativas; pues en ningún caso alcanzan un valor de 1% de diferencia.*
+
+2.  Considera el objetivo ambiental: emplea el algoritmo PRIM a través de la función sdprim y explica al menos el 95% de los casos de vulnerabilidad empleando uno o más clusters multi-dimensionales. Para cada cluster describe sus límites dimensionales y las métricas de cobertura y densidad correspondientes. ¿Bajo que circunstancias tu política es vulnerable con respecto de este objetivo? [Tabla con resultados y discusión, toma como ejemplo la tabla 4.4 de Molina-Perez (2016)]
+
+**2.2 Unificación de bases de datos de resultados de políticas con diseño experimental**
+
+```{r 2.2 Unificación de bases de datos de resultados de políticas con diseño experimental}
+# Política 1
+P1_2.1 <- 
+  merge(P1_2.1,
+        Exp.design_2.1,
+        by = "Run.ID")
+
+# Política 2
+P2_2.1 <- 
+  merge(P2_2.1,
+        Exp.design_2.1,
+        by = "Run.ID")
+```
+
+**2.2 Elaboración de árboles de regresión**
+
+```{r 2.2 Elaboración de árboles de decisión}
+# Política 1
+rpart_P1_DT_2.1 <- 
+  rpart(Obj1DT ~
+          epsilon +
+          Eta.re +
+          Gamma.re +
+          Nu.re +
+          Beta.Delta.Temp + 
+          Delta.S, 
+        data = P1_2.1,
+        method = "anova",
+        maxdepth = 2)
+
+# Gráfico de árbol de regresión
+rpart.plot(rpart_P1_DT_2.1)
+
+# Política 2
+rpart_P2_DT_2.1 <- 
+  rpart(Obj1DT ~
+          epsilon +
+          Eta.re +
+          Gamma.re +
+          Nu.re +
+          Beta.Delta.Temp +
+          Delta.S, 
+        data = P2_2.1,
+        method = "anova",
+        maxdepth = 2)
+
+# Gráfico de árbol de regresión
+rpart.plot(rpart_P2_DT_2.1)
+```
+
+**2.2 Tabla comparativa de cajas de vulnerabilidad para cada alternativa de política**
+
+```{r 2.2 Tabla comparativa de cajas de vulnerabilidad para cada alternativa de política}
+# Matriz comparativa de cajas de vulnerabilidad para cada alternativa de política
+mat_vulnerabilities_2.2 <- 
+  matrix(nrow = 6, 
+         ncol = 5)
+
+mat_vulnerabilities_2.2[1,1] <- "P1"
+mat_vulnerabilities_2.2[2,1] <- "P1"
+mat_vulnerabilities_2.2[3,1] <- "P1"
+
+mat_vulnerabilities_2.2[4,1] <- "P2"
+mat_vulnerabilities_2.2[5,1] <- "P2"
+mat_vulnerabilities_2.2[6,1] <- "P2"
+
+mat_vulnerabilities_2.2[1,2] <- "Caja 1"
+mat_vulnerabilities_2.2[2,2] <- "Caja 2"
+mat_vulnerabilities_2.2[3,2] <- "Caja 3"
+
+mat_vulnerabilities_2.2[4,2] <- "Caja 1"
+mat_vulnerabilities_2.2[5,2] <- "Caja 2"
+mat_vulnerabilities_2.2[6,2] <- "Caja 3"
+
+# Política 1
+## Densidad Caja 1
+mat_vulnerabilities_2.2[1,3] <- 
+  round(1-0.008,2)
+  
+## Cobertura Caja 1
+mat_vulnerabilities_2.2[1,4] <- 
+  round(0.5*(1-0.008)/(1-0.27),2)
+
+## Rangos de estresores Caja 1
+mat_vulnerabilities_2.2[1,5] <- 
+  "Epsilon < 6.5"
+
+## Densidad Caja 2
+mat_vulnerabilities_2.2[2,3] <- 
+  round(1-0.21,2)
+
+## Cobertura Caja 2
+mat_vulnerabilities_2.2[2,4] <- 
+  round(0.13*(1-0.21)/(1-0.27),2)
+
+## Rangos de estresores Caja 2
+mat_vulnerabilities_2.2[2,5] <- 
+  "6.5 < Epsilon < 7.4"
+
+## Densidad Caja 3
+mat_vulnerabilities_2.2[3,3] <- 
+  round(1-0.3,2)
+
+## Cobertura Caja 3
+mat_vulnerabilities_2.2[3,4] <- 
+  round(0.12*(1-0.3)/(1-0.27),2)
+
+## Rangos de estresores Caja 3
+mat_vulnerabilities_2.2[3,5] <- 
+  "Epsilon > 7.4, Delta.S < 0.001"
+
+# Política 2
+## Densidad Caja 1
+mat_vulnerabilities_2.2[4,3] <- 
+  round(1-0.008,2)
+  
+## Cobertura Caja 1
+mat_vulnerabilities_2.2[4,4] <- 
+  round(0.5*(1-0.008)/(1-0.28),2)
+
+## Rangos de estresores Caja 1
+mat_vulnerabilities_2.2[4,5] <- 
+  "Epsilon < 6.5"
+
+## Densidad Caja 2
+mat_vulnerabilities_2.2[5,3] <- 
+  round(1-0.22,2)
+
+## Cobertura Caja 2
+mat_vulnerabilities_2.2[5,4] <- 
+  round(0.13*(1-0.22)/(1-0.28),2)
+
+## Rangos de estresores Caja 2
+mat_vulnerabilities_2.2[5,5] <- 
+  "6.5 < Epsilon < 7.4"
+
+## Densidad Caja 3
+mat_vulnerabilities_2.2[6,3] <- 
+  round(1-0.33,2)
+
+## Cobertura Caja 3
+mat_vulnerabilities_2.2[6,4] <- 
+  round(0.12*(1-0.33)/(1-0.28),2)
+
+## Rangos de estresores Caja 3
+mat_vulnerabilities_2.2[6,5] <- 
+  "Epsilon > 7.4, Delta.S < 0.0011"
+
+kable(mat_vulnerabilities_2.2,
+      align = "l",
+      col.names = 
+        c("Política",
+          "Caja",
+          "Densidad",
+          "Cobertura",
+          "Rangos de estresores"),
+      caption = "Tabla comparativa de cajas de vulnerabilidad respecto al objetivo ambiental correspondientes a cada alternativa de política.")
+```
+
+*R: A partir de la tabla generada, se puede visualizar que nuevamente la variable preponderante en la definición del objetivo climático resulta ser la elasticidad de substitución entre energía fósil y verde (epsilon). Sin embargo, cabe destacar que la nueva tabla generada ahora incorpora la variable climática de capacidad del sumidero de carbono (Delta.S) como el segundo factor más relevante; la cual toma relevancia exclusivamente en casos en los que los valores de epsilon estén por encima de 7.4. Entre las políticas, por su parte, se puede visualizar que con la implementación de la Política 2 la probabilidad de caer en un caso vulnerable se reduce conforme se incrementa el valor de epsilon más que con la implementación de la Política 1.*
+
+3.  Considera el objetivo económico: emplea el algoritmo PRIM a través de la función sdprim y explica al menos el 70% de los casos de vulnerabilidad empleando uno o más clusters multi-dimensionales. Para cada cluster describe sus límites dimensionales y las métricas de cobertura y densidad correspondientes. ¿Bajo que circunstancias tu política es vulnerable con respecto de este objetivo? [Tabla con resultados y discusión, toma como ejemplo la tabla 4.4 de Molina-Perez (2016)]
+
+**2.3 Elaboración de árboles de regresión**
+
+```{r 2.3 Elaboración de árboles de decisión}
+# Política 1
+rpart_P1_GNGS_2.1 <- 
+  rpart(Obj2GNGS ~
+          epsilon +
+          Eta.re +
+          Gamma.re +
+          Nu.re + 
+          Beta.Delta.Temp +
+          Delta.S, 
+        data = P1_2.1,
+        method = "anova",
+        maxdepth = 3)
+
+# Gráfico de árbol de regresión
+rpart.plot(rpart_P1_GNGS_2.1)
+
+# Política 2
+rpart_P2_GNGS_2.1 <- 
+  rpart(Obj2GNGS ~
+          epsilon +
+          Eta.re +
+          Gamma.re +
+          Nu.re + 
+          Beta.Delta.Temp +
+          Delta.S, 
+        data = P2_2.1,
+        method = "anova",
+        maxdepth = 3)
+
+# Gráfico de árbol de regresión
+rpart.plot(rpart_P2_GNGS_2.1)
+```
+
+**2.3 Tabla comparativa de cajas de vulnerabilidad para cada alternativa de política**
+
+```{r 2.3 Tabla comparativa de cajas de vulnerabilidad para cada alternativa de política}
+# Matriz comparativa de cajas de vulnerabilidad para cada alternativa de política
+mat_vulnerabilities_2.3 <- 
+  matrix(nrow = 6, 
+         ncol = 5)
+
+mat_vulnerabilities_2.3[1,1] <- "P1"
+mat_vulnerabilities_2.3[2,1] <- "P1"
+mat_vulnerabilities_2.3[3,1] <- "P1"
+
+mat_vulnerabilities_2.3[4,1] <- "P2"
+mat_vulnerabilities_2.3[5,1] <- "P2"
+mat_vulnerabilities_2.3[6,1] <- "P2"
+
+mat_vulnerabilities_2.3[1,2] <- "Caja 1"
+mat_vulnerabilities_2.3[2,2] <- "Caja 2"
+mat_vulnerabilities_2.3[3,2] <- "Caja 3"
+
+mat_vulnerabilities_2.3[4,2] <- "Caja 1"
+mat_vulnerabilities_2.3[5,2] <- "Caja 2"
+mat_vulnerabilities_2.3[6,2] <- "Caja 3"
+
+# Política 1
+## Densidad Caja 1
+mat_vulnerabilities_2.3[1,3] <- 
+  round(1-0.021,2)
+  
+## Cobertura Caja 1
+mat_vulnerabilities_2.3[1,4] <- 
+  round(0.37*(1-0.021)/(1-0.36),2)
+
+## Rangos de estresores Caja 1
+mat_vulnerabilities_2.3[1,5] <- 
+  "Eta.re < 0.021, Gamma.re < 0.28"
+
+## Densidad Caja 2
+mat_vulnerabilities_2.3[2,3] <- 
+  round(1-0.042,2)
+
+## Cobertura Caja 2
+mat_vulnerabilities_2.3[2,4] <- 
+  round(0.10*(1-0.042)/(1-0.36),2)
+
+## Rangos de estresores Caja 2
+mat_vulnerabilities_2.3[2,5] <- 
+  "Eta.re > 0.021, Gamma.re < 0.2"
+
+## Densidad Caja 3
+mat_vulnerabilities_2.3[3,3] <- 
+  round(1-0.062,2)
+
+## Cobertura Caja 3
+mat_vulnerabilities_2.3[3,4] <- 
+  round(0.08*(1-0.062)/(1-0.36),2)
+
+## Rangos de estresores Caja 3
+mat_vulnerabilities_2.3[3,5] <- 
+  "Eta.re < 0.016, Gamma.re > 0.28"
+
+# Política 2
+## Densidad Caja 1
+mat_vulnerabilities_2.3[4,3] <- 
+  round(1-0.0033,2)
+  
+## Cobertura Caja 1
+mat_vulnerabilities_2.3[4,4] <- 
+  round(0.3*(1-0.0033)/(1-0.36),2)
+
+## Rangos de estresores Caja 1
+mat_vulnerabilities_2.3[4,5] <- 
+  "Gamma.re < 0.25, Eta.re < 0.021"
+
+## Densidad Caja 2
+mat_vulnerabilities_2.3[5,3] <- 
+  round(1-0.03,2)
+
+## Cobertura Caja 2
+mat_vulnerabilities_2.3[5,4] <- 
+  round(0.13*(1-0.03)/(1-0.36),2)
+
+## Rangos de estresores Caja 2
+mat_vulnerabilities_2.3[5,5] <- 
+  "0.25 < Gamma.re < 0.31, Eta.re < 0.018"
+
+## Densidad Caja 3
+mat_vulnerabilities_2.3[6,3] <- 
+  round(1-0.041,2)
+
+## Cobertura Caja 3
+mat_vulnerabilities_2.3[6,4] <- 
+  round(0.05*(1-0.041)/(1-0.36),2)
+
+## Rangos de estresores Caja 3
+mat_vulnerabilities_2.3[6,5] <- 
+  "Gamma.re < 0.2, Eta.re > 0.024"
+
+kable(mat_vulnerabilities_2.3,
+      align = "l",
+      col.names = 
+        c("Política",
+          "Caja",
+          "Densidad",
+          "Cobertura",
+          "Rangos de estresores"),
+      caption = "Tabla comparativa de cajas de vulnerabilidad respecto al objetivo económico correspondientes a cada alternativa de política.")
+```
+
+*R: A partir de la tabla generada se puede visualizar que la incorporación de la incertidumbre climática en la evaluación del objetivo económico repercute en las principales variables que afectan los casos de vulnerabilidad en cada política; pues con la implementación de la Política 1 se aprecia que la principal variable de interés resulta ser la propensidad a la innovación en las tecnologías verdes (Eta.re) seguida de los retornos a la investigación en tecnologías verdes (Gamma.re), mientras que con la implementación de la Política 2 la variable Gamma.re resulta ser la principal variable de interés por encima de Eta.re. En este sentido, tomando en consideración las coberturas que las tres cajas generadas logran, es importante destacar que con la Política 1 se pueden aislar en estas 3 cajas hasta el 84% de los futuros vulnerables, mientras que con la Política 2 solamente se pueden aislar el 74%; lo cual nos indica que con la implementación de la Política 2 es más probable que se den casos de vulnerabilidad en rangos de estresores no previstos en las tres cajas propuestas.*
+
+4.  Compara tus resultados de este ejercicio con los resultados del ejercicio anterior y describe como cambián las condiciones de vulnerabilidad de tu política. [Descripción simple]
+
+*R: Con respecto al cumplimiento del objetivo ambiental, es interesante reconocer que la incorporación de la incertidumbre en las variables climáticas repercute en que los rangos de estresores que generan dicha incertidumbre, que para este caso es principalmente epsilon, se incrementan. En el primer ejercicio, se puede visualizar que el 82% de los casos de vulnerabilidad se encuentran tan solo en las Cajas 1 que corresponden a valores de epsilon menores a 5.8; mientras que en el segundo ejercicio se puede denotar que los casos de vulnerabilidad incrementan y se difunden en valores más altos de epsilon, de forma que el 68% de los casos de vulnerabilidad se concentran en valores de epsilon menores a 6.5; y aun en las cajas 2 y 3 se logra capturar un 26% adicional de los casos de vulnerabilidad contra un 13% de las cajas 2 y 3 del primer ejercicio.*
+
+*Con respecto al cumplimiento del objetivo económico, por su parte, es importante notar que la incorporación de la incertidumbre climática en la evaluación del objetivo económico repercute en las principales variables que afectan los casos de vulnerabilidad en cada política; pues en el segundo ejercicio con la implementación de la Política 1 se aprecia que la principal variable de interés resulta ser Eta.re seguida de Gamma.re, mientras que con la implementación de la Política 2 la variable Gamma.re resulta ser la principal variable de interés por encima de Eta.re. Por otro lado, en el primer ejercicio Eta.re se mantiene en todos los casos como la variable de mayor interés para determinar la vulnerabilidad. Este cambio, en si mismo, nos indica que la incertidumbre climática le da importancia muy similar a las variables Eta.re y Gamma.re; de modo que tan solo es necesario que una sola de estas variables se mantenga en valores bajos para tener una alta probabilidad de tener un caso de vulnerabilidad.*
+
+5.  Considera lo que has aprendido de ambos experimentos y diseña una nueva política climática que cumpla ambos objetivos en un mayor número de futuros, o que cumpla el objetivo ambiental en un mayor número de futuros y que no disminuya el porcentaje de futuros en los que se cumple el objetivo económico. [Descripción de nueva política y tabla con resultados comparando el desempeño de las tres políticas]
+
+-   Política Propuesta:
+
+    -   Impuesto al Carbono AR;  tax.rate.N=0.605709672
+
+    -   Subsidio Tecnológico AR;  epsi.re.subsidy.N=0.191382026
+
+    -   Subsidio Investigación y Desarrollo AR;  s.re.subsidy.N=3.322859643
+
+    -   Impuesto al Carbono ER;  tax.rate.S=0.295041075
+
+    -   Subsidio Tecnológico ER;  epsi.re.subsidy.S=0.202098716
+
+    -   Subsidio Investigación y Desarrollo ER;  s.re.subsidy.S=0.733830192
+
+    -   Subsidio Tecnológico Fondo Verde;  epsi.re.GFsubsidy.N=0.077498849
+
+    -   Subsidio Investigación y Desarrollo Fondo Verde;  s.re.GFsubsidy.N=0.540613659
+
+    -   Vida media política;  policy.half.life=0.003541255
+    
+**2.5 Definición de política**
+
+```{r 2.5 Definición de política}
+#The Ediam model requires two input vectors
+#Choose your policy
+#Define your policy
+
+policies.3 <-
+  c(
+#carbon tax
+    tax.rate.N = 0.56490213,
+    tax.rate.S = 0.29273582,
+#Technology push in Advanced Region
+	  epsi.re.subsidy.N = 0.33509668, #Technology subsidy in Advanced Region
+    s.re.subsidy.N = 2.09203509, #R&D subsidy in Advanced Region
+#Technology push in Emerging Region
+    epsi.re.subsidy.S = 0.25091565, #Technology subsidy in Emerging Region
+    epsi.re.GFsubsidy.N = 0.077498849,#Technology subsidy in GCF
+    s.re.subsidy.S = 2.25442520, #R&D subsidy in Emerging Region
+    s.re.GFsubsidy.N = 0.540613659, #R&D subsidy in GCF
+    policy.half.life = as.numeric(0.003541255) #Policy half time
+)
+```
+
+**2.5 Ejecución del experimento para cada alternativa de política**
+
+```{r 2.5 Ejecución del experimento para cada alternativa de política, warning=FALSE}
+exp.out.P3_2.5 <-
+  ediam.experiment(Exp.design_2.1,policies.3)
+```
+
+**2.5 Unificación de resultados por política implementada**
+
+```{r 2.5 Unificación de resultados por política implementada, warning=FALSE}
+# Unifico los resultados dela implementación de cada política en una base de datos
+exp.out.P3_2.5$Policy <- 
+  "P3"
+
+exp.out_2.5 <-
+  rbind(exp.out.P1_2.1,
+        exp.out.P2_2.1,
+        exp.out.P3_2.5)
+
+# Unifico los resultados con el diseño experimental utilizado
+exp.out_2.5 <- 
+  merge(exp.out_2.5,
+        Exp.design_2.1, 
+        by="Run.ID")
+```
+
+**2.5 Estimación de las métricas de desempeño**
+
+```{r 2.5 Estimación de las métricas de desempeño, warning=FALSE}
+# Estimación del crecimiento económico promedio de ambas regiones bajo cada política
+## Política 1
+P1_2.5 <-
+  subset(exp.out_2.5,
+         Policy =="P1")
+
+P1_2.5 <-
+  aggregate(P1_2.5[,c("Growth.Rate_N","Growth.Rate_S")],
+            list(Run.ID = P1_2.5$Run.ID),
+            mean,
+            na.rm=TRUE)
+
+## Política 2
+P2_2.5 <-
+  subset(exp.out_2.5,
+         Policy =="P2")
+
+P2_2.5 <-
+  aggregate(P2_2.5[,c("Growth.Rate_N","Growth.Rate_S")],
+            list(Run.ID = P2_2.5$Run.ID),
+            mean,
+            na.rm=TRUE)
+
+## Política 3
+P3_2.5 <-
+  subset(exp.out_2.5,
+         Policy =="P3")
+
+P3_2.5 <-
+  aggregate(P3_2.5[,c("Growth.Rate_N","Growth.Rate_S")],
+            list(Run.ID = P3_2.5$Run.ID),
+            mean,
+            na.rm=TRUE)
+
+# Estimación del Crecimiento de la Temperatura Promedio en el año 300
+
+## Política 1
+Delta.temp.P1_2.5 <-
+  subset(exp.out_2.5,
+         Policy =="P1" & time == 100)[,c("Run.ID","Delta.Temp")]
+
+## Política 2
+Delta.temp.P2_2.5 <-
+  subset(exp.out_2.5,
+         Policy =="P2" & time == 100)[,c("Run.ID","Delta.Temp")]
+
+## Política 3
+Delta.temp.P3_2.5 <-
+  subset(exp.out_2.5,
+         Policy =="P3" & time == 100)[,c("Run.ID","Delta.Temp")]
+```
+
+**2.5 Elaboración de base de datos para cada política y summary() de resultados**
+
+```{r 2.5 Elaboración de base de datos para cada política y summary() de resultados, warning=FALSE}
+# Elaboración de base de datos para cada política
+## Política 1
+P1_2.5 <-
+  merge(P1_2.5,
+        Delta.temp.P1_2.5,
+        by = "Run.ID")
+
+kable(head(P1_2.5),
+      align = c("c"))
+
+## Política 2
+P2_2.5 <-
+  merge(P2_2.5,
+        Delta.temp.P2_2.5,
+        by = "Run.ID")
+
+kable(head(P2_2.5),
+      align = c("c"))
+
+## Política 3
+P3_2.5 <-
+  merge(P3_2.5,
+        Delta.temp.P3_2.5,
+        by = "Run.ID")
+
+kable(head(P3_2.5),
+      align = c("c"))
+
+# Resumen de resultados de cada política
+summary(P1_2.5)
+summary(P2_2.5)
+summary(P3_2.5)
+```
+
+**2.5 Incorporación de objetivos de métricas de desempeño a bases de datos de políticas**
+
+```{r 2.5 Incorporación de objetivos de métricas de desempeño a bases de datos de políticas}
+# Política 1
+
+## Objetivo 1
+P1_2.5$Obj1DT <- 
+  ifelse(P1_2.5$Delta.Temp < 2, 1, 0)
+
+## Objetivo 2
+P1_2.5$Obj2GNGS <- 
+  ifelse(P1_2.5$Growth.Rate_N >= 0.020 & P1_2.5$Growth.Rate_S >= 0.020, 1, 0)
+
+## Objetivos 1 y 2
+P1_2.5$Obj12 <- 
+  ifelse(P1_2.5$Obj1DT == 1 & P1_2.5$Obj2GNGS == 1, 1, 0)
+
+# Política 2
+
+## Objetivo 1
+P2_2.5$Obj1DT <- 
+  ifelse(P2_2.5$Delta.Temp < 2, 1, 0)
+
+## Objetivo 2
+P2_2.5$Obj2GNGS <- 
+  ifelse(P2_2.5$Growth.Rate_N >= 0.020 & P2_2.5$Growth.Rate_S >= 0.020, 1, 0)
+
+## Objetivos 1 y 2
+P2_2.5$Obj12 <- 
+  ifelse(P2_2.5$Obj1DT == 1 & P2_2.5$Obj2GNGS == 1, 1, 0)
+
+# Política 3
+
+## Objetivo 1
+P3_2.5$Obj1DT <- 
+  ifelse(P3_2.5$Delta.Temp < 2, 1, 0)
+
+## Objetivo 2
+P3_2.5$Obj2GNGS <- 
+  ifelse(P3_2.5$Growth.Rate_N >= 0.020 & P3_2.5$Growth.Rate_S >= 0.020, 1, 0)
+
+## Objetivos 1 y 2
+P3_2.5$Obj12 <- 
+  ifelse(P3_2.5$Obj1DT == 1 & P3_2.5$Obj2GNGS == 1, 1, 0)
+```
+
+**2.5 Resumen de resultados de cada política**
+
+```{r 2.5 Resumen de resultados de cada política}
+# Resumen de resultados de cada política
+summary(P1_2.5[,5:7])
+
+summary(P2_2.5[,5:7])
+
+summary(P3_2.5[,5:7])
+```
+
+**2.5 Tabla comparativa de porcentaje de incumplimiento de objetivos para cada alternativa de política**
+
+```{r 2.5 Tabla comparativa de porcentaje de incumplimiento de objetivos para cada alternativa de política}
+mat_incumplimiento_2.5 <- 
+  matrix(nrow = 3, 
+         ncol = 4)
+
+mat_incumplimiento_2.5[1,1] <- "P1"
+mat_incumplimiento_2.5[2,1] <- "P2"
+mat_incumplimiento_2.5[3,1] <- "P3"
+
+# Política 1
+## Objetivo Ambiental
+mat_incumplimiento_2.5[1,2] <- 
+  round(1-mean(P1_2.5$Obj1DT),4)
+
+## Objetivo Económico
+mat_incumplimiento_2.5[1,3] <- 
+  round(1-mean(P1_2.5$Obj2GNGS),4)
+
+## Ambos Objetivos
+mat_incumplimiento_2.5[1,4] <- 
+  round(1-mean(P1_2.5$Obj12),4)
+
+# Política 2
+mat_incumplimiento_2.5[2,2] <- 
+  round(1-mean(P2_2.5$Obj1DT),4)
+
+## Objetivo Económico
+mat_incumplimiento_2.5[2,3] <- 
+  round(1-mean(P2_2.5$Obj2GNGS),4)
+
+## Ambos Objetivos
+mat_incumplimiento_2.5[2,4] <- 
+  round(1-mean(P2_2.5$Obj12),4)
+
+# Política 3
+mat_incumplimiento_2.5[3,2] <- 
+  round(1-mean(P3_2.5$Obj1DT),4)
+
+## Objetivo Económico
+mat_incumplimiento_2.5[3,3] <- 
+  round(1-mean(P3_2.5$Obj2GNGS),4)
+
+## Ambos Objetivos
+mat_incumplimiento_2.5[3,4] <- 
+  round(1-mean(P3_2.5$Obj12),4)
+
+kable(mat_incumplimiento_2.5,
+      align = "l",
+      col.names = 
+        c("Políticas",
+          "Futuros en incumplimiento del Objetivo Ambiental",
+          "Futuros en incumplimiento del Objetivo Económico",
+          "Futuros en incumplimiento de ambos objetivos"),
+      caption = "Tabla comparativa de porcentaje de incumplimiento de objetivos para cada alternativa de política.")
+```

@@ -1,0 +1,138 @@
+{UTF-8}
+Delay  = A FUNCTION OF( Real Estate Demand)
+	~	
+	~		|
+
+Delay 0  = A FUNCTION OF( Real Estate Demand 0)
+	~	
+	~		|
+
+New Projects  = A FUNCTION OF( Delay)
+	~	
+	~		|
+
+New Projects 0  = A FUNCTION OF( Delay 0)
+	~	
+	~		|
+
+Property Prices  = A FUNCTION OF( Real Estate Demand,Relative Oversupply)
+	~	
+	~		|
+
+Property Prices 0  = A FUNCTION OF( Real Estate Demand 0,Relative Oversupply 0)
+	~	
+	~		|
+
+Real Estate Demand  = A FUNCTION OF( Property Prices)
+	~	
+	~		|
+
+Real Estate Demand 0  = A FUNCTION OF( Property Prices 0)
+	~	
+	~		|
+
+Relative Oversupply  = A FUNCTION OF( New Projects,Property Prices)
+	~	
+	~		|
+
+Relative Oversupply 0  = A FUNCTION OF( New Projects 0,Property Prices 0)
+	~	
+	~		|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 100
+	~	Month
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 0
+	~	Month
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 
+        TIME STEP
+	~	Month [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 1
+	~	Month [0,?]
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*View 1
+$192-192-192,0,Arial Unicode MS|12||0-0-0|0-0-0|0-0-255|-1--1--1|255-255-255|96,96,132,0
+10,1,Relative Oversupply,202,439,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,2,Property Prices,189,271,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,3,Real Estate Demand,188,103,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,4,2,3,1,0,45,0,2,192,0,-1--1--1,|||-1--1--1,1|(106,179)|
+1,5,2,1,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(113,356)|
+1,6,3,2,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(280,178)|
+1,7,1,2,1,0,45,0,2,192,0,-1--1--1,|||-1--1--1,1|(280,363)|
+10,8,New Projects,482,359,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,9,8,1,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(389,421)|
+12,10,2,370,288,23,23,4,7,0,0,3,0,0,0,0,0,0,0,0,0
+New Projects' Effect
+12,11,1,194,344,18,18,5,7,0,0,1,0,0,0,0,0,0,0,0,0
+Law of supply
+12,12,1,195,198,23,23,4,7,0,0,3,0,0,0,0,0,0,0,0,0
+Law of Demand
+10,13,Delay,481,212,40,20,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,14,13,8,1,0,0,0,0,192,0,-1--1--1,,1|(520,287)|
+10,15,Relative Oversupply 0,788,438,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,16,Property Prices 0,775,270,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,17,Real Estate Demand 0,774,102,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,18,16,17,1,0,45,0,2,192,0,-1--1--1,|||-1--1--1,1|(692,178)|
+1,19,16,15,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(699,355)|
+1,20,17,16,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(866,177)|
+1,21,15,16,1,0,45,0,2,192,0,-1--1--1,|||-1--1--1,1|(866,362)|
+10,22,New Projects 0,1068,358,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,23,22,15,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(975,420)|
+12,24,2,956,287,23,23,4,7,0,0,3,0,0,0,0,0,0,0,0,0
+New Projects' Effect
+12,25,1,780,343,18,18,5,7,0,0,1,0,0,0,0,0,0,0,0,0
+Law of supply
+12,26,1,781,197,23,23,4,7,0,0,3,0,0,0,0,0,0,0,0,0
+Law of Demand
+10,27,Delay 0,1067,211,40,20,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,28,27,22,1,0,0,0,0,192,0,-1--1--1,,1|(1106,286)|
+1,29,17,27,1,0,0,0,0,192,0,-1--1--1,,1|(942,130)|
+1,30,3,13,1,0,0,0,0,192,0,-1--1--1,,1|(368,128)|
+///---\\\
+:L<%^E!@
+5:Delay 0
+9:current
+19:132,0
+24:0
+25:0
+26:0
+23:0
+15:0,0,0,0,0,0
+27:0,
+34:0,
+42:0
+72:0
+73:0
+95:0
+96:0
+97:0
+77:0
+78:0
+102:0
+93:0
+94:0
+92:0
+91:0
+90:0
+87:0
+75:
+43:
+103:8,8,8,3,8

@@ -1,0 +1,6 @@
+"0","autoplot(advert[,""sales""], series = ""Data"") +"
+"0","  autolayer(fitted(fit.advert), series = ""Fitted"") + "
+"0","  xlab(""Month"") +"
+"0","  ylab("""") + "
+"0","  ggtitle(""Monthly sales and advertising expenditure for an automotive parts company."") + "
+"0","  guides(colour = guide_legend(title = """"))"

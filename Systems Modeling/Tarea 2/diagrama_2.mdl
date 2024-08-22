@@ -1,0 +1,293 @@
+{UTF-8}
+Adults  = A FUNCTION OF( Becoming Adult Rate,-Retirements)
+	~	
+	~		|
+
+Annual Fertility Rate of Adults  = A FUNCTION OF( )
+	~	
+	~		|
+
+Annual Fertility Rate of Youngsters  = A FUNCTION OF( )
+	~	
+	~		|
+
+Average time as adult  = A FUNCTION OF( )
+	~	
+	~		|
+
+Average time as kid  = A FUNCTION OF( )
+	~	
+	~		|
+
+Average time as retiree  = A FUNCTION OF( )
+	~	
+	~		|
+
+Average time as youngster  = A FUNCTION OF( )
+	~	
+	~		|
+
+Becoming Adult Rate  = A FUNCTION OF( Average time as youngster)
+	~	
+	~		|
+
+Becoming Youngster Rate  = A FUNCTION OF( Average time as kid)
+	~	
+	~		|
+
+Birth Inflow  = A FUNCTION OF( Adults,Annual Fertility Rate of Adults,Annual Fertility Rate of Youngsters\
+		,Youngsters)
+	~	
+	~		|
+
+Crimes  = A FUNCTION OF( Crimes by Adults,Crimes by Kids,Crimes by Others,Crimes by Retirees\
+		,Crimes by Youngsters)
+	~	
+	~		|
+
+Crimes by Adults  = A FUNCTION OF( Criminal Acts per Criminal Adult,Criminal Adults)
+	~	
+	~		|
+
+Crimes by Kids  = A FUNCTION OF( Criminal Acts per Criminal Kid,Criminal Kids)
+	~	
+	~		|
+
+Crimes by Others  = A FUNCTION OF( )
+	~	
+	~		|
+
+Crimes by Retirees  = A FUNCTION OF( Criminal Acts per Criminal Retiree,Criminal Retirees\
+		)
+	~	
+	~		|
+
+Crimes by Youngsters  = A FUNCTION OF( Criminal Acts per Criminal Youngster,Criminal Youngsters\
+		)
+	~	
+	~		|
+
+Criminal Acts per Criminal Adult  = A FUNCTION OF( )
+	~	
+	~		|
+
+Criminal Acts per Criminal Kid  = A FUNCTION OF( )
+	~	
+	~		|
+
+Criminal Acts per Criminal Retiree  = A FUNCTION OF( )
+	~	
+	~		|
+
+Criminal Acts per Criminal Youngster  = A FUNCTION OF( )
+	~	
+	~		|
+
+Criminal Adults  = A FUNCTION OF( Adults,Percentage of Adults with Criminal Behavior)
+	~	
+	~		|
+
+Criminal Kids  = A FUNCTION OF( Kids,Percentage of Kids with Criminal Behavior)
+	~	
+	~		|
+
+Criminal Retirees  = A FUNCTION OF( Percentage of Retirees with Criminal Behavior,Retirees\
+		)
+	~	
+	~		|
+
+Criminal Youngsters  = A FUNCTION OF( Percentage of Youngsters with Criminal Behavior\
+		,Youngsters)
+	~	
+	~		|
+
+Deaths  = A FUNCTION OF( Average time as retiree)
+	~	
+	~		|
+
+Kids  = A FUNCTION OF( -Becoming Youngster Rate,Birth Inflow)
+	~	
+	~		|
+
+Percentage of Adults with Criminal Behavior  = A FUNCTION OF( )
+	~	
+	~		|
+
+Percentage of Kids with Criminal Behavior  = A FUNCTION OF( )
+	~	
+	~		|
+
+Percentage of Retirees with Criminal Behavior  = A FUNCTION OF( )
+	~	
+	~		|
+
+Percentage of Youngsters with Criminal Behavior  = A FUNCTION OF( )
+	~	
+	~		|
+
+Retirees  = A FUNCTION OF( -Deaths,Retirements)
+	~	
+	~		|
+
+Retirements  = A FUNCTION OF( Average time as adult)
+	~	
+	~		|
+
+Youngsters  = A FUNCTION OF( Becoming Youngster Rate,-Becoming Adult Rate)
+	~	
+	~		|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 100
+	~	Month
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 0
+	~	Month
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 
+        TIME STEP 
+	~	Month [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 1
+	~	Month [0,?]
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*View 1
+$192-192-192,0,Arial Unicode MS|12||0-0-0|0-0-0|0-0-255|-1--1--1|255-255-255|96,96,82,0
+10,1,Kids,368,126,40,20,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,2,Youngsters,626,128,54,20,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,3,Adults,886,130,40,20,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,4,Retirees,1184,127,42,20,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,5,48,1362,127,25,15,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,6,8,4,100,0,0,22,0,192,0,-1--1--1,,1|(1250,127)|
+1,7,8,5,4,0,0,22,0,192,0,-1--1--1,,1|(1312,127)|
+11,8,0,1281,127,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,9,Deaths,1281,165,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,10,Average time as retiree,1442,251,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,11,10,9,1,0,45,0,2,192,0,-1--1--1,|||-1--1--1,1|(1351,241)|
+1,12,14,3,100,0,0,22,0,192,0,-1--1--1,,1|(977,128)|
+1,13,14,4,4,0,0,22,0,192,0,-1--1--1,,1|(1091,128)|
+11,14,0,1034,128,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,15,Retirements,1034,166,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,16,Average time as adult,1189,250,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,17,16,15,1,0,45,0,2,192,0,-1--1--1,|||-1--1--1,1|(1085,240)|
+1,18,20,2,100,0,0,22,0,192,0,-1--1--1,,1|(718,129)|
+1,19,20,3,4,0,0,22,0,192,0,-1--1--1,,1|(807,129)|
+11,20,0,763,129,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,21,Becoming Adult Rate,763,167,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,22,24,1,100,0,0,22,0,192,0,-1--1--1,,1|(446,127)|
+1,23,24,2,4,0,0,22,0,192,0,-1--1--1,,1|(534,127)|
+11,24,0,490,127,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,25,Becoming Youngster Rate,490,165,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,26,Average time as youngster,893,243,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,27,26,21,1,0,45,0,2,192,0,-1--1--1,|||-1--1--1,1|(803,238)|
+10,28,Average time as kid,631,247,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,29,28,25,1,0,45,0,2,192,0,-1--1--1,|||-1--1--1,1|(532,230)|
+12,30,48,186,124,25,15,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,31,33,30,100,0,0,22,0,192,0,-1--1--1,,1|(244,124)|
+1,32,33,1,4,0,0,22,0,192,0,-1--1--1,,1|(309,124)|
+11,33,0,284,124,6,8,34,3,0,0,3,0,0,0,0,0,0,0,0,0
+10,34,Birth Inflow,284,86,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,35,Annual Fertility Rate of Adults,149,204,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,36,Annual Fertility Rate of Youngsters,155,300,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,37,35,34,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(231,168)|
+1,38,36,34,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(263,217)|
+1,39,3,34,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(615,-18)|
+1,40,2,34,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(518,72)|
+10,41,Criminal Kids,373,307,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,42,Criminal Youngsters,637,310,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,43,Criminal Adults,894,309,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,44,Criminal Retirees,1195,312,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,45,1,41,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(456,225)|
+1,46,2,42,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(716,249)|
+1,47,3,43,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(972,242)|
+1,48,4,44,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(1263,220)|
+10,49,Percentage of Kids with Criminal Behavior,154,387,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,50,Percentage of Youngsters with Criminal Behavior,515,398,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,51,Percentage of Adults with Criminal Behavior,780,403,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,52,Percentage of Retirees with Criminal Behavior,1067,404,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,53,49,41,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(263,312)|
+1,54,50,42,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(572,339)|
+1,55,51,43,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(826,341)|
+1,56,52,44,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(1129,340)|
+10,57,Crimes,782,602,40,20,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,58,48,680,685,25,15,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,59,61,58,100,0,0,22,0,192,0,-1--1--1,,1|(782,685)|
+1,60,61,57,4,0,0,22,0,192,0,-1--1--1,,1|(782,644)|
+11,61,0,782,674,6,8,34,3,0,0,4,0,0,0,0,0,0,0,0,0
+10,62,Crimes by Others,865,674,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,63,Criminal Acts per Criminal Kid,152,457,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,64,Criminal Acts per Criminal Youngster,487,460,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,65,Criminal Acts per Criminal Adult,763,462,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,66,Criminal Acts per Criminal Retiree,1063,468,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,67,48,185,601,25,15,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,68,70,67,100,0,0,22,0,192,0,-1--1--1,,1|(281,601)|
+1,69,70,57,4,0,0,22,0,192,0,-1--1--1,,1|(555,601)|
+11,70,0,361,601,8,6,33,3,0,0,3,0,0,0,0,0,0,0,0,0
+10,71,Crimes by Kids,361,563,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,72,63,71,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(279,490)|
+1,73,41,71,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(405,419)|
+12,74,48,477,533,25,15,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,75,77,74,100,0,0,22,0,192,0,-1--1--1,,1|(561,533)|
+1,76,77,57,4,0,0,22,0,192,0,-1--1--1,,1|(782,533)|
+11,77,0,629,533,8,6,33,3,0,0,3,0,0,0,0,0,0,0,0,0
+10,78,Crimes by Youngsters,629,495,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,79,42,78,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(680,405)|
+1,80,64,78,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(562,468)|
+12,81,48,1074,533,25,15,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,82,84,81,100,0,0,22,0,192,0,-1--1--1,,1|(994,533)|
+1,83,84,57,4,0,0,22,0,192,0,-1--1--1,,1|(782,533)|
+11,84,0,932,533,8,6,33,3,0,0,3,0,0,0,0,0,0,0,0,0
+10,85,Crimes by Adults,932,495,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,86,43,85,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(966,400)|
+1,87,65,85,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(868,469)|
+12,88,48,1369,602,25,15,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,89,91,88,100,0,0,22,0,192,0,-1--1--1,,1|(1278,602)|
+1,90,91,57,4,0,0,22,0,192,0,-1--1--1,,1|(1009,602)|
+11,91,0,1205,602,8,6,33,3,0,0,3,0,0,0,0,0,0,0,0,0
+10,92,Crimes by Retirees,1205,564,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,93,44,92,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(1298,448)|
+1,94,66,92,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(1174,505)|
+///---\\\
+:L<%^E!@
+5:Crimes by Retirees
+19:82,0
+24:0
+25:0
+26:0
+23:0
+15:0,0,0,0,0,0
+27:0,
+34:0,
+42:0
+72:0
+73:0
+95:0
+96:0
+97:0
+77:0
+78:0
+102:0
+93:0
+94:0
+92:0
+91:0
+90:0
+87:0
+75:
+43:
+103:8,8,8,3,8

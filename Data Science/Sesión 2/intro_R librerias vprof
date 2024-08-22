@@ -1,0 +1,49 @@
+rm(list=ls())
+
+#install.packages("tm")
+#install.packages("wordcloud")
+#install.packages("RColorBrewer")
+
+library(tm)
+library(wordcloud)
+library(RColorBrewer)
+
+setwd("G:/Mi unidad/TEC/clases/2021/dataScience/Clase2")
+
+speech = "vision_futuro_mat_vesp.txt"
+
+modi_txt = readLines(speech)
+modi <- Corpus(VectorSource(modi_txt))
+
+# Limpieza de datos
+modi_data <- tm_map(modi, stripWhitespace)
+modi_data <- tm_map(modi_data, tolower)
+modi_data <- tm_map(modi_data, removeNumbers)
+modi_data <- tm_map(modi_data, removePunctuation)
+modi_data <- tm_map(modi_data, removeWords, stopwords("spanish"))
+modi_data <- tm_map(modi_data, removeWords, 
+                    c("ciudad","zonas","urbana", "urbano","zona","todas", "inventivar", "necesidades", "personas",
+                      "falta","inventivar","Áreas","espacios", "histórico", "realizar", "expedientes",
+                      "cada", "aÃ±os", "dan", "existentes","incluso", "pico", "poder", "nuevo",
+                      "medidas", "parte", "conductores", "gobierno", "municipal", "públicos", "público",
+                      "existen", "sistema", "mejor", "tener", "existe", "cultura",
+                      "unidades", "baja", "atención", "baja", "mala", "hace", "etc", 
+                      "deben", "provocan", "pueden", "pública", "principalmente", 
+                      "atención", "pasos", "mal", "áreas", "problemas", "problema", "mal",
+                      "toda", "priorizar", "mayor", "activos", "cuentan",
+                      "disminuir", "incentivar", "respecto", "costo", "sistemas")
+                    )
+
+tdm_modi <- TermDocumentMatrix(modi_data)
+
+TDM1 <- as.matrix(tdm_modi)
+
+v = sort(rowSums(TDM1), decreasing = TRUE)
+summary(v)
+v[v>10]
+
+png("miprimernube.png", width=12, height=8, units="in", res=300)
+wordcloud(modi_data, scale=c(5, 0.2), min.freq=3, max.words=200, 
+          random.order=FALSE, rot.per=0.2, 
+          use.r.layout=FALSE, colors=brewer.pal(8, "Dark2"))
+dev.off()

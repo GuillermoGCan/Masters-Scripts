@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.84.0">
+    <title>Tarea 3</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/grid/">
+
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+    
+    <!-- Custom styles for this template -->
+    <link href="grid.css" rel="stylesheet">
+  </head>
+  <body class="py-4">
+
+    <div class="jumbotron text-center">
+      <h1 class="title">Escuela de Gobierno y Transformación Pública<br />
+      -Técnicas de Modelación Avanzada-<br />
+      Tarea 3</h1>
+      <p class="author">Profesor: Dr. Edmundo Molina<br />
+      edmundo.molina@itesm.mx<br />
+
+      <img src="https://github.com/milocortes/modelacion_avanzada/raw/main/tareas/images/logo_itesm.jpg" class="img-rounded" alt="Cinque Terre">
+
+  </div>
+
+<main>
+
+    
+  <div class="container">
+
+    <h1 id="instrucciones-y-recomendaciones">Instrucciones y recomendaciones</h1>
+    <ul>
+    <li><p>Las tareas se entregarán de manera individual.Por lo tanto, cada estudiante es responsable de la calidad e integridad de los productos entregados.</p></li>
+    <li><p>La colaboración grupal es deseable durante la resolución de esta tarea, pero cada estudiante debe demostrar capacidad crítica individual en la resolución de los ejercidos descritos en este documento.</p></li>
+    <li><p>La presentación de tu trabajo es muy importante. Se conciso y claro en tu exposición, describe adecuadamente tus gráficos y úsalos para hacer más claros y contundentes tus argumentos. No escribas argumentos o ideas incompletas, concluye tus pensamientos de manera adecuada.</p></li>
+    <li><p>Si empleas tablas y/o gráficos, asegúrate de incluir notas para cada uno de ellos. Cada elemento gráfico en tu exposición debe explicarse por sí mismo.</p></li>
+    <li><p>Revisa cuidadosamente cada inciso, responde a la totalidad de las preguntas.</p></li>
+    <li><p>No te límites a la información presentada en cada caso. Si consideras que los casos son incompletos busca de manera individual más información y referencia adecuadamente tus fuentes.</p></li>
+    <li><p>Es altamente recomendable consultar el libro de texto para resolver los ejercicios descritos en esta tarea.</p></li>
+    </ul>
+
+
+    <div class="card">
+      <div class="card-body">
+         <h2 class="card-title">  Problema 1 (50 puntos)</h5>
+         <h3 class="card-subtitle mb-2 text-muted">Aplicación detallada de Scenario Discovery</h6>
+         <br>
+
+         <ol type="1">
+            <li><p>Emplea la versión “ediam_10_24_2016.r” del modelo EDIAM como el “Generador de Escenarios” en el estudio RDM descrito en los siguientes apartados</p>
+            <ul>
+            <li><p>Métricas de desempeño:</p>
+            <ul>
+            <li><p>Crecimiento de la temperatura en el año 100</p></li>
+            <li><p>Crecimiento económico promedio región avanzada</p></li>
+            <li><p>Crecimiento económico promedio región emergente</p></li>
+            </ul></li>
+            <li><p>Objetivos:</p>
+            <ul>
+            <li><p>Ambiental: El crecimiento de la temperatura se mantiene debajo de dos grados Celsius al final del primer siglo</p></li>
+            <li><p>Económico: El crecimiento económico en ambas regiones es mayor o igual al 2%</p></li>
+            </ul></li>
+            <li><p>Incertidumbres, crea una muestra tipo LHC, tamaño <span class="math inline">\(\ N=500\)</span>, considerando el siguente espacio de incertidumbre:</p>
+            <ul>
+            <li><p>Propensión a la innovación tecnologías verdes: <em>Eta.re</em> <span class="math inline">\(\ 0.013 \leq \eta_{re} \leq .027\)</span></p></li>
+            <li><p>Retornos a la investigación tecnologías verdes: <em>Gamma.re</em> <span class="math inline">\(\ 0.16 \leq \gamma_{re} \leq .33\)</span></p></li>
+            <li><p>Transferabilidad tecnologías verdes: <em>Nu.re</em> <span class="math inline">\(\ 0.013 \leq \nu_{re} \leq .027\)</span></p></li>
+            <li><p>Elasticidad de substitución entre energía fósil y verde: <em>epsilon</em> <span class="math inline">\(\ 3.0 \leq \epsilon \leq 10.0\)</span></p></li>
+            </ul></li>
+            <li><p>Políticas, considera las siguientes dos alternativas de política:</p>
+            <ul>
+            <li><p>Política Independiente:</p>
+            <ul>
+            <li><p>Impuesto al Carbono AR; <span class="math inline">\(\ tax.rate.N= 0.56490213\)</span></p></li>
+            <li><p>Subsidio Tecnológico AR; <span class="math inline">\(\ epsi.re.subsidy.N = 0.33509668\)</span></p></li>
+            <li><p>Subsidio Investigación y Desarrollo AR; <span class="math inline">\(\ s.re.subsidy.N = 2.09203509\)</span></p></li>
+            <li><p>Impuesto al Carbono ER; <span class="math inline">\(\ tax.rate.S= 0.29273582\)</span></p></li>
+            <li><p>Subsidio Tecnológico ER; <span class="math inline">\(\ epsi.re.subsidy.S = 0.25091565\)</span></p></li>
+            <li><p>Subsidio Investigación y Desarrollo ER; <span class="math inline">\(\ s.re.subsidy.S = 2.25442520\)</span></p></li>
+            <li><p>Subsidio Tecnológico Fondo Verde; <span class="math inline">\(\ epsi.re.GFsubsidy.N = 0.0\)</span></p></li>
+            <li><p>Subsidio Investigación y Desarrollo Fondo Verde; <span class="math inline">\(\ s.re.GFsubsidy.N = 0.0\)</span></p></li>
+            <li><p>Vida media política; <span class="math inline">\(\ policy.half.life= 0.00411079\)</span></p></li>
+            </ul></li>
+            <li><p>Política Fondo Verde</p>
+            <ul>
+            <li><p>Impuesto al Carbono AR; <span class="math inline">\(\ tax.rate.N= 0.605709672\)</span></p></li>
+            <li><p>Subsidio Tecnológico AR; <span class="math inline">\(\ epsi.re.subsidy.N = 0.191382026\)</span></p></li>
+            <li><p>Subsidio Investigación y Desarrollo AR; <span class="math inline">\(\ s.re.subsidy.N = 3.322859643\)</span></p></li>
+            <li><p>Impuesto al Carbono ER; <span class="math inline">\(\ tax.rate.S= 0.295041075\)</span></p></li>
+            <li><p>Subsidio Tecnológico ER; <span class="math inline">\(\ epsi.re.subsidy.S = 0.202098716\)</span></p></li>
+            <li><p>Subsidio Investigación y Desarrollo ER; <span class="math inline">\(\ s.re.subsidy.S = 0.733830192\)</span></p></li>
+            <li><p>Subsidio Tecnológico Fondo Verde; <span class="math inline">\(\ epsi.re.GFsubsidy.N = 0.077498849\)</span></p></li>
+            <li><p>Subsidio Investigación y Desarrollo Fondo Verde; <span class="math inline">\(\ s.re.GFsubsidy.N = 0.540613659\)</span></p></li>
+            <li><p>Vida media política; <span class="math inline">\(\ policy.half.life= 0.003541255\)</span></p></li>
+            </ul></li>
+            </ul>
+            <p>Corre el experimento exploratorio para cada política y estima el porcentaje de futuros en los que no se cumplen los objetivos ambiental y económico respectivamente. ¿Qué política te parece más vulnerable? [Tabla con resultados, renglones con políticas, columnas con objetivos]</p></li>
+            </ul></li>
+            <li><p>Estima el nivel de arrepentimiento para cada futuro y cada política para las tres métricas de desempeño. Describe tus resultados empleando un histograma para cada política y métrica. ¿Identificas algún tipo de diferencia con el respecto del nivel de arrepentimiento de cada política?, ¿Qué política te parece más robusta? [histogramas y discusión de resultados]</p></li>
+            <li><p>Estima el valor esperado del arrepentimiento ambiental, crecimiento económico en la región avanzada y crecimiento económico en la región emergente para cada una las políticas consideradas. ¿Qué política te parece más robusta? [tabla con resultados y discusión]</p></li>
+            <li><p>Considera el objetivo ambiental: emplea el algoritmo PRIM a través de la función <em>sdprim</em> y explica al menos el 95% de los casos de vulnerabilidad empleando uno o más clusters multi-dimensionales. Para cada cluster describe sus límites dimensionales y las métricas de cobertura y densidad correspondientes. ¿Bajo que circunstancias tu política es vulnerable con respecto de este objetivo? [Tabla con resultados y discusión, toma como ejemplo la tabla 4.4 de Molina-Perez (2016)]</p></li>
+            <li><p>Considera el objetivo económico: emplea el algoritmo PRIM a través de la función <em>sdprim</em> y explica al menos el 70% de los casos de vulnerabilidad empleando uno o más clusters multi-dimensionales. Para cada cluster describe sus límites dimensionales y las métricas de cobertura y densidad correspondientes. ¿Bajo que circunstancias tu política es vulnerable con respecto de este objetivo? [Tabla con resultados y discusión, toma como ejemplo la tabla 4.4 de Molina-Perez (2016)]</p></li>
+            </ol>
+    </div>
+   </div>
+
+    <div class="card bg-light text-dark">
+    <div class="card-body">
+
+      <h2 class="card-title">  Problema 2 (25 puntos)</h5>
+      <h3 class="card-subtitle mb-2 text-muted">Diseño de políticas robustas</h6>
+      <br>
+
+      <ol type="1">
+        <li><p>Considera el mismo diseño experimental del problema anterior incluyendo la siguiente modificación:</p>
+        <ul>
+        <li><p>Incertidumbres, crea una muestra tipo LHC, tamaño <span class="math inline">\(\ N=1,000\)</span>, considerando el siguente espacio de incertidumbre:</p>
+        <ul>
+        <li><p>Propensión a la innovación tecnologías verdes: <em>Eta.re</em> <span class="math inline">\(\ 0.013 \leq \eta_{re} \leq .027\)</span></p></li>
+        <li><p>Retornos a la investigación tecnologías verdes: <em>Gamma.re</em> <span class="math inline">\(\ 0.16 \leq \gamma_{re} \leq .33\)</span></p></li>
+        <li><p>Transferabilidad tecnologías verdes: <em>Nu.re</em> <span class="math inline">\(\ 0.013 \leq \nu_{re} \leq .027\)</span></p></li>
+        <li><p>Elasticidad de substitución entre energía fósil y verde: <em>epsilon</em> <span class="math inline">\(\ 3.0 \leq \epsilon \leq 10.0\)</span></p></li>
+        <li><p>Sensibilidad climática al carbono: <em>Beta.Delta.Temp</em> <span class="math inline">\(\ 4.9 \leq \beta \leq 6.2\)</span></p></li>
+        <li><p>Capacidad del sumidero de carbono: <em>Delta.S</em> <span class="math inline">\(\ 0.0006 \leq \delta \leq 0.002\)</span></p></li>
+        </ul></li>
+        </ul>
+        <p>A través de esta modificación investigaremos la vulnerabilidad de las políticas climáticas propuestas bajo escenarios ambientales menos favorables. Corre el experimento exploratorio para cada política y estima el porcentaje de futuros en los que no se cumplen los objetivos ambiental y económico respectivamente. ¿Qué política te parece más vulnerable? [Tabla con resultados, renglones con políticas, columnas con objetivos]</p></li>
+        <li><p>Considera el objetivo ambiental: emplea el algoritmo PRIM a través de la función <em>sdprim</em> y explica al menos el 95% de los casos de vulnerabilidad empleando uno o más clusters multi-dimensionales. Para cada cluster describe sus límites dimensionales y las métricas de cobertura y densidad correspondientes. ¿Bajo que circunstancias tu política es vulnerable con respecto de este objetivo? [Tabla con resultados y discusión, toma como ejemplo la tabla 4.4 de Molina-Perez (2016)]</p></li>
+        <li><p>Considera el objetivo económico: emplea el algoritmo PRIM a través de la función <em>sdprim</em> y explica al menos el 70% de los casos de vulnerabilidad empleando uno o más clusters multi-dimensionales. Para cada cluster describe sus límites dimensionales y las métricas de cobertura y densidad correspondientes. ¿Bajo que circunstancias tu política es vulnerable con respecto de este objetivo? [Tabla con resultados y discusión, toma como ejemplo la tabla 4.4 de Molina-Perez (2016)]</p></li>
+        <li><p>Compara tus resultados de este ejercicio con los resultados del ejercicio anterior y describe como cambián las condiciones de vulnerabilidad de tu política. [Descripción simple]</p></li>
+        <li><p>Considera lo que has aprendido de ambos experimentos y diseña una nueva política climática que cumpla ambos objetivos en un mayor número de futuros, o que cumpla el objetivo ambiental en un mayor número de futuros y que no disminuya el porcentaje de futuros en los que se cumple el objetivo económico. [Descripción de nueva política y tabla con resultados comparando el desempeño de las tres políticas]</p></li>
+        </ol>
+    </div>
+    </div>
+
+
+
+  </div>
+
+
+<div class="footer">
+  <div class="container text-center">
+  <p>Dr. Edmundo Molina</p>
+  <p><a href="mailto:hege@example.com">edmundo.molina@itesm.mx</a></p>
+  </div>
+</div>
+
+
+  </body>
+
+</main>
+</html>

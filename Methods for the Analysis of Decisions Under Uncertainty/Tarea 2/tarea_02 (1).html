@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.84.0">
+    <title>Tarea 2</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/grid/">
+
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+
+
+    <!-- Custom styles for this template -->
+    <link href="grid.css" rel="stylesheet">
+  </head>
+  <body class="py-4">
+
+    <div class="jumbotron text-center">
+      <h1 class="title">Escuela de Gobierno y Transformación Pública<br />
+      -Técnicas de Modelación Avanzada-<br />
+      Tarea 2</h1>
+      <p class="author">Profesor: Dr. Edmundo Molina<br />
+      edmundo.molina@itesm.mx<br />
+
+      <img src="https://github.com/milocortes/modelacion_avanzada/raw/main/tareas/images/logo_itesm.jpg" class="img-rounded" alt="Cinque Terre">
+
+  </div>
+
+<main>
+  <div class="container">
+
+    <h1 id="instrucciones-y-recomendaciones">Instrucciones y recomendaciones</h1>
+    <ul>
+    <li><p>Las tareas se entregarán de manera individual.Por lo tanto, cada estudiante es responsable de la calidad e integridad de los productos entregados.</p></li>
+    <li><p>La colaboración grupal es deseable durante la resolución de esta tarea, pero cada estudiante debe demostrar capacidad crítica individual en la resolución de los ejercidos descritos en este documento.</p></li>
+    <li><p>La presentación de tu trabajo es muy importante. Se conciso y claro en tu exposición, describe adecuadamente tus gráficos y úsalos para hacer más claros y contundentes tus argumentos. No escribas argumentos o ideas incompletas, concluye tus pensamientos de manera adecuada.</p></li>
+    <li><p>Si empleas tablas y/o gráficos, asegúrate de incluir notas para cada uno de ellos. Cada elemento gráfico en tu exposición debe explicarse por sí mismo.</p></li>
+    <li><p>Revisa cuidadosamente cada inciso, responde a la totalidad de las preguntas.</p></li>
+    <li><p>No te límites a la información presentada en cada caso. Si consideras que los casos son incompletos busca de manera individual más información y referencia adecuadamente tus fuentes.</p></li>
+    <li><p>Es altamente recomendable consultar el libro de texto para resolver los ejercicios descritos en esta tarea.</p></li>
+    </ul>
+
+
+    <div class="card">
+      <div class="card-body">
+         <h2 class="card-title">  Problema 1 (25 puntos)</h5>
+         <h3 class="card-subtitle mb-2 text-muted">Diseño de experimentos exploratorios</h6>
+         <br>
+
+         <ol type="1">
+            <li><p>Diseña cuatro opciones de política pública de acuerdo a los siguientes lineamientos:</p>
+            <ul>
+            <li><p>La alternativa “P0” es la política del status quo</p></li>
+            <li><p>La alternativa “P1” considera solo la implementación de impuestos al carbono en ambas regiones</p></li>
+            <li><p>La alternativa “P2” considera la implementación de impuestos al carbono y la implementación de subsidios tecnológicos y de investigación y desarrollo en ambas regiones</p></li>
+            <li><p>La alternativa “P3” considera además la implementación del fondo verde</p></li>
+            </ul>
+            <p>Emplea el modelo EDIAM: “ediam_10_24_2016.r” con los parámetros base para diseñar alternativas de política que sean viables financieramente y que al final de 300 años mantengan el crecimiento de la temperatura sea igual o menor a dos grados Celsius [Código con R con resultados de diseño].</p></li>
+            <li><p>Considera los siguientes elementos de incertidumbre del modelo EDIAM:</p>
+            <ul>
+            <li><p>Propensión a la innovación tecnologías verdes: <em>Eta.re</em></p></li>
+            <li><p>Propensión a la innovación tecnologías fósiles: <em>Eta.ce</em></p></li>
+            <li><p>Retornos a la investigación tecnologías verdes: <em>Gamma.re</em></p></li>
+            <li><p>Retornos a la investigación tecnologías fósiles: <em>Gamma.ce</em></p></li>
+            <li><p>Transferabilidad tecnologías verdes: <em>Nu.re</em></p></li>
+            <li><p>Transferabilidad tecnologías fósiles: <em>Nu.ce</em></p></li>
+            <li><p>Crecimiento demográfico naciones avanzadas: <em>labor.growth.N</em></p></li>
+            <li><p>Crecimiento demográfico naciones emergentes: <em>labor.growth.S</em></p></li>
+            <li><p>Elasticidad de substitución entre energía fósil y verde: <em>epsilon</em></p></li>
+            <li><p>Sensibilidad climática a gases tipo invernadero: <em>Beta.Delta.Temp</em></p></li>
+            <li><p>Capacidad del sumidero de carbono: <em>Delta.S</em></p></li>
+            </ul>
+            <p>Considera la definición de “Incertidumbre profunda” vista en clase y clasifica cada una de estas variables en tres categorías: a) variables profundamente inciertas, b) variables inciertas o c) variables no inciertas (i.e. parámetros del modelo). Justifica tu clasificación para cada variable, además: para las variables que consideres profundamente inciertas describe el rango de exploración que consideras apropiado, para las variables inciertas describe el modelo de incertidumbre que consideres apropiado y para las variables no inciertas describe como estimarías este parámetro o cual sería el valor que le asignarías.</p></li>
+            <li><p>En tareas anteriores hemos empleado dos métricas para evaluar el desempeño de las diferentes políticas: 1) crecimiento de la temperatura en el año 300 y 2) crecimiento económico promedio en ambas regiones. Define estas tres métricas especificando sus unidades de medición y el objetivo de política que consideras debe ser alcanzado. [Listado o tabla de variables con justificación y rangos de valores]</p></li>
+            <li><p>Usa la intuición del modelo EDIAM que has adquirido en las tareas anteriores y describe brevemente como esperas que funcionen tus alternativas de política en este sistema: ¿Cómo los diferentes elementos de incertidumbre pueden afectar el desempeño de cada alternativa? [Discusión por alternativa]</p></li>
+            <li><p>Describe la estructura de tu estudio empleando la matriz “XLRM” descrita por Lempert, Popper y Bankes (2003) [Matriz XLRM con descripción ]</p></li>
+            </ol>
+    </div>
+   </div>
+
+    <div class="card bg-light text-dark">
+    <div class="card-body">
+
+      <h2 class="card-title">  Problema 2 (25 puntos)</h5>
+      <h3 class="card-subtitle mb-2 text-muted">Muestreo LHC</h6>
+      <br>
+
+      <p>Para las preguntas de este problema considera sólo las variables profundamente inciertas que definiste en el problema anterior (i.e. al menos 5 variables) y responde a los siguientes incisos:<br />
+      </p>
+      <ol type="1">
+      <li><p>Emplea el muestro tipo LHC y genera una muestra de tamaño <span class="math inline">\(\ N=100\)</span> y semilla <span class="math inline">\(\ Z=55555\)</span> de las variables profundamente inciertas que definiste en el problema anteriores [Código en R]</p></li>
+      <li><p>Genera una matriz de gráficos de dispersión de tu muestra para todas las variables ¿Qué concluyes con respecto de la pertinencia de la muestra generada? [Código en R, matriz gráfica y discusión]</p></li>
+      <li><p>Genera una nueva muestra tipo LHC de tamaño <span class="math inline">\(\ N=1,000\)</span> y semilla <span class="math inline">\(\ Z=55555\)</span>. Genera nuevamente la matriz de gráficos de dispersión, ¿Qué diferencia percibes con respecto a la muestra generada en el ejercicio anterior? [Código en R, matriz gráfica y discusión]</p></li>
+      <li><p>Incrementa el tamaño de muestra hasta que consideres satisfactoria la exploración del espacio de incertidumbre que propusiste en el ejercicio anterior, ¿Qué tan grande tiene que ser tu experimento? ¿Es factible tu experimento con los recursos disponibles en tu computadora personal? [Código en R, matriz gráfica y discusión]</p></li>
+      <li><p>Considera las restricciones de los recursos computacionales disponibles y elimina las variables de incertidumbre que consideres menos relevantes. Emplea la matriz de gráficos de dispersión para evaluar la calidad de tu muestra, justificar tu elección de dimensiones de incertidumbre y justificar el tamaño de tu muestra [Código en R, matrix final y justificación textual]</p></li>
+      </ol>
+    </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+
+        <h2 class="card-title">  Problema 3 (25 puntos)</h5>
+        <h3 class="card-subtitle mb-2 text-muted">Criterios de robustez</h6>
+        <br>
+             <ol type="1">
+            <li><p>Considera las cuatro alternativas definidas en el problema 1 y el diseño experimental definido en el problema 2: ¿Cuántos futuros son considerados en tu experimento?, ¿Cuántas corridas del modelo deben ser ejecutadas? [Respuesta simple]</p></li>
+            <li><p>Crea una tabla experimental para correr tu experimento y estima el tiempo necesario para ejecutar tu experimento [Tabla experimental y estimación de ejecución del experimento]</p></li>
+            <li><p>Emplea la versión del modelo EDIAM: “ediam_10_24_2016.r” y evalúa cada una de tus alternativas empleando tu diseño experimental. Genera un <em>data.frame</em> que resuma el desempeño de cada alternativa. El número de filas de dicho <em>data.frame</em> debe ser igual al número de futuros considerados en el experimento. Las columnas deben contener los resultados de las variables: , , , así como el correspondiente “Future.ID”. La variable indica el crecimiento de la temperatura en el año 300 de la simulación, y las variables y indican el crecimiento promedio durante la simulación en cada región respectivamente. Emplea la función <em>aggregate()</em> para estimar el crecimiento promedio. Emplea la función <em>merge()</em> para unir las tres variables en una sola tabla a través de su Run.ID. Crea una tabla para cada una de las políticas evaluadas, tal que: <em>“a0”</em>,<em>“a1”</em>,<em>“a2”</em> y <em>“a3”</em> indiquen los resultados para cada alternativa evaluada. Emplea la función <em>summary()</em> para describir el desempeño de cada una de estas alternativas.[Código en R y resumén de cada alternativa]</p></li>
+            <li><p>Considera el desempeño de tus cuatro alternativas con respecto de las tres métricas de desempeño definidas en el problema 1. Para cada métrica estima en cada futuro la alternativa que se comporta mejor y calcula el porcentaje de futuros en que resulta ser la mejor alternativa [Código en R y tabla con resultados]</p></li>
+            <li><p>Estima para cada futuro y cada política el nivel de arrepentimiento (ecuación 3.1 Lempert, Popper y Bankes (2003)) con respecto de cada una de las métricas de medición. Agrega estas tres nuevas columnas en cada una de las tablas que generaste en el inciso 4.c) y estima para cada política el arrepentimiento promedio y arrepentimiento total con respecto de cada métrica de desempeño [Código en R y tabla con resultados]</p></li>
+            <li><p>Genera un diagrama de caja para cada métrica de desempeño en el que compares el nivel de arrepentimiento de cada política. ¿Distingues algún patrón de comportamiento? [Código en R, gráfico y discusión de resultados]</p></li>
+            <li><p>Genera para cada política tres gráficos de dispersión considerando todos los futuros analizados: 1) arrepentimiento con respecto del nivel de temperatura vs arrepentimiento con respecto del nivel de crecimiento en la región avanzada, 2) arrepentimiento con respecto del nivel de temperatura vs arrepentimiento con respecto del nivel de crecimiento en la región emergente y 3) arrepentimiento con respecto del nivel de crecimiento en la región avanzada vs arrepentimiento con respecto del nivel de crecimiento en la región emergente. ¿Identificas algún patrón de comportamiento en tus políticas? [Gráficos y discusión de resultados]</p></li>
+            </ol>
+    </div>
+  </div>
+
+  <div class="card bg-light text-dark">
+  <div class="card-body">
+    <h2 class="card-title"> Problema 4 (25 puntos)</h5>
+    <h3 class="card-subtitle mb-2 text-muted">Descubrimiento de escenarios: introducción</h6>
+    <br>
+    <ol type="1">
+        <li><p>Considera los siguientes dos objetivos:</p>
+        <ul>
+        <li><p>Mantener el crecimiento de la temperatura por debajo de dos grados Celsius al final de la simulación</p></li>
+        <li><p>Mantener el nivel de crecimiento promedio en ambas regiones igual o mayor a 2.5% (i.e. las dos regiones cumplen este objetivo de manera simultanea)</p></li>
+        </ul>
+        <p>En cada tabla de resultados agrega las siguientes dos variables categóricas: <span class="math display">\[Objetivo1_{temperatura}=\left\{
+                 \begin{array}{rl}
+                 1  &amp; \textbf{si  } Delta.temp\leq2.0,\\
+                 0 &amp; \textbf{si  }  Delta.temp&gt;2.0
+                 \end{array} \right.\]</span><br />
+        <span class="math display">\[Objetivo2_{crecimiento}=\left\{
+                 \begin{array}{rl}
+                 1  &amp; \textbf{si  } Crecimiento\geq 0.025,\\
+                 0 &amp; \textbf{si  }  Crecimiento &lt; 0.025.
+                 \end{array} \right.\]</span><br />
+        Emplea la función <em>summary()</em> para describir el desempeño de cada política. Estima el porcentaje de futuros en el que cada alternativa cumple los dos objetivos ¿Cuál de tus alternativas es más robusta con respecto del objetivo ambiental? ¿Cuál de tus alternativas cumple con mayor frecuencia el objetivo de crecimiento? [Código en R, resultados y respuesta a preguntas]</p></li>
+        <li><p>Considera sólo el objetivo ambiental y emplea la función <em>sdprim()</em> para describir las condiciones de vulnerabilidad de tus políticas. Lista al menos dos cajas de vulnerabilidad para cada política, describe sus métricas de densidad y cobertura, así como los rangos de valores de cada uno de los factores de incertidumbre relevantes. ¿Identificas algún patrón de comportamiento ?</p></li>
+        </ol>
+  </div>
+</div>
+
+
+  </div>
+
+
+<div class="footer">
+  <div class="container text-center">
+  <p>Dr. Edmundo Molina</p>
+  <p><a href="mailto:hege@example.com">edmundo.molina@itesm.mx</a></p>
+  </div>
+</div>
+
+
+  </body>
+
+</main>
+</html>

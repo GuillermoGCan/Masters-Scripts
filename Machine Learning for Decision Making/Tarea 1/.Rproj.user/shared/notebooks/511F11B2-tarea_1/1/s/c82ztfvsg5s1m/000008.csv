@@ -1,0 +1,7 @@
+"0","cohort <- df %>% "
+"0","   select(id_aplicacion, id_candidato, id_oferta, fecha_aplicacion, "
+"0","          check_area, check_tipo_contrato,"
+"0","          dias_desde_publicacion_oferta, diferencia_salario, "
+"0","          num_aplicaciones_mes = n, label = contratado)"
+"0"," "
+"0","cohort"

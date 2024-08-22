@@ -1,0 +1,164 @@
+install.packages("fpp3")
+install.packages("seasonal")
+install.packages("ggfortify")
+install.packages("forecast")
+
+library(fpp3)
+library(seasonal)
+library(ggplot2)
+library(ggfortify)
+library(forecast)
+
+
+#Paso 1. Definir el directorio y cargar la base de datos
+
+#setwd()
+
+serieo <- read.csv(file = "TD original 20190606.csv",
+                   header = TRUE,
+                   sep = ",")
+
+# Paso 2. Definición de la variable que es nuestra ts
+
+tseries2 <- ts(serieo$Total, 
+               start = c(2017, 1), 
+               frequency = 12)
+
+# Paso 3. Diferentes gráficas de series de tiempo
+
+autoplot(tseries2, 
+         colour = 'blue') + 
+  ggtitle("Tasa de desocupación de México mensual, serie original, Enero de 2017 a Abril de 2019") +
+  ylab("Tasa de desocupación") + 
+  xlab("Tiempo")
+
+autoplot(tseries2, 
+         colour = "maroon", 
+         linetype = "dashed") + 
+  ggtitle("Tasa de desocupación de México mensual, serie original, Enero de 2017 a Abril de 2019") +
+  ylab("Tasa de desocupación") + 
+  xlab("Tiempo")
+
+ggseasonplot(tseries2,
+             year.labels = TRUE,
+             year.labels.left = TRUE) +
+  ylab("Tasa de desocupación") + 
+  ggtitle("Tasa de desocupación de México mensual, serie original, Enero de 2017 a Abril de 2019"
+          )
+
+ggseasonplot(tseries2, 
+             polar = TRUE) + 
+  ylab("Tasa de desocupación") + 
+  ggtitle("Tasa de desocupación de México mensual, serie original, Enero de 2017 a Abril de 2019")
+
+metstl <- stl(tseries2,
+              s.window = 3,
+              robust = TRUE)
+
+autoplot(metstl) +
+  xlab("Tiempo")
+
+metstl2 <- stl(tseries2,
+               s.window = 3)
+
+autoplot(metstl2) +
+  xlab("Tiempo")
+
+metstl3 <- stl(tseries2,
+              s.window = 3,
+              t.window = 3)
+
+autoplot(metstl3) +
+  xlab("Tiempo")
+
+metstl4 <- stl(tseries2,
+               s.window = 5,
+               robust = TRUE)
+
+autoplot(metstl4) +
+  xlab("Tiempo")
+
+metstl5 <- stl(tseries2,
+               s.window = 7,
+               robust = TRUE)
+
+autoplot(metstl5) +
+  xlab("Tiempo")
+
+ajustada <- stl(tseries2,
+                s.window = 3,
+                robust = TRUE)
+
+autoplot(tseries2,
+         series = "Datos originales") +
+  autolayer(seasadj(ajustada),
+            series = "Ajustados por estacionalidad")
+
+ajustada2 <- stl(tseries2,
+                s.window = 5,
+                robust = TRUE)
+
+autoplot(tseries2,
+         series = "Datos originales") +
+  autolayer(seasadj(ajustada2),
+            series = "Ajustados por estacionalidad")
+
+ajustada3 <- stl(tseries2,
+                 s.window = 7,
+                 robust = TRUE)
+
+autoplot(tseries2,
+         series = "Datos originales") +
+  autolayer(seasadj(ajustada3),
+            series = "Ajustados por estacionalidad")
+
+ajustada4 <- stl(tseries2,
+                 s.window = 9,
+                 robust = TRUE)
+
+autoplot(tseries2,
+         series = "Datos originales") +
+  autolayer(seasadj(ajustada4),
+            series = "Ajustados por estacionalidad")
+
+# Paso 6. Crear nuestra serie desestacionalizada
+
+seriedes = seasadj(ajustada3)
+seriedes
+tseries2
+
+# Paso 7. Abrir la serie desestacionalizada del INEGI
+
+DESESINEGI <- read.csv(file = "TD desestacionalizada 20190606.csv",
+                     header = TRUE,
+                     sep = ",")
+tseriesdesINEGI <- ts(DESESINEGI$Total,
+                      start = c(2017,1),
+                      frequency = 12)
+tseriesdesINEGI
+
+# Paso 8. Comparar la desestacionalizada con STL y la de INEGI
+diferencia <- seriedes - tseriesdesINEGI
+diferencia
+
+autoplot(seriedes,
+         series = "Datos desestacionalizados con STL") +
+  autolayer(tseriesdesINEGI,
+            series = "Ajustados por el INEGI con X11")
+
+meanSTL <- mean(seriedes)
+meanINEGI <- mean(tseriesdesINEGI)
+meantseries2 <- mean(tseries2)
+
+meanSTL
+meanINEGI 
+meantseries2
+
+boxplot(seriedes,
+        tseriesdesINEGI,
+        tseries2,
+        main = "Boxplots de las series desestacionalizadas y la original",
+        names = c("Serie con STL", "Serie del INEGI con X11", "Original"),
+        ylab = "Tasa de desocupación",
+        col = "orange",
+        border = "brown")

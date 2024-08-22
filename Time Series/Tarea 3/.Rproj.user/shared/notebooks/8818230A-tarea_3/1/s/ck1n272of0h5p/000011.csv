@@ -1,0 +1,5 @@
+"0",""
+"0","autoplot(advert_fcast) +"
+"0","  ggtitle(""Monthly sales and forecast for an automotive parts company."") + "
+"0","  xlab(""Month"") + "
+"0","  ylab(""Sales [USD]"")"

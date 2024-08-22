@@ -1,0 +1,487 @@
+{UTF-8}
+"1-(product price cI/reference price cI)"  = A FUNCTION OF( product price cI,reference price\
+		)
+	~	
+	~		|
+
+custom duties raised by cII  = A FUNCTION OF( )
+	~	
+	~		|
+
+product costs cII  = A FUNCTION OF( resource costs cII)
+	~	
+	~		|
+
+demand for products from cI  = A FUNCTION OF( market volume cI,market volume cII,percentage purchased by cI from cI\
+		,percentage purchased by cII from cII)
+	~	
+	~		|
+
+demand for products from cII  = A FUNCTION OF( market volume cI,market volume cII,percentage purchased by cI from cI\
+		,percentage purchased by cII from cII)
+	~	
+	~		|
+
+standard factor cII  = A FUNCTION OF( )
+	~	
+	~		|
+
+depreciation cII  = A FUNCTION OF( depreciation rate cII,production capacity cII)
+	~	
+	~		|
+
+standards of cII  = A FUNCTION OF( -deterioration cII,progress cII)
+	~	
+	~		|
+
+depreciation rate cII  = A FUNCTION OF( )
+	~	
+	~		|
+
+production costs cII  = A FUNCTION OF( standard factor cII,standards of cII)
+	~	
+	~		|
+
+deterioration cII  = A FUNCTION OF( deterioration rate cII,standards of cII)
+	~	
+	~		|
+
+progress cI  = A FUNCTION OF( "1-(product price cI/reference price cI)",investment in progress cI\
+		,standards of cI)
+	~	
+	~		|
+
+deterioration rate cII  = A FUNCTION OF( )
+	~	
+	~		|
+
+surplus cII  = A FUNCTION OF( demand for products from cII,supply cII)
+	~	
+	~		|
+
+price of cII products in cII  = A FUNCTION OF( product price cII)
+	~	
+	~		|
+
+investment function cII  = A FUNCTION OF( )
+	~	
+	~		|
+
+investment in progress cI  = A FUNCTION OF( investments cI,progress function cI)
+	~	
+	~		|
+
+investment in progress cII  = A FUNCTION OF( investments cII,progress function cII)
+	~	
+	~		|
+
+resource costs cII  = A FUNCTION OF( )
+	~	
+	~		|
+
+investment rate cII  = A FUNCTION OF( )
+	~	
+	~		|
+
+product price cII  = A FUNCTION OF( product costs cII,tax rate cII)
+	~	
+	~		|
+
+investments cII  = A FUNCTION OF( investment function cII,investment rate cII,production capacity cII\
+		,surplus cII)
+	~	
+	~		|
+
+production capacity cII  = A FUNCTION OF( -depreciation cII,investments cII)
+	~	
+	~		|
+
+subsidy cI  = A FUNCTION OF( )
+	~	
+	~		|
+
+price ratio of domestic versus imported products in cII  = A FUNCTION OF( price of cI products in cII\
+		,price of cII products in cII)
+	~	
+	~		|
+
+percentage purchased by cII from cII  = A FUNCTION OF( price ratio of domestic versus imported products in cII\
+		)
+	~	
+	~		|
+
+price of cI products in cI  = A FUNCTION OF( )
+	~	
+	~		|
+
+price of cI products in cII  = A FUNCTION OF( custom duties raised by cII,product price cI\
+		,subsidy cI)
+	~	
+	~		|
+
+progress cII  = A FUNCTION OF( investment in progress cII,standards of cII)
+	~	
+	~		|
+
+progress function cII  = A FUNCTION OF( )
+	~	
+	~		|
+
+tax rate cII  = A FUNCTION OF( )
+	~	
+	~		|
+
+product price cI  = A FUNCTION OF( price of cI products in cI,product costs cI,tax rate cI\
+		)
+	~	
+	~		|
+
+supply cII  = A FUNCTION OF( production capacity cII,production rate cII)
+	~	
+	~		|
+
+production rate cII  = A FUNCTION OF( )
+	~	
+	~		|
+
+customs duties raised by cI  = A FUNCTION OF( )
+	~	
+	~		|
+
+depreciation cI  = A FUNCTION OF( depreciation rate cI,production capacity cI)
+	~	
+	~		|
+
+depreciation rate cI  = A FUNCTION OF( )
+	~	
+	~		|
+
+deterioration cI  = A FUNCTION OF( deterioration rate cI,standards of cI)
+	~	
+	~		|
+
+deterioration rate cI  = A FUNCTION OF( )
+	~	
+	~		|
+
+investment factor cI  = A FUNCTION OF( )
+	~	
+	~		|
+
+investment function cI  = A FUNCTION OF( investment factor cI)
+	~	
+	~		|
+
+investment rate cI  = A FUNCTION OF( )
+	~	
+	~		|
+
+investments cI  = A FUNCTION OF( investment function cI,investment rate cI,production capacity cI\
+		,surplus cI)
+	~	
+	~		|
+
+market volume cI  = A FUNCTION OF( )
+	~	
+	~		|
+
+market volume cII  = A FUNCTION OF( )
+	~	
+	~		|
+
+percentage purchased by cI from cI  = A FUNCTION OF( price ratio of domestic versus imported products in cI\
+		)
+	~	
+	~		|
+
+price of cII products in cI  = A FUNCTION OF( customs duties raised by cI,product price cII\
+		,subsidy cII)
+	~	
+	~		|
+
+price ratio of domestic versus imported products in cI  = A FUNCTION OF( price of cI products in cI\
+		,price of cII products in cI)
+	~	
+	~		|
+
+product costs cI  = A FUNCTION OF( production costs cI,resource costs cI)
+	~	
+	~		|
+
+production capacity cI  = A FUNCTION OF( -depreciation cI,investments cI)
+	~	
+	~		|
+
+production costs cI  = A FUNCTION OF( standard factor cI,standards of cI)
+	~	
+	~		|
+
+production rate cI  = A FUNCTION OF( )
+	~	
+	~		|
+
+progress factor cI  = A FUNCTION OF( )
+	~	
+	~		|
+
+progress function cI  = A FUNCTION OF( progress factor cI)
+	~	
+	~		|
+
+reference price  = A FUNCTION OF( )
+	~	
+	~		|
+
+resource costs cI  = A FUNCTION OF( )
+	~	
+	~		|
+
+standard factor cI  = A FUNCTION OF( )
+	~	
+	~		|
+
+standards of cI  = A FUNCTION OF( -deterioration cI,progress cI)
+	~	
+	~		|
+
+subsidy cII  = A FUNCTION OF( )
+	~	
+	~		|
+
+supply cI  = A FUNCTION OF( production capacity cI,production rate cI)
+	~	
+	~		|
+
+surplus cI  = A FUNCTION OF( demand for products from cI,supply cI)
+	~	
+	~		|
+
+tax rate cI  = A FUNCTION OF( )
+	~	
+	~		|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 100
+	~	Month
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 0
+	~	Month
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 
+        TIME STEP
+	~	Month [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 1
+	~	Month [0,?]
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*View 1
+$192-192-192,0,Arial Unicode MS|12||0-0-0|0-0-0|0-0-255|-1--1--1|255-255-255|96,96,75,0
+10,1,production capacity cI,1237,146,52,20,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,2,48,1023,143,25,15,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,3,5,2,100,0,0,22,0,192,0,-1--1--1,,1|(1079,143)|
+1,4,5,1,4,0,0,22,0,192,0,-1--1--1,,1|(1153,143)|
+11,5,0,1116,143,6,8,34,3,0,0,3,0,0,0,0,0,0,0,0,0
+10,6,investments cI,1116,105,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,7,48,1470,146,25,15,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,8,10,1,100,0,0,22,0,192,0,-1--1--1,,1|(1325,146)|
+1,9,10,7,4,0,0,22,0,192,0,-1--1--1,,1|(1409,146)|
+11,10,0,1367,146,6,8,34,3,0,0,3,0,0,0,0,0,0,0,0,0
+10,11,depreciation cI,1367,108,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,12,depreciation rate cI,1565,106,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,13,12,11,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(1404,99)|
+1,14,1,11,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(1275,108)|
+10,15,investment rate cI,1258,49,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,16,15,6,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(1171,53)|
+1,17,1,6,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(1181,113)|
+10,18,investment function cI,909,197,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,19,18,6,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(1005,197)|
+10,20,investment factor cI,1102,217,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,21,20,18,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(1006,256)|
+10,22,production rate cI,1621,227,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,23,percentage purchased by cI from cI,1224,431,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,24,market volume cI,1552,474,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,25,market volume cII,1425,483,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,26,24,74,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(1489,406)|
+1,27,23,74,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(1299,401)|
+1,28,25,74,0,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(0,0)|
+10,29,price ratio of domestic versus imported products in cI,1076,316,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,30,29,23,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(1159,444)|
+10,31,price of cI products in cI,867,441,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,32,31,29,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(936,365)|
+10,33,price of cII products in cI,844,508,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,34,33,29,1,0,45,0,2,192,0,-1--1--1,|||0-0-0,1|(972,458)|
+10,35,product costs cI,688,329,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,36,tax rate cI,768,388,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,37,35,138,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(546,390)|
+1,38,36,138,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(659,379)|
+10,39,resource costs cI,552,301,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,40,39,35,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(616,303)|
+10,41,production costs cI,658,208,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,42,41,35,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(660,268)|
+10,43,standards of cI,759,142,59,20,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,44,43,41,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(691,148)|
+10,45,standard factor cI,885,325,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,46,45,41,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(797,311)|
+12,47,48,569,140,25,15,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,48,50,47,100,0,0,22,0,192,0,-1--1--1,,1|(610,140)|
+1,49,50,43,4,0,0,22,0,192,0,-1--1--1,,1|(669,140)|
+11,50,0,633,140,6,8,34,3,0,0,3,0,0,0,0,0,0,0,0,0
+10,51,progress cI,633,102,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,52,48,958,142,25,15,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,53,55,43,100,0,0,22,0,192,0,-1--1--1,,1|(855,142)|
+1,54,55,52,4,0,0,22,0,192,0,-1--1--1,,1|(918,142)|
+11,55,0,898,142,6,8,34,3,0,0,3,0,0,0,0,0,0,0,0,0
+10,56,deterioration cI,898,104,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,57,43,56,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(812,107)|
+10,58,deterioration rate cI,878,63,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,59,58,56,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(955,74)|
+1,60,43,51,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(693,101)|
+10,61,investment in progress cI,674,65,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,62,61,51,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(612,70)|
+10,63,"1-(product price cI/reference price cI)",444,294,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,64,reference price,513,197,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,65,64,63,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(464,208)|
+1,66,63,51,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(569,223)|
+1,67,31,138,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(743,421)|
+1,68,6,61,1,0,0,0,0,192,0,-1--1--1,,1|(979,30)|
+10,69,progress function cI,418,180,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,70,69,61,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(508,81)|
+10,71,progress factor cI,433,44,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,72,71,69,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(392,104)|
+10,73,surplus cI,1240,340,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,74,demand for products from cI,1375,345,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,75,supply cI,1365,233,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,76,75,73,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(1265,273)|
+1,77,74,73,1,0,45,0,2,192,0,-1--1--1,|||0-0-0,1|(1313,301)|
+1,78,1,75,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(1308,220)|
+1,79,22,75,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(1497,297)|
+1,80,73,6,1,0,0,0,0,192,0,-1--1--1,,1|(1177,252)|
+10,81,product price cII,656,687,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,82,81,33,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(626,502)|
+10,83,subsidy cII,1108,536,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,84,customs duties raised by cI,1083,481,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,85,83,33,1,0,45,0,2,192,0,-1--1--1,|||0-0-0,1|(993,537)|
+1,86,84,33,1,0,45,0,2,192,0,-1--1--1,|||0-0-0,1|(966,505)|
+10,87,standards of cII,956,688,59,20,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,88,48,766,686,25,15,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,89,91,88,100,0,0,22,0,192,0,-1--1--1,,1|(807,686)|
+1,90,91,87,4,0,0,22,0,192,0,-1--1--1,,1|(866,686)|
+11,91,0,830,686,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,92,progress cII,830,724,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,93,48,1155,688,25,15,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,94,96,87,100,0,0,22,0,192,0,-1--1--1,,1|(1052,688)|
+1,95,96,93,4,0,0,22,0,192,0,-1--1--1,,1|(1115,688)|
+11,96,0,1095,688,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,97,deterioration cII,1095,726,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,98,87,97,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(996,742)|
+1,99,87,92,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(885,746)|
+10,100,production capacity cII,1356,863,54,20,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,101,48,1135,866,25,15,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,102,104,101,100,0,0,22,0,192,0,-1--1--1,,1|(1191,866)|
+1,103,104,100,4,0,0,22,0,192,0,-1--1--1,,1|(1268,866)|
+11,104,0,1228,866,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,105,investments cII,1228,904,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,106,48,1582,869,25,15,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,107,109,100,100,0,0,22,0,192,0,-1--1--1,,1|(1441,869)|
+1,108,109,106,4,0,0,22,0,192,0,-1--1--1,,1|(1521,869)|
+11,109,0,1479,869,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,110,depreciation cII,1479,907,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,111,100,110,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(1428,918)|
+1,112,100,105,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(1322,911)|
+10,113,investment rate cII,1423,960,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,114,113,105,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(1339,961)|
+10,115,depreciation rate cII,1567,824,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,116,115,110,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(1487,816)|
+10,117,investment function cII,1253,572,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,118,117,105,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(1215,706)|
+10,119,supply cII,1465,721,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,120,production rate cII,1754,633,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,121,120,119,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(1676,716)|
+1,122,100,119,1,0,0,0,0,192,0,-1--1--1,,1|(1382,782)|
+10,123,surplus cII,1350,595,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,124,123,105,1,0,0,0,2,192,0,-1--1--1,|||-1--1--1,1|(1269,727)|
+1,125,119,123,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(1385,684)|
+10,126,demand for products from cII,1592,687,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,127,126,123,1,0,45,0,2,192,0,-1--1--1,|||-1--1--1,1|(1485,600)|
+10,128,percentage purchased by cII from cII,1675,477,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,129,25,126,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(1505,549)|
+1,130,128,126,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(1686,582)|
+1,131,23,126,1,0,45,0,2,192,0,-1--1--1,|||-1--1--1,1|(1428,537)|
+1,132,128,74,1,0,45,0,2,192,0,-1--1--1,|||-1--1--1,1|(1555,374)|
+1,133,24,126,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(1594,548)|
+10,134,deterioration rate cII,1005,784,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,135,134,97,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(1089,782)|
+10,136,investment in progress cII,918,808,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,137,136,92,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(842,777)|
+10,138,product price cI,512,451,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,139,138,63,1,0,45,0,2,192,0,-1--1--1,|||-1--1--1,1|(434,395)|
+10,140,progress function cII,1178,949,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,141,140,136,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(1039,912)|
+1,142,105,136,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(1057,883)|
+10,143,price ratio of domestic versus imported products in cII,1851,538,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,144,143,128,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(1766,499)|
+10,145,price of cII products in cII,1139,995,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,146,145,143,1,0,43,0,2,64,0,-1--1--1,|||-1--1--1,1|(1610,904)|
+1,147,81,145,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+10,148,price of cI products in cII,1089,1039,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,149,138,148,1,0,43,0,2,64,0,-1--1--1,|||-1--1--1,1|(690,841)|
+1,150,148,143,1,0,45,0,2,192,0,-1--1--1,|||-1--1--1,1|(1719,852)|
+10,151,subsidy cI,1444,1010,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,152,151,148,1,0,45,0,2,64,0,-1--1--1,|||-1--1--1,1|(1294,1041)|
+10,153,custom duties raised by cII,804,862,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,154,153,148,0,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(0,0)|
+10,155,tax rate cII,665,541,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,156,155,81,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(654,598)|
+10,157,product costs cII,816,575,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,158,157,81,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(732,612)|
+10,159,resource costs cII,750,478,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,160,159,157,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(744,538)|
+10,161,production costs cII,781,638,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,162,87,161,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(832,699)|
+10,163,standard factor cII,1244,512,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,164,163,161,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(1035,600)|
+///---\\\
+:L<%^E!@
+5:subsidy cI
+9:current
+19:75,0
+24:0
+25:0
+26:0
+23:0
+15:0,0,0,0,0,0
+27:0,
+34:0,
+42:0
+72:0
+73:0
+95:0
+96:0
+97:0
+77:0
+78:0
+102:0
+93:0
+94:0
+92:0
+91:0
+90:0
+87:0
+75:
+43:
+103:8,8,8,3,8

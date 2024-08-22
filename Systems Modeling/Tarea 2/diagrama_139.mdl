@@ -1,0 +1,211 @@
+{UTF-8}
+FRACTION INVESTED  = A FUNCTION OF( )
+	~	
+	~		|
+
+ship building rate  = A FUNCTION OF( annual profits,FRACTION INVESTED,SHIP COST)
+	~	
+	~		|
+
+annual profits  = A FUNCTION OF( costs,revenues)
+	~	
+	~		|
+
+FISH PRICE  = A FUNCTION OF( )
+	~	
+	~		|
+
+Ships  = A FUNCTION OF( ship building rate)
+	~	
+	~		|
+
+total catch per year  = A FUNCTION OF( catch per ship,Ships)
+	~	
+	~		|
+
+costs  = A FUNCTION OF( Ships,UNIT SHIP OPERATING COST)
+	~	
+	~		|
+
+SHIP COST  = A FUNCTION OF( )
+	~	
+	~		|
+
+fish  = A FUNCTION OF( fish date rate,fish hatch rate,total catch per year)
+	~	
+	~		|
+
+UNIT SHIP OPERATING COST  = A FUNCTION OF( )
+	~	
+	~		|
+
+revenues  = A FUNCTION OF( FISH PRICE,total catch per year)
+	~	
+	~		|
+
+Total Profits  = A FUNCTION OF( annual profits)
+	~	
+	~		|
+
+death fraction  = A FUNCTION OF( CARRYING CAPACITY,EFFECT OF FISH AND CARRYING CAPACITY ON DEATH FRACTION\
+		,fish)
+	~	
+	~		|
+
+catch per ship  = A FUNCTION OF( density,EFFECT OF DENSITY ON CATCH PER SHIP,NORMAL DENSITY\
+		)
+	~	
+	~		|
+
+fish hatch rate  = A FUNCTION OF( HATCH FRACTION)
+	~	
+	~		|
+
+density  = A FUNCTION OF( AREA,fish)
+	~	
+	~		|
+
+fish date rate  = A FUNCTION OF( death fraction,fish)
+	~	
+	~		|
+
+AREA  = A FUNCTION OF( )
+	~	
+	~		|
+
+CARRYING CAPACITY  = A FUNCTION OF( )
+	~	
+	~		|
+
+EFFECT OF DENSITY ON CATCH PER SHIP  = A FUNCTION OF( )
+	~	
+	~		|
+
+EFFECT OF FISH AND CARRYING CAPACITY ON DEATH FRACTION  = A FUNCTION OF( )
+	~	
+	~		|
+
+HATCH FRACTION  = A FUNCTION OF( )
+	~	
+	~		|
+
+NORMAL DENSITY  = A FUNCTION OF( )
+	~	
+	~		|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 100
+	~	Month
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 0
+	~	Month
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 
+        TIME STEP
+	~	Month [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 1
+	~	Month [0,?]
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*View 1
+$192-192-192,0,Arial Unicode MS|12||0-0-0|0-0-0|0-0-255|-1--1--1|255-255-255|96,96,90,0
+10,1,fish hatch rate,229,117,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,2,fish,443,117,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,3,HATCH FRACTION,139,193,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,4,AREA,250,267,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,5,NORMAL DENSITY,272,374,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,6,EFFECT OF DENSITY ON CATCH PER SHIP,350,462,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,7,catch per ship,425,372,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,8,density,384,250,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,9,fish date rate,643,118,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,10,death fraction,550,39,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,11,EFFECT OF FISH AND CARRYING CAPACITY ON DEATH FRACTION,874,63,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,12,CARRYING CAPACITY,813,120,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,13,1,2,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+1,14,3,1,1,0,0,0,0,192,0,-1--1--1,,1|(213,182)|
+1,15,4,8,1,0,0,0,0,192,0,-1--1--1,,1|(294,239)|
+1,16,2,8,1,0,0,0,0,192,0,-1--1--1,,1|(392,164)|
+1,17,8,7,1,0,0,0,0,192,0,-1--1--1,,1|(371,310)|
+1,18,5,7,1,0,0,0,0,192,0,-1--1--1,,1|(332,407)|
+1,19,6,7,1,0,0,0,0,192,0,-1--1--1,,1|(420,436)|
+1,20,2,10,1,0,0,0,0,192,0,-1--1--1,,1|(460,66)|
+1,21,10,9,1,0,0,0,0,192,0,-1--1--1,,1|(608,71)|
+1,22,2,9,1,0,0,0,0,192,0,-1--1--1,,1|(549,101)|
+1,23,9,2,1,0,0,0,0,192,0,-1--1--1,,1|(528,150)|
+1,24,12,10,1,0,0,0,0,192,0,-1--1--1,,1|(686,64)|
+1,25,11,10,1,0,0,0,0,192,0,-1--1--1,,1|(708,31)|
+10,26,FISH PRICE,513,442,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,27,revenues,716,419,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,28,annual profits,916,419,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,29,Total Profits,1166,411,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,30,total catch per year,609,268,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,31,UNIT SHIP OPERATING COST,854,289,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,32,costs,1041,287,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,33,Ships,1135,205,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,34,ship building rate,1293,207,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,35,SHIP COST,1265,109,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,36,30,2,1,0,45,0,2,192,0,-1--1--1,|||0-0-0,1|(503,219)|
+1,37,7,30,1,0,0,0,0,192,0,-1--1--1,,1|(549,349)|
+1,38,26,27,1,0,0,0,0,192,0,-1--1--1,,1|(616,406)|
+1,39,30,27,1,0,0,0,0,192,0,-1--1--1,,1|(640,336)|
+1,40,27,28,1,0,0,0,0,192,0,-1--1--1,,1|(809,459)|
+1,41,28,29,1,0,0,0,0,192,0,-1--1--1,,1|(1048,454)|
+1,42,32,28,1,0,0,0,0,192,0,-1--1--1,,1|(1008,358)|
+1,43,33,32,1,0,0,0,0,192,0,-1--1--1,,1|(1049,244)|
+1,44,31,32,1,0,0,0,0,192,0,-1--1--1,,1|(964,325)|
+1,45,34,33,1,0,0,0,0,192,0,-1--1--1,,1|(1218,169)|
+1,46,35,34,1,0,0,0,0,192,0,-1--1--1,,1|(1337,146)|
+1,47,33,30,1,0,0,0,0,192,0,-1--1--1,,1|(875,181)|
+12,48,0,538,124,16,16,4,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,49,0,536,74,18,18,4,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,50,0,461,272,40,40,5,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,51,FRACTION INVESTED,1292,346,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,52,51,34,1,0,0,0,0,192,0,-1--1--1,,1|(1341,282)|
+1,53,28,34,1,0,0,0,0,192,0,-1--1--1,,1|(1117,353)|
+12,54,0,750,310,39,39,5,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,55,0,1138,271,32,32,5,3,0,0,-1,0,0,0,0,0,0,0,0,0
+///---\\\
+:L<%^E!@
+5:Ships
+9:current
+19:90,0
+24:0
+25:0
+26:0
+23:0
+15:0,0,0,0,0,0
+27:0,
+34:0,
+42:0
+72:0
+73:0
+95:0
+96:0
+97:0
+77:0
+78:0
+102:0
+93:0
+94:0
+92:0
+91:0
+90:0
+87:0
+75:
+43:
+103:8,8,8,3,8

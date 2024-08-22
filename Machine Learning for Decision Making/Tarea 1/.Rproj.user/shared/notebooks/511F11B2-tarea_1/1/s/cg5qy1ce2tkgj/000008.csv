@@ -1,0 +1,6 @@
+"0","# Agrego columna donde se resta salario_oferta menos salario_candidato"
+"0",""
+"0","df <- df %>% "
+"0","   mutate(diferencia_salario = salario_oferta - salario_candidato)"
+"0",""
+"0","head(df)"

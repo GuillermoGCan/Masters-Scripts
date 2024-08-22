@@ -1,0 +1,6 @@
+"0","# Grafico con función autoplot()"
+"0",""
+"0","autoplot(advert, facets = TRUE) + "
+"0","  ggtitle(""Monthly sales and advertising expenditure for an automotive parts company."") +"
+"0","  xlab(""Month"") + "
+"0","  ylab("""")"

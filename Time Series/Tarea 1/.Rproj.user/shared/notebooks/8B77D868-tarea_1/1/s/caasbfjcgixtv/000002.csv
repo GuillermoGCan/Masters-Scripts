@@ -1,0 +1,12 @@
+"0","# No requerí asignar un directorio de trabajo, pues estoy trabajando sobre un proyecto en RStudio en donde asigné previamente el directorio."
+"0",""
+"0","tute1 <- read_csv(""tute1.csv"")"
+"2","
+[36m--[39m [1mColumn specification[22m [36m-----------------------------------------------------------------------------------------------------------[39m
+cols(
+  Quarter = [34mcol_date(format = """")[39m,
+  Sales = [32mcol_double()[39m,
+  AdBudget = [32mcol_double()[39m,
+  GDP = [32mcol_double()[39m
+)
+"

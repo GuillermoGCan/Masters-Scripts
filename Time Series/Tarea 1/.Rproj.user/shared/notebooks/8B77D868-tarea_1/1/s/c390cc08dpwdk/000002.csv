@@ -1,0 +1,3 @@
+"0","mytimeseries <- tute1 %>%"
+"0","  mutate(Quarter = yearmonth(Quarter)) %>%"
+"0","  as_tsibble(index = Quarter)"

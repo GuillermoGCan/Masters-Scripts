@@ -1,0 +1,130 @@
+{UTF-8}
+deforestation  = A FUNCTION OF( )
+	~	
+	~		|
+
+demand for food  = A FUNCTION OF( )
+	~	
+	~		|
+
+emigration ratio  = A FUNCTION OF( )
+	~	
+	~		|
+
+fertility Losses  = A FUNCTION OF( )
+	~	
+	~		|
+
+fertility of agricultural land  = A FUNCTION OF( -fertility Losses)
+	~	
+	~		|
+
+food produced  = A FUNCTION OF( )
+	~	
+	~		|
+
+Forest  = A FUNCTION OF( -deforestation)
+	~	
+	~		|
+
+gap  = A FUNCTION OF( demand for food,food produced)
+	~	
+	~		|
+
+intensity  = A FUNCTION OF( )
+	~	
+	~		|
+
+natural population increase  = A FUNCTION OF( )
+	~	
+	~		|
+
+Population  = A FUNCTION OF( natural population increase)
+	~	
+	~		|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 100
+	~	Month
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 0
+	~	Month
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 
+        TIME STEP 
+	~	Month [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 1
+	~	Month [0,?]
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*View 1
+$192-192-192,0,Arial Unicode MS|12||0-0-0|0-0-0|0-0-255|-1--1--1|255-255-255|96,96,100,0
+10,1,gap,658,261,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,2,food produced,827,199,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,3,demand for food,502,199,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,4,2,1,1,0,45,0,2,192,0,-1--1--1,|||-1--1--1,1|(753,195)|
+1,5,3,1,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(586,201)|
+10,6,fertility of agricultural land,886,285,52,27,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,7,intensity,1005,188,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,8,emigration ratio,789,390,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,9,Population,1101,453,51,20,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,10,48,1101,285,25,15,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,11,13,6,100,0,0,22,0,192,0,-1--1--1,,1|(969,285)|
+1,12,13,10,4,0,0,22,0,192,0,-1--1--1,,1|(1044,285)|
+11,13,0,1007,285,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,14,fertility Losses,1007,323,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,15,Forest,494,452,40,20,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,16,48,651,452,25,15,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,17,19,15,100,0,0,22,0,192,0,-1--1--1,,1|(554,452)|
+1,18,19,16,4,0,0,22,0,192,0,-1--1--1,,1|(606,452)|
+11,19,0,580,452,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,20,deforestation,580,490,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,21,48,904,451,25,15,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,22,24,21,100,0,0,22,0,192,0,-1--1--1,,1|(956,451)|
+1,23,24,9,4,0,0,22,0,192,0,-1--1--1,,1|(1022,451)|
+11,24,0,989,451,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,25,natural population increase,989,489,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+///---\\\
+:L<%^E!@
+5:Population
+19:100,0
+24:0
+25:0
+26:0
+23:0
+15:0,0,0,0,0,0
+27:0,
+34:0,
+42:0
+72:0
+73:0
+95:0
+96:0
+97:0
+77:0
+78:0
+102:0
+93:0
+94:0
+92:0
+91:0
+90:0
+87:0
+75:
+43:
+103:8,8,8,3,8

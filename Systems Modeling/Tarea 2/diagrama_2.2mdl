@@ -1,0 +1,110 @@
+{UTF-8}
+Adults  = A FUNCTION OF( -Retirements)
+	~	
+	~		|
+
+Average time as adult  = A FUNCTION OF( )
+	~	
+	~		|
+
+Average time as retiree  = A FUNCTION OF( )
+	~	
+	~		|
+
+Deaths  = A FUNCTION OF( Average time as retiree)
+	~	
+	~		|
+
+Kids  = A FUNCTION OF( )
+	~	
+	~		|
+
+Retirees  = A FUNCTION OF( -Deaths,Retirements)
+	~	
+	~		|
+
+Retirements  = A FUNCTION OF( Average time as adult)
+	~	
+	~		|
+
+Youngsters  = A FUNCTION OF( )
+	~	
+	~		|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 100
+	~	Month
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 0
+	~	Month
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 
+        TIME STEP 
+	~	Month [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 1
+	~	Month [0,?]
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*View 1
+$192-192-192,0,Arial Unicode MS|12||0-0-0|0-0-0|0-0-255|-1--1--1|255-255-255|96,96,146,0
+10,1,Kids,131,210,40,20,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,2,Youngsters,389,212,54,20,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,3,Adults,649,214,40,20,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,4,Retirees,947,211,42,20,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,5,48,1125,211,25,15,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,6,8,4,100,0,0,22,0,192,0,-1--1--1,,1|(1013,211)|
+1,7,8,5,4,0,0,22,0,192,0,-1--1--1,,1|(1075,211)|
+11,8,0,1044,211,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,9,Deaths,1044,249,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,10,Average time as retiree,1147,336,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,11,10,9,1,0,45,0,2,192,0,-1--1--1,|||-1--1--1,1|(1064,323)|
+1,12,14,3,100,0,0,22,0,192,0,-1--1--1,,1|(740,212)|
+1,13,14,4,4,0,0,22,0,192,0,-1--1--1,,1|(854,212)|
+11,14,0,797,212,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,15,Retirements,797,250,75,30,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,16,Average time as adult,904,333,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,17,16,15,1,0,45,0,2,192,0,-1--1--1,|||-1--1--1,1|(815,319)|
+///---\\\
+:L<%^E!@
+5:Average time as retiree
+19:146,0
+24:0
+25:0
+26:0
+23:0
+15:0,0,0,0,0,0
+27:0,
+34:0,
+42:0
+72:0
+73:0
+95:0
+96:0
+97:0
+77:0
+78:0
+102:0
+93:0
+94:0
+92:0
+91:0
+90:0
+87:0
+75:
+43:
+103:8,8,8,3,8

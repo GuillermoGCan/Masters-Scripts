@@ -1,0 +1,145 @@
+{UTF-8}
+New Projects  = A FUNCTION OF( Real Estate Demand)
+	~	
+	~		|
+
+New Projects 0  = A FUNCTION OF( "Out of phase projects development.",Real Estate Demand 0\
+		)
+	~	
+	~		|
+
+"Out of phase projects development."  = A FUNCTION OF( )
+	~	
+	~		|
+
+Property Prices  = A FUNCTION OF( Real Estate Demand,Relative Oversupply)
+	~	
+	~		|
+
+Property Prices 0  = A FUNCTION OF( Real Estate Demand 0,Relative Oversupply 0)
+	~	
+	~		|
+
+Real Estate Demand  = A FUNCTION OF( Property Prices)
+	~	
+	~		|
+
+Real Estate Demand 0  = A FUNCTION OF( Property Prices 0)
+	~	
+	~		|
+
+Relative Oversupply  = A FUNCTION OF( New Projects,Property Prices)
+	~	
+	~		|
+
+Relative Oversupply 0  = A FUNCTION OF( New Projects 0,Property Prices 0)
+	~	
+	~		|
+
+Revenues  = A FUNCTION OF( Property Prices 0)
+	~	
+	~		|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 100
+	~	Month
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 0
+	~	Month
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 
+        TIME STEP
+	~	Month [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 1
+	~	Month [0,?]
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*View 1
+$192-192-192,0,Arial Unicode MS|12||0-0-0|0-0-0|0-0-255|-1--1--1|255-255-255|96,96,132,0
+10,1,Relative Oversupply 0,995,444,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,2,Property Prices 0,982,276,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,3,Real Estate Demand 0,981,108,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,4,2,3,1,0,45,0,2,192,0,-1--1--1,|||0-0-0,1|(899,184)|
+1,5,2,1,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(906,361)|
+1,6,3,2,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(1073,183)|
+1,7,1,2,1,0,45,0,2,192,0,-1--1--1,|||0-0-0,1|(1073,368)|
+10,8,New Projects 0,733,282,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,9,8,1,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(822,424)|
+12,10,2,863,296,23,23,4,7,0,0,3,0,0,0,0,0,0,0,0,0
+New Projects' Effect
+12,11,1,987,349,18,18,5,7,0,0,1,0,0,0,0,0,0,0,0,0
+Law of supply
+12,12,1,988,203,23,23,4,7,0,0,3,0,0,0,0,0,0,0,0,0
+Law of Demand
+10,13,"Out of phase projects development.",594,128,68,34,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,14,3,8,1,0,0,0,2,193,0,-1--1--1,|||-1--1--1,1|(831,104)|
+1,15,13,8,1,0,0,0,2,193,0,-1--1--1,|||-1--1--1,1|(680,196)|
+10,16,Relative Oversupply,349,435,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,17,Property Prices,336,267,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,18,Real Estate Demand,335,99,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,19,17,18,1,0,45,0,2,192,0,-1--1--1,|||0-0-0,1|(253,175)|
+1,20,17,16,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(260,352)|
+1,21,18,17,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(427,174)|
+1,22,16,17,1,0,45,0,2,192,0,-1--1--1,|||0-0-0,1|(427,359)|
+10,23,New Projects,87,273,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,24,23,16,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(176,415)|
+12,25,2,217,287,23,23,4,7,0,0,3,0,0,0,0,0,0,0,0,0
+New Projects' Effect
+12,26,1,341,340,18,18,5,7,0,0,1,0,0,0,0,0,0,0,0,0
+Law of supply
+12,27,1,342,194,23,23,4,7,0,0,3,0,0,0,0,0,0,0,0,0
+Law of Demand
+1,28,18,23,1,0,0,0,2,193,0,-1--1--1,|||-1--1--1,1|(185,95)|
+10,29,Revenues,1233,279,49,20,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,30,2,29,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+12,31,0,186,70,46,13,0,7,0,0,-1,0,0,0,0,0,0,0,0,0
+2-3 years
+12,32,0,809,72,46,13,0,7,0,0,-1,0,0,0,0,0,0,0,0,0
+2-3 years
+12,33,0,708,172,59,13,0,7,0,0,-1,0,0,0,0,0,0,0,0,0
+t + 2-3 years
+///---\\\
+:L<%^E!@
+5:Revenues
+9:current
+19:132,0
+24:0
+25:0
+26:0
+23:0
+15:0,0,0,0,0,0
+27:0,
+34:0,
+42:0
+72:0
+73:0
+95:0
+96:0
+97:0
+77:0
+78:0
+102:0
+93:0
+94:0
+92:0
+91:0
+90:0
+87:0
+75:
+43:
+103:8,8,8,3,8

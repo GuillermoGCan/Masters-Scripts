@@ -1,0 +1,21 @@
+id_oferta,fecha_publicacion,salario,area,tipo_contrato
+1,2020-05-03,5000,ventas,temporal
+2,2020-05-04,6000,administración,permanente
+3,2020-05-05,7000,soporte técnico,permamente
+4,2020-05-06,5000,chef,permanente
+5,2020-05-07,4000,ventas,temporal
+6,2020-05-03,7000,administración,temporal
+7,2020-05-08,10000,ventas,permanente
+8,2020-05-08,6000,soporte técnico,temporal
+9,2020-05-09,6000,diseño,permanente
+10,2020-05-04,5000,chef,permanente
+11,2020-05-08,4000,ventas,permanente
+12,2020-05-03,7000,administración,temporal
+13,2020-05-07,5000,ventas,permanente
+14,2020-05-05,6000,soporte técnico,permanente
+15,2020-05-05,6000,diseño,temporal
+16,2020-05-06,5000,administración,permanente
+17,2020-05-09,7000,administración,permanente
+18,2020-05-03,4000,diseño,temporal
+19,2020-05-06,10000,soporte técnico,permanente
+20,2020-05-04,7000,ventas,permanente

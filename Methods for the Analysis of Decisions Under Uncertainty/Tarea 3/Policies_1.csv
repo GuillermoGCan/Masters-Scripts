@@ -1,0 +1,9 @@
+policy.name
+FWA
+Nordhaus
+Nordhaus+TraditionalGreenClimateFund
+Nordhaus+R&DGreenClimateFund
+Nordhaus+TechnologyPolicy.Both
+Nordhaus+TraditionalGreenClimateFund+R&DS
+Nordhaus+CoR&DGreenClimateFund
+Nordhaus+CoR&DGreenClimateFund+TecS

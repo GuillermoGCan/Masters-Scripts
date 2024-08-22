@@ -1,0 +1,19 @@
+"0","hiper_rf <- list(c(""num de árboles: 300"", ""profundidad: 6""), 
+"
+"2","Warning messages:
+"
+"2","1: "
+"2","In native_encode(options$fig.path) :"
+"2","
+ "
+"2"," some characters may not work under the current locale
+"
+"2","2: "
+"2","In list.files(files_dir, ""^figure-.+"") :"
+"2","
+ "
+"2"," unable to translate 'C:\Users\Guillermo GC\Dropbox\TEC MTY MPE\3er Trimestre\Aprendizaje m<e1>quina para la toma de decisiones\Tarea 2\tarea_2_files' to native encoding
+"
+"0","                    c(""num de árboles: 300"", ""profundidad: 9""),"
+"0","                    c(""num de árboles: 500"", ""profundidad: 6""), "
+"0","                    c(""num de árboles: 500"", ""profundidad: 9""))"

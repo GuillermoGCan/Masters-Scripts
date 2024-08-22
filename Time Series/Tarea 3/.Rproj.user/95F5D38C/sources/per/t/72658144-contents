@@ -1,0 +1,151 @@
+---
+title: 'Series de tiempo: Tarea 3'
+author: "Guillermo Alberto Garcia Candanosa - A01034958"
+date: '2022-06-13'
+output:
+  html_document:
+    df_print: paged
+---
+
+Carga la librería fpp2 y utiliza los datos de la base advert. Esta base de datos incluye las ventas mensuales y los anuncios publicitarios de una empresa de autopartes.
+
+Carga de librerías:
+
+```{r message=FALSE, warning=FALSE}
+library(fpp2)
+library(forecast)
+library(ggplot2)
+```
+
+Carga de base de datos:
+
+```{r}
+advert <- advert
+```
+
+
+a.	Haz una gráfica con autoplot.
+
+```{r echo=TRUE, warning=FALSE}
+# Grafico con función autoplot()
+
+autoplot(advert) + 
+  ggtitle("Monthly sales and advertising expenditure for an automotive parts company.") +
+  xlab("Month") + 
+  ylab("")
+```
+
+b.	Haz una gráfica con autoplot y la función facets =TRUE. ¿Para qué nos sirve?
+
+```{r echo=TRUE, warning=FALSE}
+# Grafico con función autoplot()
+
+autoplot(advert, facets = TRUE) + 
+  ggtitle("Monthly sales and advertising expenditure for an automotive parts company.") +
+  xlab("Month") + 
+  ylab("")
+```
+
+*R:.*
+
+c.	Haz un modelo de regresión donde y= sales y x es advertising.
+
+```{r echo=TRUE, warning=FALSE}
+# Regresión lineal múltiple en datos ts
+
+fit.advert <- 
+  tslm(sales ~ 
+         advert,
+       data = advert)
+
+summary(fit.advert)
+
+advert %>% 
+  as.data.frame() %>% 
+  ggplot(aes(x = advert, y = sales)) + 
+  geom_point() + 
+  geom_smooth(method = "lm",
+              se = FALSE)
+
+autoplot(advert[,"sales"], series = "Data") +
+  autolayer(fitted(fit.advert), series = "Fitted") + 
+  xlab("Month") +
+  ylab("") + 
+  ggtitle("Monthly sales and advertising expenditure for an automotive parts company.") + 
+  guides(colour = guide_legend(title = ""))
+```
+
+d.	¿Los residuales tienen una autocorrelación estadísticamente significativa?
+
+```{r echo=TRUE, warning=FALSE}
+# Gráfica de los residuales
+fit.advert %>% checkresiduals()
+```
+
+*R:.*
+
+e.	Ahora haz el siguiente modelo dinámico:
+advert_dreg.0.0.0 <- Arima(
+  advert[, "sales"], xreg = advert[, "advert"],
+  order = c(0, 0, 0))
+
+```{r echo=TRUE, warning=FALSE}
+advert_dreg.0.0.0 <- 
+  Arima(advert[, "sales"], 
+        xreg = advert[, "advert"],
+        order = c(0, 0, 0))
+
+advert_dreg.0.0.0
+```
+
+f.	¿Los residuales del modelo advert_dreg.0.0.0 están autocorrelacionados?
+
+```{r echo=TRUE, warning=FALSE}
+# Gráfica de los residuales
+advert_dreg.0.0.0 %>% checkresiduals()
+```
+
+*R:.*
+
+g.	Ahora vuelve a hacer el modelo dinámico, pero con auto.arima. ¿Qué pasó con los residuales?
+
+```{r echo=TRUE, warning=FALSE}
+advert_dreg.auto <- 
+  auto.arima(advert[, "sales"],
+             xreg = advert[, "advert"])
+
+advert_dreg.auto
+
+checkresiduals(advert_dreg.auto)
+```
+
+*R:.*
+
+h.	¿Cuál modelo es mejor? Usa los criterios de AIC y de accuracy.
+
+```{r echo=TRUE, warning=FALSE}
+advert_dreg.0.0.0$aicc
+advert_dreg.auto$aicc
+
+accuracy(advert_dreg.0.0.0)[,"MASE"]
+accuracy(advert_dreg.auto)[,"MASE"]
+```
+
+*R:.*
+
+i.	Considera que el presupuesto para la publicidad es igual a $10 para cada uno de los siguientes seis meses. Genera un pronóstico y grafícalo para los próximos seis meses. Incluye los intervalos de pronóstico.
+
+```{r echo=TRUE, warning=FALSE}
+advert_fcast <- 
+  forecast(advert_dreg.auto,
+           xreg = rep(10,6))
+
+advert_fcast
+
+autoplot(advert_fcast) +
+  ggtitle("Monthly sales and forecast for an automotive parts company.") + 
+  xlab("Month") + 
+  ylab("Sales [USD]")
+```
+
+*R:.*

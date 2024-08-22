@@ -1,0 +1,187 @@
+### Mi primer script en R 
+
+## Variables
+x = 5
+print(x)
+
+x= "mmm"
+
+## Vectores
+c(4, 8, 10, 11, 20)
+v1 = c(4, 8, 10, 11, 20)
+v1 <- c(4,8,10,11,20)
+
+v2 <- c("a", "b", "c", "d")
+
+print(v1)
+print(v2)
+
+v1[1:3]
+
+length(v1)
+v1[length(v1)]
+
+
+## Matrices
+v3 <- c(4,1,8,6,9,1)
+m1 <- matrix(v3, nrow=3, ncol=2)
+print(m1)
+
+m1[1,]
+m1[,2]
+m1[2,2]
+
+
+# Bases de datos
+d <- data.frame(m1)
+print(d)
+row.names(d) <- c("a", "b", "c")
+colnames(d) <- c("COL1", "COL2")
+
+d2 <- data.frame(COL1=c(1,2,3,4), COL2=c(4,5,6,7))
+
+# Esto es equivalente:
+d$COL1
+mean(d[,"COL1"])
+
+d[1,]
+d[,1]
+d[,"COL1"]
+
+# Esto es equivalente:
+d$COL3 <- d$COL1  * d$COL2
+d[,"COL3"] <- d[,"COL1"]  * d[,"COL2"]
+
+## Agregando un filtrado
+d
+d[1,]
+d[,1]
+d[2,2]
+
+d[d$COL1 <= 4, ]
+
+t <- d$COL1 <= 4
+d[t,]
+
+
+## Hagamos un ejercicio de práctica
+d2 <- data.frame(COL1=c(1,2,3,4, 20, 40,1,4), COL2=c(4,5,6,7,3, 100, 3, 1))
+
+## Obtener el valor mínimo de la fila 1
+# Obtener el promedio de la columna 1
+# Crear una nueva columna que sea la suma de COL1 y COL2
+
+
+# Listas
+l1 <- list(v1, v2, d, d2, x) 
+class(l1)
+print(l1)
+
+l1[[1]]
+l1[[1]][1:3]
+
+# Funciones
+ # Supongamos que tenemos un triangulo y queremos calcular el área
+# base * altura / 2
+
+base=2
+altura=1
+base*altura/2
+
+
+miArea <- function(input_base, input_altura){
+  area = input_base * input_altura / 2
+  return(area)
+}
+class(miArea)
+
+miArea(20,10)
+
+
+# Iteradores. hay de dos tipos: "for" y el "while"
+colnames(d2) <- c("base","altura")
+
+# Iterador FOR
+for(i in 1:nrow(d2)){
+  x = miArea(d2$base[i], d2$altura[i])
+  print(x)
+}
+
+# Iterador WHILE
+i=1
+while(i <= 10){
+  print(i)
+  i=i+1
+}
+
+# Condicionales
+# Funcion para convertir monedas a peso
+currencyConverter <- function(dinero, moneda){
+  if(moneda=="dolar"){
+    pesos = dinero*20
+  }
+  else if(moneda=="euro"){
+    pesos = dinero*26
+  }
+  else{
+    pesos = "intenta otra moneda"
+  }
+  return(pesos)
+}
+
+currencyConverter(50, "yuan")
+
+d2$basemenos10 <- ifelse(d2$base<10, "menor de 10", "mayor de 10")
+
+
+# Simulaciones o probabilidades
+# Escribir una función que genere una moneda y la aviente aleatoriamente. 
+# Mete tu función en un iterador y lanza la moneda mil veces
+# Guarda el resultado en un vector
+# c("H", "T", "H", "T". ....... n=1000)
+
+# Function
+
+headTail <- function(){
+  p <- runif(1)
+  if(p<0.5){
+    res = "H"
+  }else{
+    res="T"
+  }
+  return(res)
+}
+
+headTail()
+
+n=100000
+res <- c()
+
+for(i in 1:n){
+  res <- c(res, headTail())
+}
+prop.table(table(res))
+
+
+## Simulen que lanzan tres monedas de forma secuencial
+# Calcula la probabilidad de que el primer lanzamiento sera una HEAD y que en total
+# obtengas más H que T en los tres lanzamientos. 
+
+n=1000
+counter=0
+
+for(i in 1:n){
+  m1 <- headTail()
+  m2 <- headTail()
+  m3 <- headTail()
+
+   if(m1=="H"){
+    if(m2=="H" | m3=="H"){
+      counter=counter+1
+    } 
+ }
+}
+counter/n
+
+
+

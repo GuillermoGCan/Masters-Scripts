@@ -1,0 +1,1042 @@
+---
+title: 'Modelación de sistemas: Tarea 3'
+author: "Guillermo Alberto Garcia Candanosa - A01034958"
+date: '2022-03-23'
+output: html_document
+---
+
+# Problema 1: Globalización y liberalización
+
+1. Construye un modelo de dinámica de sistemas basado en el caso anterior, simula el modelo por un periodo de 50 años. Asegúrate que el modelo este en equilibrio (Envía tu modelo con la versión final de tu tarea.)
+
+Escenario Sin Globalización
+
+```{r}
+#Problema 1
+#Globalización y liberalización
+
+#Paso 1: cargar la libreria "deSolve" empleando la funcion library()
+ library("deSolve")
+ library("ggplot2")
+ library("ggpubr")
+
+#Considera a los parametros como variables exogenas que no pueden ser modificadas
+
+ parameters<-c(depreciation.rate.cI = 5/100, #[%/year]
+               depreciation.rate.cII = 5/100, #[%/year]
+               investment.rate.cI = 10/100, #[%/year]
+               investment.rate.cII = 10/100, #[%/year]
+               investment.factor.cI = 2, #[dimensionless]
+               production.rate.cI = 100/100,  #[]
+               production.rate.cII = 100/100,  #[]
+               market.volume.cI = 100/100, #[]
+               market.volume.cII = 100/100, #[]
+               tax.rate.cI = 20/100, #[%]
+               tax.rate.cII = 20/100, #[%]
+               resource.costs.cI = 100/100, #[%]
+               resource.costs.cII = 100/100, #[%]
+               standard.factor.cI = 100/100, #[%]
+               standard.factor.cII = 100/100, #[%]
+               deterioration.rate.cI = 5/100, #[%]
+               deterioration.rate.cII = 5/100, #[%]
+               reference.price.cI = 5,
+               reference.price.cII = 5,
+               progress.factor.cI = 2,
+               subsidy.cII = 0,
+               customs.duties.raised.by.cII = 0
+               )
+ 
+ #para definir tus condiciones iniciales utiiza tus variables de estado
+ InitialConditions <- c(production.capacity.cI = 100/100, #[%]
+                        standards.of.cI = 100/100, #[%]
+                        production.capacity.cII = 10/100, #[%]
+                        standards.of.cII = 10/100
+                        ) 
+
+ times <- seq(0, #tiempo inicial
+              50, #tiempo final #[years]
+              0.05 )#número de repetición de puntos #[years]
+
+# Definimos método de integración
+ intg.method<-c("rk4")
+ 
+#Especificamos modelo
+Globalizacion.y.Liberalizacion <- function(t, state, parameters) {
+  with(as.list(c(state,parameters)), {
+    
+#auxiliary variables
+    subsidy.cI <- 
+      ifelse(t >= 10,
+             0.75,
+             0.75)
+    
+    customs.duties.raised.by.cI <- 
+      ifelse(t >= 10,
+             0.5,
+             0.5)
+    
+    investment.function.cI <- 
+      ifelse(t >= 10,
+             investment.factor.cI,
+             2) #[]
+    
+    investment.function.cII <- 
+      ifelse(t >= 10,
+             0.2,
+             0.2) #[]
+    
+    production.costs.cI <- 
+      standards.of.cI * 
+      standard.factor.cI
+    
+    production.costs.cII <- 
+      standards.of.cII * 
+      standard.factor.cII
+    
+    product.costs.cI <- 
+      resource.costs.cI + 
+      production.costs.cI
+    
+    product.costs.cII <- 
+      resource.costs.cII + 
+      production.costs.cII
+    
+    product.price.cI <- 
+      product.costs.cI *
+      (1 + tax.rate.cI)
+    
+    product.price.cII <- 
+      product.costs.cII *
+      (1 + tax.rate.cII)
+    
+    price.of.cI.products.in.cI <- product.price.cI
+    
+    price.of.cII.products.in.cII <- product.price.cII
+    
+    price.of.cII.products.in.cI <- 
+      product.price.cII *
+      (1-subsidy.cII + customs.duties.raised.by.cI)
+    
+    price.of.cI.products.in.cII <- 
+      product.price.cI *
+      (1-subsidy.cI + customs.duties.raised.by.cII)
+    
+    price.ratio.of.domestic.versus.imported.products.in.cI <- 
+      price.of.cI.products.in.cI /
+      price.of.cII.products.in.cI
+    
+    price.ratio.of.domestic.versus.imported.products.in.cII <- 
+      price.of.cII.products.in.cII /
+      price.of.cI.products.in.cII
+
+    percentage.purchased.by.cI.from.cI <- 
+      ifelse(price.ratio.of.domestic.versus.imported.products.in.cI <= 0.5, 1,
+             ifelse(price.ratio.of.domestic.versus.imported.products.in.cI > 0.5 &
+                      price.ratio.of.domestic.versus.imported.products.in.cI < 1.5, 
+                    -1* price.ratio.of.domestic.versus.imported.products.in.cI + 1.5,
+                    ifelse(price.ratio.of.domestic.versus.imported.products.in.cI >= 1.5, 0)))
+    
+    percentage.purchased.by.cII.from.cII <- 
+      ifelse(price.ratio.of.domestic.versus.imported.products.in.cII <= 0.5, 1,
+             ifelse(price.ratio.of.domestic.versus.imported.products.in.cII > 0.5 &
+                      price.ratio.of.domestic.versus.imported.products.in.cII < 1.5, 
+                    -1* price.ratio.of.domestic.versus.imported.products.in.cII + 1.5,
+                    ifelse(price.ratio.of.domestic.versus.imported.products.in.cII >= 1.5, 0)))
+    
+    demand.for.products.cI <- 
+      percentage.purchased.by.cI.from.cI *
+      market.volume.cI + 
+      market.volume.cII *
+      (1-percentage.purchased.by.cII.from.cII)
+    
+    demand.for.products.cII <- 
+      percentage.purchased.by.cII.from.cII *
+      market.volume.cII + 
+      market.volume.cI *
+      (1-percentage.purchased.by.cI.from.cI)
+    
+    supply.cI <- 
+      production.capacity.cI *
+      production.rate.cI
+    
+    supply.cII <- 
+      production.capacity.cII *
+      production.rate.cII
+    
+    surplus.cI <- 
+      supply.cI -
+      demand.for.products.cI
+    
+    surplus.cII <- 
+      supply.cII -
+      demand.for.products.cII
+    
+    progress.function.cI <- 
+      ifelse(t <= 10/12,
+             2,
+             progress.factor.cI)
+    
+    progress.function.cII <- 
+      ifelse(t <= 10/12,
+             1,
+             1)
+    
+    investment.in.progress.cI <- 
+      ifelse(surplus.cI<0,
+             investment.rate.cI *
+               production.capacity.cI *
+               investment.function.cI,
+             0) * 
+      progress.function.cI
+    
+    investment.in.progress.cII <- 
+      ifelse(surplus.cII<0,
+             investment.rate.cII *
+               production.capacity.cII *
+               investment.function.cII,
+             0) * 
+      progress.function.cII
+      
+#flow variables
+    investments.cI <- ifelse(surplus.cI<0,
+                             investment.rate.cI * 
+                               production.capacity.cI *
+                               investment.function.cI,
+                             0) #[%/year]
+    
+    investments.cII <- ifelse(surplus.cII<0,
+                             investment.rate.cII * 
+                               production.capacity.cII *
+                               investment.function.cII,
+                             0) #[%/year]
+    
+    depreciation.cI <- 
+      depreciation.rate.cI *
+      production.capacity.cI #[%/year]
+    
+    depreciation.cII <- 
+      depreciation.rate.cII *
+      production.capacity.cII #[%/year]
+    
+    progress.cI <- 
+      standards.of.cI *
+      investment.in.progress.cI *
+      (1 - (price.of.cI.products.in.cI)/reference.price.cI) #[]
+    
+    progress.cII <- 
+      standards.of.cII *
+      investment.in.progress.cII *
+      (1 - (price.of.cII.products.in.cII)/reference.price.cII) #[]
+    
+    deterioration.cI <- 
+      standards.of.cI *
+      deterioration.rate.cI #[]
+    
+    deterioration.cII <- 
+      standards.of.cII *
+      deterioration.rate.cII #[]
+
+#state variables
+    dproduction.capacity.cI <- 
+      investments.cI -
+      depreciation.cI #[%/year]
+    
+    dproduction.capacity.cII <- 
+      investments.cII -
+      depreciation.cII #[%/year]
+    
+    dstandards.of.cI <- 
+      progress.cI - 
+      deterioration.cI #[%/year]
+    
+    dstandards.of.cII <- 
+      progress.cII - 
+      deterioration.cII #[%/year]
+    
+    
+    list(c(dproduction.capacity.cI,
+             dstandards.of.cI,
+             dproduction.capacity.cII,
+             dstandards.of.cII),
+         dproduction.capacity.cI = dproduction.capacity.cI,
+         dstandards.of.cI = dstandards.of.cI,
+         dproduction.capacity.cII = dproduction.capacity.cII,
+         dstandards.of.cII = dstandards.of.cII,
+         price.of.cI.products.in.cI = price.of.cI.products.in.cI,
+         price.of.cII.products.in.cI = price.of.cII.products.in.cI,
+         price.of.cI.products.in.cII = price.of.cI.products.in.cII,
+         price.of.cII.products.in.cII = price.of.cII.products.in.cII,
+         percentage.purchased.by.cI.from.cI = percentage.purchased.by.cI.from.cI,
+         percentage.purchased.by.cII.from.cII = percentage.purchased.by.cII.from.cII,
+         demand.for.products.cI = demand.for.products.cI,
+         demand.for.products.cII = demand.for.products.cII,
+         investment.in.progress.cI = investment.in.progress.cI,
+         investment.in.progress.cII = investment.in.progress.cII,
+         surplus.cI = surplus.cI,
+         surplus.cII =  surplus.cII
+         )
+
+  })
+}
+
+out1.SG <- ode(y = InitialConditions,
+           times = times,
+           func = Globalizacion.y.Liberalizacion,
+           parms = parameters,
+           method =intg.method)
+
+```
+
+Escenario Con Globalización
+
+```{r}
+#Problema 1
+#Globalización y liberalización
+
+#Paso 1: cargar la libreria "deSolve" empleando la funcion library()
+ library("deSolve")
+ library("ggplot2")
+ library("ggpubr")
+
+#Considera a los parametros como variables exogenas que no pueden ser modificadas
+
+ parameters<-c(depreciation.rate.cI = 5/100, #[%/year]
+               depreciation.rate.cII = 5/100, #[%/year]
+               investment.rate.cI = 10/100, #[%/year]
+               investment.rate.cII = 10/100, #[%/year]
+               investment.factor.cI = 2, #[dimensionless]
+               production.rate.cI = 100/100,  #[]
+               production.rate.cII = 100/100,  #[]
+               market.volume.cI = 100/100, #[]
+               market.volume.cII = 100/100, #[]
+               tax.rate.cI = 20/100, #[%]
+               tax.rate.cII = 20/100, #[%]
+               resource.costs.cI = 100/100, #[%]
+               resource.costs.cII = 100/100, #[%]
+               standard.factor.cI = 100/100, #[%]
+               standard.factor.cII = 100/100, #[%]
+               deterioration.rate.cI = 5/100, #[%]
+               deterioration.rate.cII = 5/100, #[%]
+               reference.price.cI = 5,
+               reference.price.cII = 5,
+               progress.factor.cI = 2,
+               subsidy.cII = 0,
+               customs.duties.raised.by.cII = 0
+               )
+ 
+ #para definir tus condiciones iniciales utiiza tus variables de estado
+ InitialConditions <- c(production.capacity.cI = 100/100, #[%]
+                        standards.of.cI = 100/100, #[%]
+                        production.capacity.cII = 10/100, #[%]
+                        standards.of.cII = 10/100
+                        ) 
+
+ times <- seq(0, #tiempo inicial
+              50, #tiempo final #[years]
+              0.05 )#número de repetición de puntos #[years]
+
+# Definimos método de integración
+ intg.method<-c("rk4")
+ 
+#Especificamos modelo
+Globalizacion.y.Liberalizacion <- function(t, state, parameters) {
+  with(as.list(c(state,parameters)), {
+    
+#auxiliary variables
+    subsidy.cI <- 
+      ifelse(t >= 10,
+             0,
+             0.75)
+    
+    customs.duties.raised.by.cI <- 
+      ifelse(t >= 10,
+             0,
+             0.5)
+    
+    investment.function.cI <- 
+      ifelse(t >= 10,
+             investment.factor.cI,
+             2) #[]
+    
+    investment.function.cII <- 
+      ifelse(t >= 10,
+             2,
+             0.2) #[]
+    
+    production.costs.cI <- 
+      standards.of.cI * 
+      standard.factor.cI
+    
+    production.costs.cII <- 
+      standards.of.cII * 
+      standard.factor.cII
+    
+    product.costs.cI <- 
+      resource.costs.cI + 
+      production.costs.cI
+    
+    product.costs.cII <- 
+      resource.costs.cII + 
+      production.costs.cII
+    
+    product.price.cI <- 
+      product.costs.cI *
+      (1 + tax.rate.cI)
+    
+    product.price.cII <- 
+      product.costs.cII *
+      (1 + tax.rate.cII)
+    
+    price.of.cI.products.in.cI <- product.price.cI
+    
+    price.of.cII.products.in.cII <- product.price.cII
+    
+    price.of.cII.products.in.cI <- 
+      product.price.cII *
+      (1-subsidy.cII + customs.duties.raised.by.cI)
+    
+    price.of.cI.products.in.cII <- 
+      product.price.cI *
+      (1-subsidy.cI + customs.duties.raised.by.cII)
+    
+    price.ratio.of.domestic.versus.imported.products.in.cI <- 
+      price.of.cI.products.in.cI /
+      price.of.cII.products.in.cI
+    
+    price.ratio.of.domestic.versus.imported.products.in.cII <- 
+      price.of.cII.products.in.cII /
+      price.of.cI.products.in.cII
+    
+    percentage.purchased.by.cI.from.cI <- 
+      ifelse(price.ratio.of.domestic.versus.imported.products.in.cI <= 0.5, 1,
+             ifelse(price.ratio.of.domestic.versus.imported.products.in.cI > 0.5 &
+                      price.ratio.of.domestic.versus.imported.products.in.cI < 1.5, 
+                    -1* price.ratio.of.domestic.versus.imported.products.in.cI + 1.5,
+                    ifelse(price.ratio.of.domestic.versus.imported.products.in.cI >= 1.5, 0)))
+    
+    percentage.purchased.by.cII.from.cII <- 
+      ifelse(price.ratio.of.domestic.versus.imported.products.in.cII <= 0.5, 1,
+             ifelse(price.ratio.of.domestic.versus.imported.products.in.cII > 0.5 &
+                      price.ratio.of.domestic.versus.imported.products.in.cII < 1.5, 
+                    -1* price.ratio.of.domestic.versus.imported.products.in.cII + 1.5,
+                    ifelse(price.ratio.of.domestic.versus.imported.products.in.cII >= 1.5, 0)))
+    
+    demand.for.products.cI <- 
+      percentage.purchased.by.cI.from.cI *
+      market.volume.cI + 
+      market.volume.cII *
+      (1-percentage.purchased.by.cII.from.cII)
+    
+    demand.for.products.cII <- 
+      percentage.purchased.by.cII.from.cII *
+      market.volume.cII + 
+      market.volume.cI *
+      (1-percentage.purchased.by.cI.from.cI)
+    
+    supply.cI <- 
+      production.capacity.cI *
+      production.rate.cI
+    
+    supply.cII <- 
+      production.capacity.cII *
+      production.rate.cII
+    
+    surplus.cI <- 
+      supply.cI -
+      demand.for.products.cI
+    
+    surplus.cII <- 
+      supply.cII -
+      demand.for.products.cII
+    
+    progress.function.cI <- 
+      ifelse(t <= 10/12,
+             2,
+             progress.factor.cI)
+    
+    progress.function.cII <- 
+      ifelse(t <= 10/12,
+             1,
+             2)
+    
+    investment.in.progress.cI <- 
+      ifelse(surplus.cI<0,
+             investment.rate.cI *
+               production.capacity.cI *
+               investment.function.cI,
+             0) * 
+      progress.function.cI
+    
+    investment.in.progress.cII <- 
+      ifelse(surplus.cII<0,
+             investment.rate.cII *
+               production.capacity.cII *
+               investment.function.cII,
+             0) * 
+      progress.function.cII
+      
+#flow variables
+    investments.cI <- ifelse(surplus.cI<0,
+                             investment.rate.cI * 
+                               production.capacity.cI *
+                               investment.function.cI,
+                             0) #[%/year]
+    
+    investments.cII <- ifelse(surplus.cII<0,
+                             investment.rate.cII * 
+                               production.capacity.cII *
+                               investment.function.cII,
+                             0) #[%/year]
+    
+    depreciation.cI <- 
+      depreciation.rate.cI *
+      production.capacity.cI #[%/year]
+    
+    depreciation.cII <- 
+      depreciation.rate.cII *
+      production.capacity.cII #[%/year]
+    
+    progress.cI <- 
+      standards.of.cI *
+      investment.in.progress.cI *
+      (1 - (price.of.cI.products.in.cI)/reference.price.cI) #[]
+    
+    progress.cII <- 
+      standards.of.cII *
+      investment.in.progress.cII *
+      (1 - (price.of.cII.products.in.cII)/reference.price.cII) #[]
+    
+    deterioration.cI <- 
+      standards.of.cI *
+      deterioration.rate.cI #[]
+    
+    deterioration.cII <- 
+      standards.of.cII *
+      deterioration.rate.cII #[]
+
+#state variables
+    dproduction.capacity.cI <- 
+      investments.cI -
+      depreciation.cI #[%/year]
+    
+    dproduction.capacity.cII <- 
+      investments.cII -
+      depreciation.cII #[%/year]
+    
+    dstandards.of.cI <- 
+      progress.cI - 
+      deterioration.cI #[%/year]
+    
+    dstandards.of.cII <- 
+      progress.cII - 
+      deterioration.cII #[%/year]
+    
+    
+    list(c(dproduction.capacity.cI,
+             dstandards.of.cI,
+             dproduction.capacity.cII,
+             dstandards.of.cII),
+         dproduction.capacity.cI = dproduction.capacity.cI,
+         dstandards.of.cI = dstandards.of.cI,
+         dproduction.capacity.cII = dproduction.capacity.cII,
+         dstandards.of.cII = dstandards.of.cII,
+         price.of.cI.products.in.cI = price.of.cI.products.in.cI,
+         price.of.cII.products.in.cI = price.of.cII.products.in.cI,
+         price.of.cI.products.in.cII = price.of.cI.products.in.cII,
+         price.of.cII.products.in.cII = price.of.cII.products.in.cII,
+         percentage.purchased.by.cI.from.cI = percentage.purchased.by.cI.from.cI,
+         percentage.purchased.by.cII.from.cII = percentage.purchased.by.cII.from.cII,
+         demand.for.products.cI = demand.for.products.cI,
+         demand.for.products.cII = demand.for.products.cII,
+         investment.in.progress.cI = investment.in.progress.cI,
+         investment.in.progress.cII = investment.in.progress.cII,
+         surplus.cI = surplus.cI,
+         surplus.cII =  surplus.cII
+         )
+
+  })
+}
+
+out1.CG <- ode(y = InitialConditions,
+           times = times,
+           func = Globalizacion.y.Liberalizacion,
+           parms = parameters,
+           method =intg.method)
+
+```
+
+2. Grafica los efectos sobre production capacity y standards para los dos países.
+
+```{r}
+#Escenario Sin Globalización
+
+tail(out1.SG)
+
+#Graficas solo variables de interés
+plot(out1.SG, which = c("production.capacity.cI", 
+                    "production.capacity.cII", 
+                    "standards.of.cI",
+                    "standards.of.cII"),
+     xlab = "years",
+     ylab = c("production capacity cI", 
+                    "production capacity cII", 
+                    "standards of cI",
+                    "standards of cII")
+     )
+
+#Escenario Con Globalización
+
+tail(out1.CG)
+
+#Graficas solo variables de interés
+plot(out1.CG, which = c("production.capacity.cI", 
+                    "production.capacity.cII", 
+                    "standards.of.cI",
+                    "standards.of.cII"),
+     xlab = "years",
+     ylab = c("production capacity cI", 
+                    "production capacity cII", 
+                    "standards of cI",
+                    "standards of cII")
+     )
+
+```
+
+3. Asume que en t=10 el comercio se liberaliza. ¿Qué sucede en los dos países? Explica.
+
+```{r}
+# Escenario Sin Globalización
+#Graficas solo variables de interés
+plot(out1.SG, which = c("price.of.cI.products.in.cI",
+                    "price.of.cII.products.in.cI",
+                    "price.of.cII.products.in.cII",
+                    "price.of.cI.products.in.cII"
+                    ),
+     xlab = "years",
+     ylab = c("Price of cI products in cI", 
+              "Price of cII products in cI", 
+              "Price of cII products in cII",
+              "Price of cI products in cII"
+              )
+     )
+
+#Graficas solo variables de interés
+plot(out1.SG, which = c("percentage.purchased.by.cI.from.cI",
+                    "percentage.purchased.by.cII.from.cII",
+                    "demand.for.products.cI",
+                    "demand.for.products.cII"
+                     ),
+     xlab = "years",
+     ylab = c("Percentage Purchased by cI from cI", 
+              "Percentage Purchased by cII from cII",
+              "Demand for products cI",
+              "Demand for products cII"
+              )
+     )
+
+#Graficas solo variables de interés
+plot(out1.SG, which = c("surplus.cI",
+                        "surplus.cII",
+                        "investment.in.progress.cI",
+                        "investment.in.progress.cII"
+                        ),
+     xlab = "years",
+     ylab = c("Surplus cI", 
+              "Surplus cII",
+              "Investment in Progress cI",
+              "Investment in Progress cII"
+              )
+     )
+
+# Escenario Con Globalización
+#Graficas solo variables de interés
+
+plot(out1.CG, which = c("price.of.cI.products.in.cI",
+                    "price.of.cII.products.in.cI",
+                    "price.of.cII.products.in.cII",
+                    "price.of.cI.products.in.cII"
+                    ),
+     xlab = "years",
+     ylab = c("Price of cI products in cI", 
+              "Price of cII products in cI", 
+              "Price of cII products in cII",
+              "Price of cI products in cII"
+              )
+     )
+
+#Graficas solo variables de interés
+plot(out1.CG, which = c("percentage.purchased.by.cI.from.cI",
+                    "percentage.purchased.by.cII.from.cII",
+                    "demand.for.products.cI",
+                    "demand.for.products.cII"
+                     ),
+     xlab = "years",
+     ylab = c("Percentage Purchased by cI from cI", 
+              "Percentage Purchased by cII from cII",
+              "Demand for products cI",
+              "Demand for products cII"
+              )
+     )
+
+#Graficas solo variables de interés
+plot(out1.CG, which = c("surplus.cI",
+                        "surplus.cII",
+                        "investment.in.progress.cI",
+                        "investment.in.progress.cII"
+                        ),
+     xlab = "years",
+     ylab = c("Surplus cI", 
+              "Surplus cII",
+              "Investment in Progress cI",
+              "Investment in Progress cII"
+              )
+     )
+
+```
+
+*R: Analizando primeramente a cI en el escenario en el cual no hay liberalización del comercio, se aprecia que existe un incremento importante en la capacidad de producción del país, la cual se estabiliza posteriormente a la baja en un valor de aproximadamente 106% desde el 100% de las condiciones iniciales; mientras que los estándares de cI incrementan desde 100% hasta un aproximado de 118% en los primeros años del periodo modelado. Estos cambios se pueden explicar con la estabilización del sistema a partir de las condiciones iniciales, donde los consumidores de cI se ven ampliamente beneficiados por los precios progresivamente bajos de los productos de cII en cI y  que, por lo tanto, incrementan de forma importante la demanda de productos de cII en el tiempo. En cII, por otro lado, se aprecia que tanto su capacidad de producción como sus estándares se vislumbran en decrementos progresivos hasta valores aproximados de 2% y 0.8% respectivamente desde sus condiciones iniciales de 10%. Estas caídas en las variables de estado de cII se reflejan asimismo en los precios de los productos de cII, los cuales siguen sin ser competitivos contra los productos de cI gracias a la existencia de enormes subsidios a los productos de exportación por parte de cI. Esto ocasiona que prácticamente, durante todo el periodo de modelación, no se compren productos de cII en cII, sino que todos estos productos son exportados a cI, donde sí se mantienen competitivos; y por lo tanto la totalidad de la demanda de cII sea cubierta a partir de productos de cI.*
+
+*Analizando posteriormente a cI en el escenario en el cual si hay liberalización del comercio, se aprecia que a partir del t = 10 se vislumbran caídas progresivas de su capacidad de producción y de sus estándares. Esto responde al hecho de que la liberalización del comercio desploma los precios de los productos de cII en cI gracias al retiro de los aranceles recaudados por cI, y por lo tanto las preferencias de la población de cI se inclinan de manera prácticamente total por los productos de cII. En cII, por su parte, la liberalización del comercio ocasiona que se retiren los subsidios que mantenían sumamente competitivos los precios de los productos de cI en cII, y por lo tanto la demanda de productos también se inclina hacia los productos producidos en el mismo cII. El incremento en la demanda de productos de cII ocasiona que se tenga un déficit, o un surplus negativo, de oferta para satisfacer la demanda de productos de cII en ambos países, lo cual ocasiona un incremento importante en las inversiones en progreso en este país y un subsecuente incremento en sus estándares. Estas inversiones finalmente se reflejan también en incrementos en la capacidad de producción de cII, y el incremento en los estándares ocasiona que haya también un incremento progresivo en los precios de los productos de cII. Este incremento en los precios de cII, finalmente, ocasiona que la demanda de productos de cI se recupere progresivamente; reemplazando una parte de la participación de mercado que había ganado cII. Al final del periodo de modelación, se aprecia que la capacidad de producción de cI se estabiliza en un valor cercano al 80% desde el 100% de su condicion inicial, que los estándares de cI terminan en un 64% desde el 100% de su condición inicial, que la capacidad de producción de cII asciende hasta un 120% desde el 10% de su condición inicial y que los estándares de cII ascienden a un 49% desde el 10% de su condición inicial.*
+
+4. Construye un diagrama causal del modelo o un diagrama stock-and-flow simplificado. Emplea este diagrama para describir el comportamiento que observas.
+
+
+
+5. Construye un diagrama de fase que englobe los principales elementos dinámicos del modelo. ¿Qué trayectoria sigue el sistema si inicia bajo diferentes condiciones iniciales? ¿Cuántos puntos de equilibrio identificas? ¿Son estables o inestables?
+
+```{r}
+# Diagramas de fase
+
+#Escenario Sin Globalización
+
+out1.SGdf <- data.frame(out1.SG)
+
+production.capacity.cI.phase.diagram.SG <-
+  ggplot(out1.SGdf, aes(x=production.capacity.cI, y=dproduction.capacity.cI)) +
+  geom_point() +
+  geom_path(aes(colour = times), 
+            arrow = arrow()
+            )
+
+production.capacity.cII.phase.diagram.SG <-
+  ggplot(out1.SGdf, aes(x=production.capacity.cII, y=dproduction.capacity.cII)) +
+  geom_point()+
+  geom_path(aes(colour = times), 
+            arrow = arrow()
+            )
+
+standards.of.cI.phase.diagram.SG <-
+  ggplot(out1.SGdf, aes(x=standards.of.cI, y=dstandards.of.cI)) +
+  geom_point()+
+  geom_path(aes(colour = times), 
+            arrow = arrow()
+            )
+
+standards.of.cII.phase.diagram.SG <-
+  ggplot(out1.SGdf, aes(x=standards.of.cII, y=dstandards.of.cII)) +
+  geom_point()+
+  geom_path(aes(colour = times), 
+            arrow = arrow()
+            )
+
+ggarrange(production.capacity.cI.phase.diagram.SG,
+          production.capacity.cII.phase.diagram.SG,
+          standards.of.cI.phase.diagram.SG,
+          standards.of.cII.phase.diagram.SG,
+          labels = 
+            c("Production Capacity cI", "Production Capacity cII",
+              "Standards of cI", "Standards of cII"),
+          ncol = 2, nrow = 2)
+
+#Escenario Con Globalización
+
+out1.CGdf <- data.frame(out1.CG)
+
+production.capacity.cI.phase.diagram.CG <-
+  ggplot(out1.CGdf, aes(x=production.capacity.cI, y=dproduction.capacity.cI)) +
+  geom_point() +
+  geom_path(aes(colour = times), 
+            arrow = arrow()
+            )
+
+production.capacity.cII.phase.diagram.CG <-
+  ggplot(out1.CGdf, aes(x=production.capacity.cII, y=dproduction.capacity.cII)) +
+  geom_point()+
+  geom_path(aes(colour = times), 
+            arrow = arrow()
+            )
+
+standards.of.cI.phase.diagram.CG <-
+  ggplot(out1.CGdf, aes(x=standards.of.cI, y=dstandards.of.cI)) +
+  geom_point()+
+  geom_path(aes(colour = times), 
+            arrow = arrow()
+            )
+
+standards.of.cII.phase.diagram.CG <-
+  ggplot(out1.CGdf, aes(x=standards.of.cII, y=dstandards.of.cII)) +
+  geom_point()+
+  geom_path(aes(colour = times), 
+            arrow = arrow()
+            )
+
+ggarrange(production.capacity.cI.phase.diagram.CG,
+          production.capacity.cII.phase.diagram.CG,
+          standards.of.cI.phase.diagram.CG,
+          standards.of.cII.phase.diagram.CG,
+          labels = 
+            c("Production Capacity cI", "Production Capacity cII",
+              "Standards of cI", "Standards of cII"),
+          ncol = 2, nrow = 2)
+
+
+```
+
+*R: Analizando primeramente a cI en el escenario en el cual no hay liberalización del comercio, se aprecia que tanto la capacidad de producción como los estándares del país se mantienen a la alza en los primeros años a tasas incrementales y posteriormente hay una caída en el diferencial de ambos con respecto al tiempo. Posterior a esta caída, se vislumbran ligeros incrementos en el valor del diferencial, el cual sin embargo no llega a un valor de cero para ninguno de los dos casos. Esto nos indica que*
+
+*.*
+
+# Problema 2: Colapso de Civilizaciones
+
+1. Construye un modelo de dinámica de sistemas basado en el caso anterior. Calcula el valor de los exponentes y las variables de flujo omitidas de tal manera que el colapso de la población Maya ocurra en el año 800. Simula 2000 años de evolución iniciando en el año 1,000 A.C.
+
+```{r}
+#Problema 2
+# Colapso de Civilizacioes
+
+#Paso 1: cargar la libreria "deSolve" empleando la funcion library()
+ library("deSolve")
+# library("ggplot2")
+# library("ggpubr")
+
+#Considera a los parametros como variables exogenas que no pueden ser modificadas
+
+ parameters<-c(consumed.food.per.person = 400, #[kg/(person * year)]
+               emigration.ratio = 5/100, #[%]
+               intensity = 1,
+               x = 1.84
+               )
+ 
+ #para definir tus condiciones iniciales utiiza tus variables de estado
+ InitialConditions <- c(fertility.of.agricultural.land = 5000000, #[kg/(km2 * year)]
+                        agricultural.land = 8, #[km2]
+                        forest = 5000, #[km2]
+                        population = 100000 #[people]
+                        ) 
+
+ times <- seq(-1000, #tiempo inicial [years]
+              1000, #tiempo final [years]
+              1)# número de repetición de puntos [years]
+
+# Definimos método de integración
+ intg.method<-c("rk4")
+ 
+#Especificamos modelo
+Colapso.De.Civilizaciones <- function(t, state, parameters) {
+  with(as.list(c(state,parameters)), {
+    
+#auxiliary variables
+    food.produced <- 
+      fertility.of.agricultural.land * 
+      agricultural.land #[kg/year]
+    
+    demand.of.food <- 
+      population * 
+      consumed.food.per.person #[kg/year]
+    
+    gap <- 
+      demand.of.food - 
+      food.produced #[kg/year]
+    
+    number.of.people.without.food <- 
+      gap/
+      consumed.food.per.person #[people/year]
+
+#flow variables
+    deforestation <-
+      min(gap/max(fertility.of.agricultural.land,1),forest/4)/
+      intensity #[km2/year]
+    
+    fertility.losses <- 
+      fertility.of.agricultural.land * 
+      min(2,(agricultural.land/forest)^x)/
+      intensity #[kg/(km2*year)/year]
+      
+    net.natural.population.increase <- 
+      population * 
+      (exp(log(2)/408)-1) #[people/year]
+    
+    emigration <- 
+      emigration.ratio * 
+      number.of.people.without.food #[people/year]
+      
+#state variables
+    dfertility.of.agricultural.land <- 
+      -fertility.losses #[kg/(km2*year)]
+      
+    dforest <- 
+      -deforestation #[km2/year]
+    
+    dagricultural.land <- 
+      deforestation #[km2/year]
+    
+    dpopulation <- 
+      net.natural.population.increase - 
+      emigration #[people/year]
+    
+    list(c(dfertility.of.agricultural.land,
+             dagricultural.land,
+             dforest,
+             dpopulation),
+         population.density = population/(agricultural.land + forest))
+
+  })
+}
+
+out2 <- ode(y = InitialConditions,
+           times = times,
+           func = Colapso.De.Civilizaciones,
+           parms = parameters,
+           method =intg.method)
+
+out2.df <- data.frame(out2)
+
+```
+
+2. ¿Qué pasa con la población? Grafica el comportamiento de esta variable, ¿corresponde el comportamiento de tu modelo al comportamiento observado?
+
+```{r}
+#Graficas solo variables de interés
+plot(out2, which = c("population"),
+     xlab = "years",
+     ylab = c("population")
+     )
+
+#Graficas solo variables de interés
+plot(out2, which = c("population.density"),
+     xlab = "years",
+     ylab = c("population.density")
+     )
+
+```
+
+*R: Se aprecia que existe un crecimiento exponencial en la población hasta el año 800 d.C. que eleva la densidad poblacional hasta los 340 personas por km2, lo cual coincide con lo establecido en el problema en donde se menciona que la densidad poblacional se llega a encontrar en máximos de entre 200 y 500 personas por km2. Posterior a esto, se observa un colapso en la población que la lleva a una densidad poblacional menor a 20 personas por km2 después de 70 años, lo cual coincide también con los valores y plazos establecidos en el problema. Por esto, se podría considerar que efectivamente el comportamiento del modelo coincide con el observado.*
+
+3. Introduce cambios en el modelo que hagan más realista su comportamiento.
+
+```{r}
+#Problema 2.3
+# Colapso de Civilizacioes
+
+#Paso 1: cargar la libreria "deSolve" empleando la funcion library()
+ library("deSolve")
+# library("ggplot2")
+# library("ggpubr")
+
+#Considera a los parametros como variables exogenas que no pueden ser modificadas
+
+ parameters<-c(consumed.food.per.person = 400, #[kg/(person * year)]
+               emigration.ratio = 5/100, #[%]
+               intensity = 1,
+               x = 1.84
+               )
+ 
+ #para definir tus condiciones iniciales utiiza tus variables de estado
+ InitialConditions <- c(fertility.of.agricultural.land = 5000000, #[kg/(km2 * year)]
+                        agricultural.land = 8, #[km2]
+                        forest = 5000, #[km2]
+                        population = 100000 #[people]
+                        ) 
+
+ times <- seq(-1000, #tiempo inicial [years]
+              1000, #tiempo final [years]
+              1)# número de repetición de puntos [years]
+
+# Definimos método de integración
+ intg.method<-c("rk4")
+ 
+#Especificamos modelo
+Colapso.De.Civilizaciones <- function(t, state, parameters) {
+  with(as.list(c(state,parameters)), {
+    
+#auxiliary variables
+    food.produced <- 
+      fertility.of.agricultural.land * 
+      agricultural.land #[kg/year]
+    
+    demand.of.food <- 
+      population * 
+      consumed.food.per.person #[kg/year]
+    
+    gap <- 
+      demand.of.food - 
+      food.produced #[kg/year]
+    
+    number.of.people.without.food <- 
+      gap/
+      consumed.food.per.person #[people/year]
+
+#flow variables
+    deforestation <-
+      min(gap/max(fertility.of.agricultural.land,1),forest/4)/
+      intensity #[km2/year]
+    
+    fertility.losses <- 
+      fertility.of.agricultural.land * 
+      min(2,(agricultural.land/forest)^x)/
+      intensity #[kg/(km2*year)/year]
+      
+    net.natural.population.increase <- 
+      population * 
+      (exp(log(2)/408)-1) #[people/year]
+    
+    emigration <- 
+      emigration.ratio * 
+      number.of.people.without.food #[people/year]
+      
+#state variables
+    dfertility.of.agricultural.land <- 
+      -fertility.losses #[kg/(km2*year)]
+      
+    dforest <- 
+      -deforestation #[km2/year]
+    
+    dagricultural.land <- 
+      deforestation #[km2/year]
+    
+    dpopulation <- 
+      net.natural.population.increase - 
+      emigration #[people/year]
+    
+    list(c(dfertility.of.agricultural.land,
+             dagricultural.land,
+             dforest,
+             dpopulation),
+         deforestation = deforestation,
+         gap = gap)
+
+  })
+}
+
+out2.3 <- ode(y = InitialConditions,
+           times = times,
+           func = Colapso.De.Civilizaciones,
+           parms = parameters,
+           method =intg.method)
+
+out2.3df <- data.frame(out2.3)
+
+#Graficas solo variables de interés
+plot(out2.3, which = c("population"),
+     xlab = "years",
+     ylab = c("population")
+     )
+
+```
+
+
+4. ¿Qué tan sensible es el modelo a cambios marginales en los parámetros o a cambios estructurales? Presenta al menos dos ejemplos.
+
+5. Propón una política (i.e. preferentemente una política dinámica) que evite el colapso de la civilización Maya. Implementa esta política en el modelo y compara gráficamente el comportamiento del sistema con y sin tu política. 
+
+6. Construye un diagrama de fase del modelo sin política. ¿Cuál es tu conclusión? ¿Cómo cambia este diagrama de fase con tu política?

@@ -1,0 +1,8 @@
+"0","# Agrego columna donde se resta fecha_aplicacion menos fecha_publicacion para "
+"0","#   determinar dias_desde_publicacion_oferta"
+"0",""
+"0","df <- df %>% "
+"0","  mutate(dias_desde_publicacion_oferta = "
+"0","           as.Date(fecha_aplicacion) - as.Date(fecha_publicacion))"
+"0"," "
+"0","head(df)"

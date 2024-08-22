@@ -1,0 +1,7 @@
+"0","# Generamos el pronóstico para 6 periodos, considerando que el gasto en publicidad será de 10 para todos estos."
+"0","advert_fcast <- "
+"0","  forecast(advert_dreg.auto,"
+"0","           xreg = rep(10,6))"
+"0",""
+"0","# "
+"0","advert_fcast"

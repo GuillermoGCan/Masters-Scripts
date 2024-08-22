@@ -1,0 +1,8 @@
+"0","y <- tsibble("
+"0","Year = 2015:2019,"
+"0","Observation = c(48, 36, 25, 30, 68),"
+"0","index = Year"
+"0",")"
+"2","Error in tsibble(Year = 2015:2019, Observation = c(48, 36, 25, 30, 68),  : 
+  no se pudo encontrar la función ""tsibble""
+"

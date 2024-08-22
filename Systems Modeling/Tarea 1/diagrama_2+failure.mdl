@@ -1,0 +1,155 @@
+{UTF-8}
+Success of the Technology  = A FUNCTION OF( Probability of Success of the Technology)
+	~	
+	~		|
+
+Perceived Certainty  = A FUNCTION OF( Failure of the Technology,Resources for actions to reduce uncertainty\
+		,Success of the Technology)
+	~	
+	~		|
+
+Failure of the Technology  = A FUNCTION OF( Probability of Success of the Technology)
+	~	
+	~		|
+
+Willingness to Invest  = A FUNCTION OF( Entrepreneurial Motivation,Perceived Certainty\
+		,Perceived Risk)
+	~	
+	~		|
+
+Entrepreneurial Motivation  = A FUNCTION OF( Perceptions About the Potential Success of the Technology\
+		)
+	~	
+	~		|
+
+"Entrepreneurial Willingness to acquire knowledge, experiment and invest"  = A FUNCTION OF\
+		( Perceived Certainty)
+	~	
+	~		|
+
+Investments  = A FUNCTION OF( Willingness to Invest)
+	~	
+	~		|
+
+Perceived Risk  = A FUNCTION OF( Perceived Certainty)
+	~	
+	~		|
+
+Perceptions About the Potential Success of the Technology  = A FUNCTION OF( Perceived Certainty\
+		)
+	~	
+	~		|
+
+Resources for actions to reduce uncertainty  = A FUNCTION OF( "Entrepreneurial Willingness to acquire knowledge, experiment and invest"\
+		,Investments)
+	~	
+	~		|
+
+Probability of Success of the Technology  = A FUNCTION OF( Investments,Willingness to act\
+		)
+	~	
+	~		|
+
+Willingness to act  = A FUNCTION OF( Entrepreneurial Motivation)
+	~	
+	~		|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 100
+	~	Month
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 0
+	~	Month
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 
+        TIME STEP
+	~	Month [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 1
+	~	Month [0,?]
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*View 1
+$192-192-192,0,Arial Unicode MS|12||0-0-0|0-0-0|0-0-255|-1--1--1|255-255-255|96,96,90,0
+10,1,Perceived Certainty,716,677,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,2,Perceived Risk,1035,602,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,3,1,2,1,0,45,0,2,192,0,-1--1--1,|||0-0-0,1|(884,686)|
+10,4,"Entrepreneurial Willingness to acquire knowledge, experiment and invest",622,560,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,5,1,4,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(673,647)|
+10,6,Resources for actions to reduce uncertainty,756,436,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,7,6,1,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(825,560)|
+10,8,Perceptions About the Potential Success of the Technology,1179,697,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,9,1,8,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(917,758)|
+10,10,Entrepreneurial Motivation,1370,463,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,11,8,10,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(1327,592)|
+10,12,Willingness to act,1300,152,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,13,10,12,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(1380,279)|
+10,14,Willingness to Invest,1205,338,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,15,2,14,1,0,45,0,2,192,0,-1--1--1,|||0-0-0,1|(1167,465)|
+1,16,10,14,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(1320,405)|
+10,17,Investments,1068,248,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,18,14,17,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(1156,266)|
+10,19,Probability of Success of the Technology,833,131,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,20,17,19,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(969,163)|
+1,21,4,6,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(678,463)|
+1,22,17,6,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(840,283)|
+1,23,12,19,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(1047,91)|
+1,24,1,14,1,0,43,0,2,192,0,-1--1--1,|||0-0-0,1|(1002,520)|
+10,25,Failure of the Technology,1596,361,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,26,25,1,1,0,45,0,2,64,0,-1--1--1,|||-1--1--1,1|(1517,614)|
+1,27,19,25,1,0,45,0,2,192,0,-1--1--1,|||-1--1--1,1|(1527,217)|
+10,28,Success of the Technology,536,347,75,30,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,29,19,28,1,0,43,0,2,192,0,-1--1--1,|||-1--1--1,1|(651,185)|
+1,30,28,1,1,0,43,0,2,64,0,-1--1--1,|||-1--1--1,1|(519,562)|
+12,31,2,751,573,36,36,4,7,0,0,3,0,0,0,0,0,0,0,0,0
+Certainty Reinforcement
+12,32,2,948,377,52,52,5,7,0,0,1,0,0,0,0,0,0,0,0,0
+Investment for Success
+12,33,2,1291,234,44,44,5,7,0,0,1,0,0,0,0,0,0,0,0,0
+Motivation to Success
+12,34,2,1237,530,40,40,5,7,0,0,1,0,0,0,0,0,0,0,0,0
+Motivation for Investments
+///---\\\
+:L<%^E!@
+5:Success of the Technology
+9:current
+19:90,0
+24:0
+25:0
+26:0
+23:0
+15:0,0,0,0,0,0
+27:0,
+34:0,
+42:0
+72:0
+73:0
+95:0
+96:0
+97:0
+77:0
+78:0
+102:0
+93:0
+94:0
+92:0
+91:0
+90:0
+87:0
+75:
+43:
+103:8,8,8,3,8

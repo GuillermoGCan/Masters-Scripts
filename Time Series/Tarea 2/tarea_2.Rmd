@@ -1,0 +1,422 @@
+---
+title: 'Series de tiempo: Tarea 2'
+author: "Guillermo Alberto Garcia Candanosa - A01034958"
+date: '2022-05-23'
+output:
+  html_document:
+    df_print: paged
+---
+
+1. Carga la librería fpp2 y utiliza la información de los primeros 20 días de la base de datos correspondiente a la demanda diaria de electricidad de Victoria, en Australia, para 2014 (datos20 <- head(elecdaily,20))
+
+Carga de librerías:
+
+```{r message=FALSE, warning=FALSE}
+library(fpp2)
+library(fpp3)
+library(forecast)
+library(readxl)
+library(TSstudio)
+library(ggseas)
+library(data.table)
+library(urca)
+library(formattable)
+library(janitor)
+```
+
+Carga de base de datos:
+
+```{r}
+datos20 <- 
+  head(elecdaily,20)
+```
+
+
+a. Grafica la serie de tiempo.
+
+```{r}
+autoplot(datos20[,"Demand"]) + 
+  ggtitle("Total electricity demand in GW for Victoria, Australia, every day during 2014") +
+  xlab("Time") + 
+  ylab("Total electricity demand [GW]")
+```
+
+b. Has un modelo de regresión lineal con las variables disponibles en la base de datos, a fin de pronosticar la demanda de electricidad.
+
+```{r}
+# Transformación de datos a tsibble
+
+datos20_tbl <- 
+  as_tsibble(datos20,
+             pivot_longer = FALSE)
+
+# Regresión lineal múltiple en datos ts
+
+fit.datos20 <- tslm(Demand ~ 
+         Temperature + WorkDay,
+       data = datos20)
+
+summary(fit.datos20)
+
+# Regresión lineal múltiple en tsibble
+
+fit.datos20_tbl <- datos20_tbl %>% 
+  model(
+    TSLM(Demand ~ 
+         Temperature + WorkDay)
+    )
+
+report(fit.datos20_tbl)
+
+#Gráfica de observaciones reales y estimados con Regresión Lineal Múltiple
+
+autoplot(datos20[,"Demand"], series = "Data") +
+  autolayer(fitted(fit.datos20), series = "Fitted") + 
+  xlab("Day") +
+  ylab("") + 
+  ggtitle("Total electricity demand in GW for Victoria, Australia, every day during 2014") + 
+  guides(colour = guide_legend(title = ""))
+```
+
+c.	Interpreta los coeficientes de tu regresión.
+*R: En Victoria, Australia; un grado Celsius adicional en la temperatura máxima se traduce en un incremento de 6.28 GW en la demanda diaria de electricidad. La variable WorkDay, que señala si se hace referencia a días hábiles o inhábiles, no es estadísticamente significativa.*
+
+d.	Analiza los residuales: grafícalos e interprétalos.
+
+```{r}
+# Gráfica de los residuales
+fit.datos20_tbl %>% gg_tsresiduals()
+
+# La primera gráfica nos sugiere que los residuales podrían no estarse comportando de forma aleatoria, pues hay una tendencia alcista en los mismos.
+
+# Prueba Ljung-Box
+## Hipótesis nula: serie estacionaria
+## Hipótesis alternativa: serie NO estacionaria
+
+augment(fit.datos20_tbl) %>% 
+  features(.innov, ljung_box, 
+           lag = ifelse(2*7 > nrow(datos20_tbl)/5,
+                        nrow(datos20_tbl)/5,
+                        2*7), # De acuerdo con el libro de texto FPP3, se utiliza el número de observaciones dividido entre 5 si este resultado es menor que 10 o que 2m (cuando la serie tiene estacionalidad y m es el periodo de estacionalidad.)
+           dof = 2) # Número de parámetros del modelo.
+
+# Gráfico entre las variables independientes y los residuales
+datos20_tbl %>% 
+  left_join(residuals(fit.datos20_tbl),
+            by = "index") %>% 
+  pivot_longer(WorkDay:Temperature,
+               names_to = "regressor",
+               values_to = "x") %>% 
+  ggplot(aes(x = x, y = .resid)) +
+  geom_point() + 
+  facet_wrap(. ~ regressor, scales = "free_x") +
+  labs(y = "Residuals", x = "")
+
+
+# Gráfico entre valores estimados y residuales
+augment(fit.datos20_tbl) %>% 
+  ggplot(aes(x = .fitted, y = .resid)) +
+  geom_point() +
+  labs(x = "Fitted", y = "Residuals")
+
+```
+
+*R: A partir de la gráfica de residuales, se sugiere que quizás los mismos tienen una tendencia. El correlograma no sugiere que haya correlaciones estadísticamente significativas entre los diferentes lags utilizados, y el histograma sugiere que pudiera haber una distribución que se aproxime a la distribución normal de los mismos residuales. Al llevar a cabo la prueba Ljung-Box, considerando que el pvalue es mayor a 0.05, concluimos que la hipótesis nula se acepta, por lo tanto la serie es estacionaria. No se aprecia que exista correlación alguna entre las variables independientes y los residuales, ni tampoco entre las estimaciones y los residuales.*
+
+e.	Utiliza tu moldeo para pronosticar la demanda de electricidad, para el siguiente día, si la temperatura fuera de 15° grados y compáralo con el pronóstico de 35°. ¿Cuáles son los pronósticos? ¿Parecen realistas?
+
+```{r}
+# Genero escenarios para pronosticar la demanda de energía eléctricica considerando que el día siguiente es un día hábil con 15° o con 35° de temperatura.
+
+future_scenarios <- scenarios(
+  LowTemp = new_data(datos20_tbl, 1) %>%
+  mutate(WorkDay = 1, 
+         Temperature = 15),
+  HiTemp = new_data(datos20_tbl, 1) %>%
+  mutate(WorkDay = 1, 
+         Temperature = 35),
+  names_to = "Scenario"
+  )
+
+# Hago los pronósticos correspondientes a cada escenario
+fc <- forecast(fit.datos20_tbl,
+               new_data = future_scenarios)
+
+# Genero las gráficas de los pronósticos.
+datos20_tbl %>% 
+  autoplot(Demand) +
+  autolayer(fc) +
+  labs(title = "Total electricity demand in GW for Victoria, Australia",
+       y = "Electricity demand [GW]")
+```
+
+*R: El pronóstico de la demanda de energía eléctrica para el día siguiente asumiendo que la temperatura máxima es de 15°, si bien es consistente con la tendencia del comportamiento de los datos, no se podría afirmar que es un comportamiento realista. Esto pues no se cuenta con ningún registro dentro del dataframe datos20 que corresponda a dicha temperatura máxima. Por lo tanto, para hacer ese pronóstico, se tendría que suponer que el comportamiento de los datos de demanda de electricidad vs temperatura máxima seguiría manteniendo una tendencia lineal en esos niveles de temperatura. Para el pronóstico de 35°, por otro lado, si se cuenta con registros que rodean esta temperatura máxima; y dichos registros efectivamente rodean también el pronóstico de demanda de electricidad. Por lo tanto, este pronóstico parece una aproximación realista considerando que esa fuera la temperatura máxima para ese día.*
+
+f.	Obtén las mediciones de error del modelo y comenta si los resultados son útiles. ¿Son mejores que si usamos el método naive? 
+
+```{r}
+# Calculo porcentaje de error de pronóstico considerando que al siguiente día la temperatura sería 15°C
+error.15 <- 
+  formattable::percent(
+    (fc[1,5] - elecdaily[21,1])/
+      elecdaily[21,1]
+    )
+
+view(error.15)
+
+# Calculo porcentaje de error de pronóstico considerando que al siguiente día la temperatura sería 35°C
+error.35 <-
+  formattable::percent(
+    (fc[2,5] - elecdaily[21,1])/
+      elecdaily[21,1]
+  )
+
+view(error.35)
+
+# Realizo el modelo NAIVE
+naive_model <-
+  datos20_tbl %>% 
+  model(
+    naive = NAIVE(Demand)
+  )
+
+# Calculo el pronóstico del modelo NAIVE
+naive_forecast <-
+  naive_model %>% 
+  forecast(h=1)
+
+# Genero las gráficas del pronóstico con el modelo NAIVE.
+datos20_tbl %>% 
+  autoplot(Demand) +
+  autolayer(naive_forecast) +
+  labs(title = "Total electricity demand in GW for Victoria, Australia",
+       y = "Electricity demand [GW]")
+
+# Calculo porcentaje de error de pronóstico considerando el modelo NAIVE
+error.naive <- 
+  formattable::percent(
+    (naive_forecast[1,4] - elecdaily[21,1])/
+      elecdaily[21,1]
+    )
+
+View(error.naive)
+
+```
+
+*R: Los resultados de la regresión no resultan ser tan útiles como el modelo NAIVE en este caso, pues las estimaciones de temperatura que se utilizaron para el siguiente día con la regresión fueron de 15°C y de 35°C cuando la temperatura máxima real fue en realidad de 23.1°C. Con esto, el método NAIVE de utilizar la última observación como pronóstico resultó más acertado que la regresión lineal, con un porcentaje de error del 2.75% a comparación de los errores de 31.19% y 25.34% para los pronósticos de la regresion lineal a 15°C y a 35°C respectivamente.*
+
+g.	Carga la base de datos “Elecmensual 20190618”; separa los componentes de la serie de tiempo e incluye la gráfica (es la demanda mensual ficticia de electricidad de Victoria, en Australia, desde enero de 1950).
+
+```{r}
+# Carga de la base de datos en ts
+
+Elecmensual_20190618.xls <- 
+  read_excel("Elecmensual 20190618.xlsx") %>% 
+  select(Demand)
+
+Elecmensual_20190618.ts <- 
+  ts(
+    Elecmensual_20190618.xls,
+    start = c(1950,1),
+    deltat = 1/12
+    )
+
+# Grafico la serie de tiempo original
+
+ts_plot(Elecmensual_20190618.ts[,"Demand"],
+        slider = TRUE,
+        type = "multiple",
+        title = "Demanda mensual de electricidad de Victoria, en Australia, desde enero de 1950",
+        Ytitle = "Demanda de electricidad [GW]",
+        Xtitle = "Mes"
+        )
+
+# Descompongo la serie de tiempo en forma aditiva y multiplicativa
+
+ts_decompose(Elecmensual_20190618.ts[,"Demand"], type = "both")
+
+# Ajusto formato de serie de tiempo a data.table
+
+Elecmensual_20190618.dt <- as.data.table(Elecmensual_20190618.ts)
+
+# Ajusto los números de meses a fechas según la descripción provista
+Elecmensual_20190618.dt <- Elecmensual_20190618.dt %>% 
+  mutate(Month = 
+           yearmonth(
+             seq(
+               as.Date("1950-01-01"),
+               by = "month",
+               length.out = 730
+               )
+             )
+         )
+
+# Tendencia
+Elecmensual_20190618.dt[,trend := zoo::rollmean(Demand, 12, fill=NA, align = "right")]
+
+knitr::kable(tail(Elecmensual_20190618.dt))
+
+# Datos sin la tendencia
+Elecmensual_20190618.dt[,`:=`( detrended_a = Demand - trend,  detrended_m = Demand / trend )]
+
+knitr::kable(tail(Elecmensual_20190618.dt))
+
+# Estacionalidad
+Elecmensual_20190618.dt[,`:=`(seasonal_a = mean(detrended_a, na.rm = TRUE),
+                seasonal_m = mean(detrended_m, na.rm = TRUE)), 
+          by=.(month(Month)) ]
+
+knitr::kable(tail(Elecmensual_20190618.dt))
+
+# Parte aleatoria
+Elecmensual_20190618.dt[,`:=`( residual_a = detrended_a - seasonal_a, 
+                 residual_m = detrended_m / seasonal_m )]
+
+knitr::kable(tail(Elecmensual_20190618.dt))
+
+# Gráficas
+ggsdc(Elecmensual_20190618.dt, 
+      aes(x = Month, y = Demand), 
+      method = "decompose", 
+      frequency = 12, 
+      s.window = 8, 
+      type = "additive") + 
+  geom_line() +
+  ggtitle("Aditiva") + 
+  theme_minimal()
+
+ggsdc(Elecmensual_20190618.dt, 
+      aes(x = Month, y = Demand), 
+      method = "decompose", 
+      frequency = 12, 
+      s.window = 8, 
+      type = "multiplicative") + 
+  geom_line() +
+  ggtitle("Multiplicativa") + 
+  theme_minimal()
+
+#¿Es aditiva o multiplicativa?
+
+ggAcf(Elecmensual_20190618.dt$residual_a)
+ggAcf(Elecmensual_20190618.dt$residual_m)
+
+Elecmensual_20190618.dt$residual_a %>% ur.kpss() %>% summary()
+Elecmensual_20190618.dt$residual_m %>% ur.kpss() %>% summary()
+
+```
+
+```{r}
+# Carga de la base de datos en ts
+
+Elecmensual_20190618.xls <- 
+  read_excel("Elecmensual 20190618.xlsx") %>% 
+  select(Demand)
+
+Elecmensual_20190618.ts <- 
+  ts(
+    Elecmensual_20190618.xls,
+    start = c(1950,1),
+    deltat = 1/12
+    )
+
+Elecmensual_20190618.ts.trans <- 
+  log(Elecmensual_20190618.ts,
+      base = 10)
+
+# Ajusto formato de serie de tiempo a data.table
+
+Elecmensual_20190618.dt.trans <- as.data.table(Elecmensual_20190618.ts.trans)
+
+# Ajusto los números de meses a fechas según la descripción provista
+Elecmensual_20190618.dt.trans <- Elecmensual_20190618.dt.trans %>% 
+  mutate(Month = 
+           yearmonth(
+             seq(
+               as.Date("1950-01-01"),
+               by = "month",
+               length.out = 730
+               )
+             )
+         )
+
+# Tendencia
+Elecmensual_20190618.dt.trans[,trend := zoo::rollmean(Demand, 12, fill=NA, align = "right")]
+
+knitr::kable(tail(Elecmensual_20190618.dt.trans))
+
+# Datos sin la tendencia
+Elecmensual_20190618.dt.trans[,`:=`( detrended_a = Demand - trend )]
+
+knitr::kable(tail(Elecmensual_20190618.dt.trans))
+
+# Estacionalidad
+Elecmensual_20190618.dt.trans[,`:=`(seasonal_a = mean(detrended_a, na.rm = TRUE)
+                              ), 
+          by=.(month(Month)) ]
+
+knitr::kable(tail(Elecmensual_20190618.dt.trans))
+
+# Parte aleatoria
+Elecmensual_20190618.dt.trans[,`:=`( residual_a = detrended_a - seasonal_a)]
+
+knitr::kable(tail(Elecmensual_20190618.dt.trans))
+
+# Gráficas
+ggsdc(Elecmensual_20190618.dt.trans, 
+      aes(x = Month, y = Demand), 
+      method = "decompose", 
+      frequency = 12, 
+      s.window = 8, 
+      type = "additive") + 
+  geom_line() +
+  ggtitle("Aditiva") + 
+  theme_minimal()
+
+#¿Es multiplicativa?
+ggAcf(Elecmensual_20190618.dt.trans$residual_a)
+
+Elecmensual_20190618.dt.trans$residual_a %>% ur.kpss() %>% summary()
+
+```
+
+h.	Obtén los datos desestacionalizados y muestra en una tabla los datos originales y los desestacionalizados. Calcula la diferencia entre ellos y gráfica ambas series (original y desestacionalizada) en una gráfica.
+
+```{r}
+comparativa_df <- 
+  data.frame(fecha = yearmonth(
+             seq(
+               as.Date("1950-01-01"),
+               by = "month",
+               length.out = 730
+               )
+             ),
+             Elecmensual_20190618.ts)
+
+comparativa_df$desestacionalizados <- 
+  seasadj(decompose(Elecmensual_20190618.ts, "multiplicative"))
+
+comparativa_df_restas <- dplyr::summarise(comparativa_df,
+                         restas = Demand - desestacionalizados)
+
+comparativa_df <- clean_names(comparativa_df)
+comparativa_df_restas <- clean_names(comparativa_df_restas)
+
+comparativa_df <- cbind(comparativa_df, comparativa_df_restas)
+
+knitr::kable(comparativa_df)
+```
+
+```{r}
+Elecmensual_20190618.ts2 <- 
+  ts(
+    Elecmensual_20190618.xls$Demand,
+    start = c(1950,1),
+    deltat = 1/12
+    )
+
+fit <- stl(Elecmensual_20190618.ts2, s.window = 7)
+
+autoplot(Elecmensual_20190618.ts, series = "Originales") + 
+  autolayer(seasadj(fit),
+            series = "Datos desestacionalizados")
+```

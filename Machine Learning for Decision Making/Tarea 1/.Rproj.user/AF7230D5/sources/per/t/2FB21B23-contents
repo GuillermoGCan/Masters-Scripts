@@ -1,0 +1,312 @@
+---
+title: 'Aprendizaje máquina para la toma de decisiones: Tarea 1'
+author: "Guillermo Alberto Garcia Candanosa - A01034958"
+date: '2021-06-20'
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+
+# Tarea 1: Features
+
+
+## Instrucciones
+
+Se tiene registros de ofertas de trabajo, candidatos y aplicaciones de candidatos a ofertas disponibles. Los datos los puedes encontrar [aquí](https://www.dropbox.com/scl/fi/duaulvlihm2vbrjy3lmak/datos_tarea_1.xlsx?dl=0&rlkey=u3nelopv9dts7fdooka4161gk), están en 3 hojas dentro del excel.
+
+Las ofertas contienen la siguiente información:
+
+- fecha de publicación  
+- identificador de la oferta  
+- salario de la oferta  
+- área de la oferta  
+- tipo de contrato que se ofrece
+
+Los candidatos contienen la siguiente información:
+
+- el identificador del candidato  
+- la fecha de registro  
+- el salario que solicita  
+- el área donde quiere trabajar  
+- el grado académico que tiene para esa fecha de registro  
+- el tipo de contrato que solicita tenga la oferta
+
+Las aplicaciones contienen la siguiente informacion:
+
+- id de la oferta a la que se aplicó  
+- id del candidato que aplicó a la oferta  
+- fecha en la que se aplicó a la oferta
+
+Notas:
+
+- Es posible que a una oferta apliquen muchos candidatos  
+- Es posible que un cadidato aplique a muchas ofertas  
+- Es posible que haya más de 1 registro por candidato en los datos de candidato, esto es porque conforme pasa el tiempo el candidato va "actualizando" su registro
+
+¿Qué debes hacer?
+Utilizando el `as_of_date` del **1 de junio del 2020** genera los siguientes features que un modelo predictivo ocupará para recomendar a un candidato si aplicar o no a una oferta.
+
+- `check_area`: 1 si el área del candidato es la misma que el área solicitada por la oferta, 0 en otro caso.  
+
+- `check_tipo_contrato`: 1 si el tipo de contrato que solicita el candidato hace match con el tipo de contrato que solicita la oferta, o bien, si el candidato tiene como tipo de contrato el valor "indiferente"; 0 en otro caso.  
+
+- `dias_desde_publicacion_oferta`: Número de días que han pasado desde l día que se publicó la oferta hasta el día en que el candidato aplica.  
+
+- `diferencia_salario`: La resta del salario que ofrece la oferta y el salario que pide el solicitante. Respetar el signo. El signo negativo implica que el solicitante pide más que lo que se ofrece.  
+
+- `num_aplicaciones_mes`: El número de aplicaciones que ha hecho el candidato en el último mes.  
+
+- `label`: Si el candidato fue contratado en esa oferta o no. Puede haber ocasiones en las que no se tiene información de esta etiqueta.  
+
+-> Toma en cuenta que para crear los **features** deberás tomar en cuenta los valores del candidato/oferta que existían para esa fecha. Por ejemplo, si un candidato tenía en febrero del 2020 su preparatoria termianda, y en enero del 2021 su licenciatura, y queremos generar los features para diciembre del 2020 debemos ocupar como valor de grado académico la preparatoria, pues es lo que tenía para dicimbre del 2020.
+
+Puedes generar tus **features** en excel, en R, en python, en pandas.
+
+
+### ¿Qué deberás entregar?
+Un excel o word o Rmd o pdf que contenga:
+
+- El cohort generado para el `as_of_date` definido  
+- Las features generados para este cohort incluyendo el label -> es posible que no tengas un valor para ciertos registros.  
+
+
+### ¿Cuándo se entrega?
+A más tardar el **domingo 20 de junio del 2021** por correo a liliana.millan@tec.mx con el subject `tarea_1`.
+
+--------------------------------------------------------------------------------------------------------------
+## Realización
+
+
+### Carga de librerías
+
+
+```{r message=FALSE, warning=FALSE}
+# Librerías
+
+library(dplyr)
+library(tidyverse)
+```
+
+
+### Importación y limpieza de bases de datos.
+
+
+```{r echo=TRUE, paged.print=FALSE}
+# Bases de datos
+
+ofertas_raw <- read.csv("ofertas.csv")
+candidatos_raw <- read.csv("candidatos.csv")
+aplicaciones_raw <- read.csv("aplicaciones.csv")
+
+# Selección de variables con valores
+
+candidatos_raw <- candidatos_raw %>% 
+  select(colnames(candidatos_raw)[1:6])
+
+aplicaciones_raw <- aplicaciones_raw %>% 
+  select(colnames(aplicaciones_raw)[1:4])
+
+# Declaración del objeto del as of date.
+
+as_of_date <- as.Date("2020-06-01")
+as_of_date
+
+# Filtrado de datos posteriores al as of date y renombre de columnas para 
+#   diferenciar los datos que provienen de ofertas de los que 
+#   provienen de candidatos.
+
+ofertas <- ofertas_raw %>% 
+  filter(fecha_publicacion < as_of_date) %>% 
+  rename(salario_oferta = salario, area_oferta = area, 
+         tipo_contrato_oferta = tipo_contrato)
+
+# Corrijo el typo de "permamente" a "permanente".
+ofertas[3,5] <- "permanente"
+
+candidatos <- candidatos_raw %>% 
+  filter(fecha_registro < as_of_date) %>% 
+  rename(salario_candidato = salario, 
+         area_candidato = area, tipo_contrato_candidato = tipo_contrato) %>% 
+  group_by(id_candidato) %>% 
+  slice(which.max(as.Date(fecha_registro))) 
+# Dejo solamente las últimas actualizaciones de los candidatos.
+
+
+aplicaciones <- aplicaciones_raw %>% 
+  filter(fecha_aplicacion < as_of_date, id_candidato != 8) %>% 
+  mutate(id_aplicacion = paste(id_candidato,id_oferta))
+# Filtré al candidato 8 con fechas irregulares y agregué un id conjunto
+#   de candiato y de oferta para representar las aplicaciones.
+
+head(ofertas)
+head(candidatos)
+head(aplicaciones)
+```
+
+
+### Enumeración de escenarios de aplicaciones
+
+
+```{r echo=TRUE}
+# Hago un dataframe que enumere todas las combinaciones de candidatos
+#   aplicando a todas las posibles vacantes y les asigne un id.
+
+n <- as.numeric(0)
+id_df <- matrix(nrow = 580, ncol = 3)
+id_df <- as.data.frame(id_df, row.names = 1:580)
+id_df <- rename(id_df, id_aplicacion = V1, id_candidato = V2,
+                id_oferta = V3)
+  
+for (c in candidatos$id_candidato){
+  for(o in ofertas$id_oferta){
+    n = n + 1
+    id_df[n,1] = paste(c,o)
+    id_df[n,2] = c
+    id_df[n,3] = o
+    }
+}
+
+# Unifico los id_aplicacion para contar con observaciones de todas las
+#   posibles combinaciones de candidatos y aplicaciones en mi data frame
+#   principal.
+
+aplicaciones <- 
+  merge(id_df, aplicaciones, by = "id_aplicacion", all.x = TRUE, 
+        no.dups = TRUE) 
+
+aplicaciones <- select(aplicaciones, id_aplicacion, 
+                       id_candidato = id_candidato.x, 
+                       id_oferta = id_oferta.x, fecha_aplicacion, 
+                       contratado)
+```
+
+
+### Unificación de bases de datos y reordenamiento.
+
+
+```{r echo=TRUE}
+# Unifico las 3 bases de datos en una base de datos principal llamada df.
+
+df <- merge(aplicaciones,ofertas, by = "id_oferta")
+df <- merge(candidatos,df, by = "id_candidato")
+
+# Reordeno el data frame de manera más organizada
+
+df <- df %>% select(id_aplicacion, id_oferta, fecha_publicacion, 
+                    salario_oferta,area_oferta, tipo_contrato_oferta,
+                    id_candidato, fecha_registro, salario_candidato, 
+                    area_candidato, grado_academico, 
+                    tipo_contrato_candidato, fecha_aplicacion, contratado)
+
+head(df)
+```
+
+
+### Generación de features
+
+
+#### Generación de feature `check_area`
+
+
+```{r echo=TRUE}
+# Agrego una columna adicional llamada check_area donde se compara area_oferta 
+#  con area_candidato para determinar si hay coincidencia.
+
+df <- df %>% 
+   mutate(check_area = ifelse(area_oferta == area_candidato, 1, 0))
+
+head(df)
+```
+
+
+#### Generación de feature `check_tipo_contrato`
+
+
+```{r echo=TRUE}
+# Agrego una columna adicional llamada check_tipo_contrato donde se compara 
+#   tipo_contrato_oferta con tipo_contrato_candidato para determinar 
+#   si hay coincidencia.
+
+df <- df %>% 
+   mutate(check_tipo_contrato = 
+            ifelse(tipo_contrato_oferta == tipo_contrato_candidato, 1,
+                   ifelse(tipo_contrato_candidato == "indiferente", 1, 0)))
+
+head(df)
+```
+
+
+#### Generación de feature `dias_desde_publicacion_oferta`
+
+
+```{r echo=TRUE}
+# Agrego columna donde se resta fecha_aplicacion menos fecha_publicacion para 
+#   determinar dias_desde_publicacion_oferta
+
+df <- df %>% 
+  mutate(dias_desde_publicacion_oferta = 
+           as.Date(fecha_aplicacion) - as.Date(fecha_publicacion))
+
+# Los valores nulos indicarán que el candidato no aplicó a esa 
+#   oferta.
+ 
+head(df)
+```
+
+
+#### Generación de feature `diferencia_salario`
+
+
+```{r echo=TRUE}
+# Agrego columna donde se resta salario_oferta menos salario_candidato
+
+df <- df %>% 
+   mutate(diferencia_salario = salario_oferta - salario_candidato)
+
+head(df)
+```
+
+
+#### Generación de feature `num_aplicaciones_mes`
+
+
+```{r echo=TRUE}
+# Hago una matriz donde se cuenten solamente las aplicaciones realizadas un mes 
+#   antes del as_of_date.
+
+num_aplicaciones_mes <- 
+  tally(group_by(filter(df, fecha_aplicacion > (as_of_date-30)), id_candidato))
+
+#Agrego la cuenta de aplicaciones al data frame principal df.
+df <- merge(df, num_aplicaciones_mes, "id_candidato", all.x = TRUE)
+
+# Si lo anterior resulta en valores nulos, los cambio a cero pues
+#   el candidato no ha hecho ninguna aplicación.
+
+j = as.numeric(1)
+for (i in df$id_aplicacion){
+  if (is.na(df[j, 19])){
+    df[j, 19] = 0
+  }
+  j = j+1
+}
+
+head(df)
+```
+
+
+### Selección de features y elaboración del cohorte
+
+
+```{r echo=TRUE}
+cohort <- df %>% 
+   select(id_aplicacion, id_candidato, id_oferta, fecha_aplicacion, 
+          check_area, check_tipo_contrato,
+          dias_desde_publicacion_oferta, diferencia_salario, 
+          num_aplicaciones_mes = n, label = contratado)
+ 
+cohort
+```
+

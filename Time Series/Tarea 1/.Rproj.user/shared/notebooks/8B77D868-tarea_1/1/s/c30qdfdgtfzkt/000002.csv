@@ -1,0 +1,5 @@
+"0","autoplot(y) + "
+"0","  ggtitle(""Aprobación presidencial (% promedio en México, anual)"") +"
+"0","  ylab(""%"") +"
+"0","  xlab(""Año"")"
+"2","Plot variable not specified, automatically selected `.vars = Observation`"

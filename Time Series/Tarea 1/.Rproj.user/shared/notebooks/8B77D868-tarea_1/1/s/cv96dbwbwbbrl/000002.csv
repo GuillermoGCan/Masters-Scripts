@@ -1,0 +1,4 @@
+"0","mytimeseries %>%"
+"0","  pivot_longer(-Quarter) %>%"
+"0","  ggplot(aes(x = Quarter, y = value, colour = name)) +"
+"0","  geom_line()"
